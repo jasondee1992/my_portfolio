@@ -1,0 +1,63 @@
+{
+  "profile": {
+    "name": "Jasond Delos Santos",
+    "title": "Python Developer • Data Engineer • Automation Builder",
+    "location": "Philippines"
+  },
+
+  "skills": [
+    "Python",
+    "Dash",
+    "Snowflake",
+    "Automation",
+    "AI",
+    "ETL"
+  ],
+
+  "projects": [
+    {
+      "slug": "smart-ticket-assignment",
+      "name": "Smart Ticket Assignment",
+      "description": "Auto-assigns tickets based on rules and workload with a manager dashboard.",
+      "tags": ["Automation", "Dash"],
+      "stack": ["Python", "Dash", "SQLite"],
+      "image": "/images/placeholders/project-1.jpg",
+      "links": { "live": "#", "source": "#" }
+    },
+    {
+      "slug": "auto-report-generator",
+      "name": "Auto Report Generator",
+      "description": "Generates scheduled reports from Snowflake and delivers them to stakeholders.",
+      "tags": ["Data Engineering", "Automation"],
+      "stack": ["Python", "Snowflake", "SQL"],
+      "image": "/images/placeholders/project-2.jpg",
+      "links": { "live": "#", "source": "#" }
+    },
+    {
+      "slug": "rag-portfolio-chatbot",
+      "name": "Portfolio AI Chatbot (RAG)",
+      "description": "A chatbot that answers only about my portfolio content with citations and logging.",
+      "tags": ["AI"],
+      "stack": ["FastAPI", "Embeddings", "Vector Search"],
+      "image": "/images/placeholders/project-3.jpg",
+      "links": { "live": "#", "source": "#" }
+    }
+  ],
+
+  "achievements": [
+    {
+      "title": "Automation Systems Development",
+      "year": "2025"
+    },
+    {
+      "title": "AI & RAG Systems Study",
+      "year": "2026"
+    }
+  ],
+
+  "contact": {
+    "email": "you@email.com",
+    "linkedin": "https://linkedin.com/in/your-handle",
+    "github": "https://github.com/your-handle"
+  }
+}
