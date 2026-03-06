@@ -1,26 +1,24 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
-import Achievements from "@/components/Achievements";
-import Contact from "@/components/Contact";
-import ChatbotWidget from "@/components/ChatbotWidget";
+import Navbar from "@/components/redesign/Navbar";
+import Hero from "@/components/redesign/Hero";
+import AboutSection from "@/components/redesign/AboutSection";
+import InfoCards from "@/components/redesign/InfoCards";
+import FeaturedProjects from "@/components/redesign/FeaturedProjects";
+import GalleryStrip from "@/components/redesign/GalleryStrip";
+import QuoteBlock from "@/components/redesign/QuoteBlock";
+import Footer from "@/components/redesign/Footer";
+
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* PROOF BANNER */}
-      <div className="fixed top-2 left-2 z-[9999] bg-red-600 text-white px-3 py-1 rounded">
-        PAGE.TSX LOADED
-      </div>
-
       <Navbar />
       <Hero />
-      <Projects />
-      <Achievements />
-      <Contact />
-
-      {/* CHATBOT */}
-      <ChatbotWidget />
+      <AboutSection />
+      <InfoCards />
+      <FeaturedProjects />
+      <GalleryStrip />
+      <QuoteBlock />
+      <Footer />
     </main>
   );
 }
