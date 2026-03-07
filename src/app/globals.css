@@ -3,10 +3,19 @@
 :root {
   --bg-0: #050505;
   --bg-1: #0b0c0f;
+  --bg-2: #101217;
+
   --card: rgba(255, 255, 255, 0.04);
+  --card-strong: rgba(255, 255, 255, 0.06);
   --border: rgba(255, 255, 255, 0.10);
-  --text-0: rgba(255, 255, 255, 0.92);
-  --text-1: rgba(255, 255, 255, 0.72);
+  --border-soft: rgba(255, 255, 255, 0.07);
+
+  --text-0: rgba(255, 255, 255, 0.95);
+  --text-1: rgba(255, 255, 255, 0.75);
+  --text-2: rgba(255, 255, 255, 0.52);
+
+  --accent: #60a5fa;
+  --success: #22c55e;
 }
 
 html {
@@ -15,10 +24,11 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 800px at 70% 0%, rgba(96, 165, 250, 0.10), transparent 55%),
-    radial-gradient(900px 700px at 20% 30%, rgba(34, 197, 94, 0.08), transparent 55%),
+    radial-gradient(1200px 900px at 75% 0%, rgba(59,130,246,0.12), transparent 55%),
+    radial-gradient(900px 800px at 15% 30%, rgba(34,197,94,0.08), transparent 55%),
     var(--bg-0);
   color: var(--text-0);
+  font-feature-settings: "ss01" on, "cv01" on, "cv02" on;
 }
 
 .container-page {
@@ -31,5 +41,79 @@ body {
 @media (min-width: 768px) {
   .container-page {
     padding-inline: 32px;
+  }
+}
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 20px 60px rgba(0,0,0,0.38);
+  backdrop-filter: blur(12px);
+}
+
+.glass-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: var(--text-1);
+}
+
+.section-title {
+  color: var(--text-0);
+  letter-spacing: -0.03em;
+}
+
+.section-copy {
+  color: var(--text-2);
+}
+
+.soft-hover {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+}
+
+.soft-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 24px 70px rgba(0,0,0,0.42);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.hero-glow {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      600px 600px at 25% 20%,
+      rgba(96,165,250,0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      500px 500px at 75% 40%,
+      rgba(34,197,94,0.14),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 600px at 50% 80%,
+      rgba(168,85,247,0.12),
+      transparent 65%
+    );
+  filter: blur(80px);
+  animation: heroGlowMove 18s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlowMove {
+  0% {
+    transform: translateY(-20px) scale(1);
+  }
+
+  100% {
+    transform: translateY(20px) scale(1.1);
   }
 }

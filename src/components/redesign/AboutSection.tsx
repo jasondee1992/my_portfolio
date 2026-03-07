@@ -2,13 +2,7 @@ export default function AboutSection() {
   return (
     <section className="container-page mt-24 grid gap-8 md:grid-cols-2">
 
-      <div
-        className="rounded-3xl p-8"
-        style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
+      <div className="glass-card soft-hover rounded-3xl p-8">
         <h2 className="text-2xl font-semibold mb-4">About Me</h2>
 
         <p className="text-white/70 leading-relaxed">
