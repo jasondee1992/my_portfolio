@@ -3,23 +3,34 @@ export default function AboutSection() {
     <section className="container-page mt-24 grid gap-8 md:grid-cols-2">
 
       <div className="glass-card soft-hover rounded-3xl p-8">
-        <h2 className="text-2xl font-semibold mb-4">About Me</h2>
+        <h2 className="text-2xl font-semibold mb-2">About Me</h2>
 
         <p className="text-white/70 leading-relaxed">
-          I’m a Python Developer and Data Engineer specializing in automation,
-          dashboards, and internal tools. I build scalable systems using
-          Python, Dash, Snowflake, and modern data workflows.
+          I’m a Python Developer specializing in building end-to-end internal
+          applications for enterprise environments. My work focuses on automating
+          business processes by developing full-stack Python solutions, from backend
+          APIs to interactive dashboards used by internal teams.
         </p>
 
-        <p className="text-white/70 mt-4 leading-relaxed">
-          My focus is designing automation systems that reduce manual work,
-          improve data accuracy, and deliver insights through dashboards and
-          analytics platforms.
+        <p className="text-white/70 mt-3 leading-relaxed">
+          I design and develop backend services using Python and REST APIs, while
+          building frontend applications using Dash and Bootstrap. I typically manage
+          the full development lifecycle including requirements analysis, API design,
+          UI development, backend logic, testing, and deployment to AWS in
+          collaboration with DevOps teams.
         </p>
 
-        <p className="text-white/70 mt-4 leading-relaxed">
-          I enjoy building tools that combine backend engineering, data
-          pipelines, and user-friendly interfaces.
+        <p className="text-white/70 mt-3 leading-relaxed">
+          I also maintain and enhance the applications I build by delivering
+          production updates, performance improvements, and new features. This
+          hands-on ownership allows me to deeply understand both technical systems
+          and business workflows across multiple projects.
+        </p>
+
+        <p className="text-white/70 mt-3 leading-relaxed">
+          Currently, I continue to expand my skills in backend architecture, data
+          engineering, and AI-driven systems to build scalable and impactful
+          automation platforms.
         </p>
       </div>
 

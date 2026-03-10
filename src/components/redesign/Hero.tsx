@@ -1,91 +1,111 @@
+import Image from "next/image";
+
 const metaItems = [
   "Python Developer",
-  "jasond@example.com",
+  "jasond.worked@gmail.com",
   "Based in Philippines",
-  "8+ Projects Completed",
 ];
 
-const stackTags = ["Python", "Dash", "Snowflake", "Automation", "AI"];
+const socialLinks = [
+  {
+    name: "Email",
+    href: "mailto:jasond.worked@gmail.com",
+    icon: "/icons/social/gmail.png",
+  },
+  {
+    name: "GitHub",
+    href: "https://https://github.com/jasondee1992",
+    icon: "/icons/social/github.png",
+  },
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/in/jasond-delos-santos-94978a111/",
+    icon: "/icons/social/linkedin.png",
+  },
+];
+
+const skillIcons = [
+  { name: "Python", icon: "/icons/skills/python.png" },
+  { name: "Dash", icon: "/icons/skills/dash.svg" },
+  { name: "Snowflake", icon: "/icons/skills/snowflake.svg" },
+  { name: "Automation", icon: "/icons/skills/automation.svg" },
+  { name: "AI", icon: "/icons/skills/ai.svg" },
+];
 
 export default function Hero() {
   return (
-    <section className="container-page relative pt-16 pb-10 md:pt-20 overflow-hidden">
-    <div className="hero-glow" />
-      <div className="relative z-10 grid gap-8 md:gap-10">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center">
-          <div
-            className="glass-card flex h-28 w-28 shrink-0 items-center justify-center rounded-full md:h-36 md:w-36"
-            style={{
-              border: "1px solid rgba(255,255,255,0.10)",
-              background:
-                "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.14), rgba(255,255,255,0.03) 58%)",
-            }}
-          >
-            <span className="text-3xl font-semibold tracking-tight text-white/85">
-              JD
-            </span>
+    <section className="container-page relative overflow-hidden pt-16 pb-8 md:pt-20">
+      <div className="hero-glow" />
+
+      <div className="relative z-10">
+        <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
+          {/* Profile image */}
+          <div className="shrink-0">
+            <div
+              className="glass-card overflow-hidden rounded-full"
+              style={{
+                width: 160,
+                height: 160,
+                border: "1px solid rgba(255,255,255,0.10)",
+              }}
+            >
+              <Image
+                src="/images/profile/profile.jpeg"
+                alt="Jasond Delos Santos"
+                width={150}
+                height={150}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
           </div>
 
+          {/* Right content */}
           <div className="flex-1">
-            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">
+            {/* 2. Name smaller */}
+            <h1 className="section-title text-3xl font-smaller tracking-tight md:text-6xl">
               Jasond Delos Santos
             </h1>
 
-            <p className="mt-3 max-w-2xl text-xl text-white/68 md:text-3xl">
-              Python Developer • Data Engineer
-            </p>
+            {/* 4. plain words only, no rounded backgrounds */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-smaller text-white/68 smaller:text-base">
+              {metaItems.map((item, index) => (
+                <div key={item} className="flex items-center gap-4">
+                  <span>{item}</span>
+                  {index !== metaItems.length - 1 && (
+                    <span className="hidden text-white/25 md:inline">•</span>
+                  )}
+                </div>
+              ))}
+            </div>
 
-            <div
-              className="mt-5 inline-flex items-center rounded-full px-4 py-2 text-sm font-medium"
-              style={{
-                background: "rgba(34,197,94,0.10)",
-                border: "1px solid rgba(34,197,94,0.28)",
-                color: "rgba(134,239,172,0.96)",
-              }}
-            >
-              Open to work
+            {/* 5. social icons only */}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target={link.name === "Email" ? undefined : "_blank"}
+                  rel={link.name === "Email" ? undefined : "noopener noreferrer"}
+                  className="soft-hover flex h-11 w-11 items-center justify-center rounded-full"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                  }}
+                  aria-label={link.name}
+                  title={link.name}
+                >
+                  <Image
+                    src={link.icon}
+                    alt={link.name}
+                    width={80}
+                    height={80}
+                    className="object-contain opacity-85"
+                  />
+                </a>
+              ))}
             </div>
           </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-4">
-          {metaItems.map((item) => (
-            <div
-              key={item}
-              className="glass-card soft-hover rounded-[24px] px-5 py-5 text-sm"
-              style={{ color: "rgba(255,255,255,0.72)" }}
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-4">
-          {["View Projects", "Contact Me", "GitHub", "LinkedIn"].map((label, i) => (
-            <button
-              key={label}
-              className="soft-hover rounded-[22px] px-7 py-4 text-sm font-semibold"
-              style={{
-                background: i < 2 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                color: "rgba(255,255,255,0.94)",
-                boxShadow: "0 12px 28px rgba(0,0,0,0.28)",
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          {stackTags.map((tag) => (
-            <span
-              key={tag}
-              className="glass-chip soft-hover rounded-full px-4 py-2 text-sm"
-            >
-              {tag}
-            </span>
-          ))}
         </div>
       </div>
     </section>
