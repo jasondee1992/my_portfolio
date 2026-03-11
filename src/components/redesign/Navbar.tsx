@@ -29,7 +29,7 @@ export default function Navbar() {
               letterSpacing: "-0.03em",
             }}
           >
-            JD
+            J
           </div>
         </Link>
 
