@@ -63,12 +63,12 @@ export default function Hero() {
           {/* Right content */}
           <div className="flex-1">
             {/* 2. Name smaller */}
-            <h1 className="section-title text-3xl font-smaller tracking-tight md:text-6xl">
+            <h1 className="section-title text-3xl font-smaller tracking-tight md:text-4xl">
               Jasond Delos Santos
             </h1>
 
             {/* 4. plain words only, no rounded backgrounds */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-smaller text-white/68 smaller:text-base">
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/50 md:text-sm">
               {metaItems.map((item, index) => (
                 <div key={item} className="flex items-center gap-4">
                   <span>{item}</span>
@@ -80,7 +80,7 @@ export default function Hero() {
             </div>
 
             {/* 5. social icons only */}
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               {socialLinks.map((link) => (
                 <a
                   key={link.name}
