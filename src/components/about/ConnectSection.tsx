@@ -1,11 +1,33 @@
+"use client";
+
 const links = [
-  { title: "Email", value: "jasond@example.com" },
-  { title: "GitHub", value: "@jasond-dev" },
-  { title: "LinkedIn", value: "Jasond Delos Santos" },
-  { title: "Let's Talk", value: "Chat with me" },
+  {
+    title: "Email",
+    value: "Jason.worked@gmail.com",
+    href: "mailto:Jason.worked@gmail.com",
+  },
+  {
+    title: "GitHub",
+    value: "jasondee1992",
+    href: "https://github.com/jasondee1992",
+  },
+  {
+    title: "LinkedIn",
+    value: "Jasond Delos Santos",
+    href: "https://www.linkedin.com/in/jasond-delos-santos-94978a111/",
+  },
+  {
+    title: "Let's Talk",
+    value: "Open portfolio chatbot",
+    action: "chatbot" as const,
+  },
 ];
 
 export default function ConnectSection() {
+  function handleChatbotOpen() {
+    window.dispatchEvent(new Event("open-chatbot"));
+  }
+
   return (
     <section className="container-page mt-20">
       <div
@@ -23,17 +45,36 @@ export default function ConnectSection() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {links.map((link) => (
-            <div
-              key={link.title}
-              className="rounded-[24px] p-5"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <div className="text-lg font-semibold text-white/90">{link.title}</div>
-              <div className="mt-1 text-white/55">{link.value}</div>
-            </div>
+            "href" in link ? (
+              <a
+                key={link.title}
+                href={link.href}
+                target={link.title === "GitHub" ? "_blank" : undefined}
+                rel={link.title === "GitHub" ? "noopener noreferrer" : undefined}
+                className="rounded-[24px] p-5 text-left transition hover:-translate-y-0.5"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                }}
+              >
+                <div className="text-lg font-semibold text-white/90">{link.title}</div>
+                <div className="mt-1 text-white/55">{link.value}</div>
+              </a>
+            ) : (
+              <button
+                key={link.title}
+                type="button"
+                onClick={handleChatbotOpen}
+                className="rounded-[24px] p-5 text-left transition hover:-translate-y-0.5"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                }}
+              >
+                <div className="text-lg font-semibold text-white/90">{link.title}</div>
+                <div className="mt-1 text-white/55">{link.value}</div>
+              </button>
+            )
           ))}
         </div>
       </div>

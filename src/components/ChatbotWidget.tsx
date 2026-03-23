@@ -28,6 +28,15 @@ export default function ChatbotWidget() {
     }
   }, [messages, open]);
 
+  useEffect(() => {
+    function handleOpenChatbot() {
+      setOpen(true);
+    }
+
+    window.addEventListener("open-chatbot", handleOpenChatbot);
+    return () => window.removeEventListener("open-chatbot", handleOpenChatbot);
+  }, []);
+
   async function onSend() {
     const q = input.trim();
     if (!q || loading) return;

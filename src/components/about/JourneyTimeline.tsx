@@ -1,45 +1,122 @@
 const timeline = [
   {
-    year: "2020",
-    title: "Curiosity in Technology",
+    year: "2009",
+    title: "Service Crew at Jollibee Corporation",
     description:
-      "Started becoming more interested in technology, systems, and how software can improve day-to-day work.",
+      "Started working early as a Service Crew at Jollibee Corporation, gaining frontline customer service experience and workplace discipline.",
     side: "right",
   },
   {
-    year: "2021",
-    title: "Learning Foundation",
+    year: "2010",
+    title: "Early Work Exposure and Computer Technician Program",
     description:
-      "Built stronger fundamentals in programming, problem solving, and technical thinking through study and practice.",
+      "Continued early-stage work exposure and completed the final part of the Computer Technician program period listed in your education background.",
+    side: "left",
+  },
+  {
+    year: "2011",
+    title: "Started BS Information Technology",
+    description:
+      "Began your Bachelor of Science in Information Technology at Jose Rizal University, marking the formal start of your IT career path.",
+    side: "right",
+  },
+  {
+    year: "2012",
+    title: "Academic Foundation in IT",
+    description:
+      "Focused on building your academic foundation in information technology and technical problem-solving through your BSIT studies. Needs confirmation for any specific milestone not stated in the resume.",
+    side: "left",
+  },
+  {
+    year: "2013",
+    title: "Continued IT Studies",
+    description:
+      "Continued strengthening your IT foundation through formal education. Needs confirmation for specific projects or activities not listed in the resume.",
+    side: "right",
+  },
+  {
+    year: "2014",
+    title: "IT Staff (OJT) at GG&A Clubshares Brokers Inc.",
+    description:
+      "Worked as an IT Staff (OJT) at GG&A Clubshares Brokers Inc., providing hardware and software support for Linux- and Windows-based systems while still in your academic journey.",
+    side: "left",
+  },
+  {
+    year: "2015",
+    title: "Graduation and Encoder Role",
+    description:
+      "Completed your BS in Information Technology and worked as an Encoder at ThermaPrime Well Services Inc. You developed Excel-based database systems with macros, queries, and pivot tables for contractor costing, showing early strength in data handling and process support.",
+    side: "right",
+  },
+  {
+    year: "2016",
+    title: "IT & Broadcast Engineer at Go Motion Production",
+    description:
+      "Joined Go Motion Production as an IT & Broadcast Engineer. Began supporting IT infrastructure and broadcast operations, including servers, shared storage, networks, and technical support for production teams.",
+    side: "left",
+  },
+  {
+    year: "2017",
+    title: "Infrastructure and Network Experience",
+    description:
+      "Continued building hands-on expertise in infrastructure, network layout, Active Directory, storage systems, and production software support in a media and broadcast environment.",
+    side: "right",
+  },
+  {
+    year: "2018",
+    title: "Expanded Broadcast IT Operations",
+    description:
+      "Expanded responsibilities in production IT operations, supporting editors, colorists, rendering systems, CCTV, and internal technical environments while helping maintain uninterrupted broadcast workflows.",
+    side: "left",
+  },
+  {
+    year: "2019",
+    title: "Infrastructure Reliability and Access Control",
+    description:
+      "Strengthened practical experience in on-premise infrastructure, Synology NAS deployment, user access control, and troubleshooting across hardware, software, and networks.",
+    side: "right",
+  },
+  {
+    year: "2020",
+    title: "Completed Broadcast Engineer Tenure",
+    description:
+      "Completed the later stage of your IT & Broadcast Engineer tenure, with continued focus on infrastructure reliability, broadcast support, internal systems, and production operations.",
+    side: "left",
+  },
+  {
+    year: "2021",
+    title: "Application System Engineer at Fujitsu Philippines",
+    description:
+      "Moved into a more software-focused role as Application System Engineer at Weserv System International Inc. (Fujitsu Philippines). Worked on a Location Mapping Application using React, Python (Django), and PostgreSQL in collaboration with US- and Japan-based teams.",
+    side: "right",
+  },
+  {
+    year: "2022",
+    title: "Application Development and System Improvement",
+    description:
+      "Continued application development and system improvement work, maintaining backend APIs and frontend components, optimizing production systems built with Ruby on Rails and JavaScript, and improving application reliability.",
     side: "left",
   },
   {
     year: "2023",
-    title: "Building Practical Projects",
+    title: "Transition to JPMorgan Chase & Co.",
     description:
-      "Started creating more useful applications and learning how interfaces, logic, and user experience work together.",
+      "Completed your Fujitsu role and transitioned to JPMorgan Chase & Co. as Associate - Process Improvement (Python Developer) in October. This marked a major career shift into Python-led automation, dashboards, internal tools, and data workflow modernization.",
     side: "right",
   },
   {
     year: "2024",
-    title: "Dashboards and Automation",
+    title: "Automation, Dashboards, and Snowflake Workflows",
     description:
-      "Worked more deeply on dashboards, automation flows, and business process improvements using Python-based tools.",
+      "Built and maintained end-to-end Python applications for internal automation, created dashboards for user access and ticket monitoring, automated Snowflake data extraction, replaced legacy Alteryx and ClickView workflows, and supported production deployments with DevOps and AWS pipelines.",
     side: "left",
   },
   {
     year: "2025",
-    title: "Enterprise Python Development",
+    title: "Advanced Python Automation and AI Exposure",
     description:
-      "Focused on internal tools, reporting systems, data workflows, and automation solutions for real operational needs.",
+      "Continued advancing as a Python developer focused on automation, reporting pipelines, SAP data extraction, scheduler-based report delivery, Snowflake integration, and management dashboards with near real-time operational visibility. Resume also shows growing exposure to OpenAI APIs, RAG, Hugging Face-hosted models, and Amazon Bedrock-related concepts.",
     side: "right",
-  },
-  {
-    year: "2026",
-    title: "AI, RAG, and Portfolio Growth",
-    description:
-      "Expanding into AI-powered tools, retrieval systems, better web experiences, and a stronger professional portfolio.",
-    side: "left",
   },
 ];
 
@@ -47,7 +124,7 @@ export default function JourneyTimeline() {
   return (
     <section className="container-page mt-20">
       <div className="mx-auto max-w-5xl">
-        <h2 className="mb-12 text-center text-4xl font-semibold text-white/95">
+        <h2 className="type-section-title mb-12 text-center font-semibold text-white/95">
           My Journey
         </h2>
 
@@ -71,15 +148,15 @@ export default function JourneyTimeline() {
                   }}
                 >
                   <div className="flex items-start justify-between gap-6">
-                    <div className="text-5xl font-semibold text-white/95">
+                    <div className="type-journey-year font-semibold text-white/95">
                       {item.year}
                     </div>
-                    <div className="pt-2 text-right text-2xl font-semibold text-white/90">
+                    <div className="type-card-title pt-2 text-right font-semibold text-white/90">
                       {item.title}
                     </div>
                   </div>
 
-                  <p className="mt-5 text-base leading-8 text-white/60">
+                  <p className="type-card-body mt-5 leading-8 text-white/60">
                     {item.description}
                   </p>
                 </div>
