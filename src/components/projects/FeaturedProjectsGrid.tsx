@@ -1,53 +1,14 @@
-const featuredProjects = [
-  {
-    title: "Smart Ticket Assignment",
-    description:
-      "An internal automation tool that assigns tickets based on business rules, team workload, and process logic.",
-    tags: ["Python", "Dash", "Automation", "SQLite"],
-    button: "Live",
-  },
-  {
-    title: "Auto Report Generator",
-    description:
-      "A reporting system that generates and distributes business reports from Snowflake and structured datasets.",
-    tags: ["Python", "Snowflake", "SQL", "ETL"],
-    button: "Live",
-  },
-  {
-    title: "Portfolio AI Chatbot",
-    description:
-      "A portfolio-focused chatbot that answers only about projects, skills, and experience using structured content.",
-    tags: ["Next.js", "AI", "RAG", "FastAPI"],
-    button: "Source",
-  },
-  {
-    title: "Ops Monitoring Dashboard",
-    description:
-      "A dashboard for workflow visibility, operational metrics, queue monitoring, and exception tracking.",
-    tags: ["Dash", "Plotly", "Python", "Analytics"],
-    button: "Source",
-  },
-  {
-    title: "Daily News Automation",
-    description:
-      "A lightweight automation concept for collecting and formatting daily updates into structured summaries.",
-    tags: ["Python", "Automation", "API", "n8n"],
-    button: "View",
-  },
-  {
-    title: "Personal Portfolio",
-    description:
-      "A modern premium portfolio website built with a dark visual style, structured layout, and AI-ready components.",
-    tags: ["Next.js", "Tailwind", "TypeScript", "UI"],
-    button: "View",
-  },
-];
+import { internalProjects } from "@/data/projects";
 
 export default function FeaturedProjectsGrid() {
   return (
     <section className="container-page mt-12">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {featuredProjects.map((project, index) => (
+      <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-white/35">
+        Internal Projects
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {internalProjects.map((project) => (
           <div
             key={project.title}
             className="rounded-[28px] p-5"
@@ -57,29 +18,22 @@ export default function FeaturedProjectsGrid() {
               boxShadow: "0 18px 50px rgba(0,0,0,0.30)",
             }}
           >
-            <div
-              className="mb-5 flex h-56 items-end rounded-[24px] p-4"
-              style={{
-                background:
-                  index % 2 === 0
-                    ? "radial-gradient(circle at 50% 20%, rgba(96,165,250,0.22), rgba(255,255,255,0.03) 60%)"
-                    : "radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), rgba(255,255,255,0.03) 60%)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <div
-                className="mx-auto h-36 w-48 rounded-[18px]"
-                style={{
-                  background: "rgba(0,0,0,0.45)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  boxShadow: "0 12px 32px rgba(0,0,0,0.35)",
-                }}
-              />
+            <div className="mb-3 text-xs font-medium tracking-[0.18em] text-white/35">
+              {project.no}
             </div>
 
-            <h3 className="text-xl font-semibold text-white/95">
+            <h3 className="text-xl font-semibold leading-8 text-white/95">
               {project.title}
             </h3>
+
+            <div className="mt-4 space-y-1 text-sm text-white/55">
+              <div>
+                <span className="text-white/80">Role:</span> {project.role}
+              </div>
+              <div>
+                <span className="text-white/80">Project Type:</span> {project.type}
+              </div>
+            </div>
 
             <p className="mt-4 text-sm leading-7 text-white/60">
               {project.description}
@@ -101,19 +55,11 @@ export default function FeaturedProjectsGrid() {
               ))}
             </div>
 
-            <div className="mt-7 flex justify-end">
-              <button
-                className="rounded-full px-5 py-3 text-sm font-semibold"
-                style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  color: "rgba(255,255,255,0.92)",
-                  boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
-                }}
-              >
-                {project.button} ↗
-              </button>
-            </div>
+            {project.note && (
+              <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white/45">
+                {project.note}
+              </div>
+            )}
           </div>
         ))}
       </div>

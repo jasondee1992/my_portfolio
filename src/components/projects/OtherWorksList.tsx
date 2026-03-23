@@ -1,26 +1,4 @@
-const otherWorks = [
-  {
-    no: "01",
-    title: "My Own Time",
-    description:
-      "A simple personal productivity concept featuring a customized timer workflow and focus-friendly layout.",
-    tags: ["HTML", "CSS", "JavaScript"],
-  },
-  {
-    no: "02",
-    title: "Weather App",
-    description:
-      "A weather concept project built for API integration practice and clean data presentation.",
-    tags: ["HTML", "CSS", "JavaScript", "OpenWeatherMap"],
-  },
-  {
-    no: "03",
-    title: "First Portfolio",
-    description:
-      "An early portfolio project built while learning frontend structure, responsive layout, and interface design.",
-    tags: ["HTML", "SCSS", "JavaScript"],
-  },
-];
+import { otherWorks } from "@/data/projects";
 
 export default function OtherWorksList() {
   return (
@@ -48,6 +26,15 @@ export default function OtherWorksList() {
                   {work.title}
                 </h3>
 
+                <div className="mt-4 space-y-1 text-sm text-white/55">
+                  <div>
+                    <span className="text-white/80">Role:</span> {work.role}
+                  </div>
+                  <div>
+                    <span className="text-white/80">Project Type:</span> {work.type}
+                  </div>
+                </div>
+
                 <p className="mt-3 max-w-4xl text-sm leading-7 text-white/60">
                   {work.description}
                 </p>
@@ -67,19 +54,6 @@ export default function OtherWorksList() {
                     </span>
                   ))}
                 </div>
-              </div>
-
-              <div className="md:pt-10">
-                <button
-                  className="rounded-full px-5 py-3 text-sm font-semibold"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: "rgba(255,255,255,0.92)",
-                  }}
-                >
-                  Source
-                </button>
               </div>
             </div>
           </div>

@@ -7,9 +7,10 @@ export default function ProjectsHero() {
         </h1>
 
         <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/60">
-          A collection of projects focused on automation, dashboards, internal
-          tools, data workflows, and AI-driven ideas. Dummy content for now —
-          we’ll replace everything with your real projects later.
+          A collection of internal automation platforms, monitoring dashboards,
+          reporting systems, and personal builds focused on solving practical
+          workflow problems. Public live demos are not available for enterprise
+          work shared here.
         </p>
       </div>
     </section>
