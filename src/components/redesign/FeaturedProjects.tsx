@@ -76,7 +76,7 @@ function ExpandableDescription({
 
   return (
     <div>
-      <p className="text-[15px] leading-8 text-white/68">{visibleText}</p>
+      <p className="type-card-body leading-8 text-white/68">{visibleText}</p>
 
       {isLong && (
         <button
@@ -96,11 +96,11 @@ export default function FeaturedProjects() {
     <section className="container-page mt-16">
       <div className="glass-card rounded-[32px] p-6 md:p-8">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-white/95">
+          <h2 className="type-section-title font-semibold tracking-[-0.02em] text-white/95">
             Featured Projects
           </h2>
 
-          <button className="text-sm text-white/55 transition hover:text-white/80">
+          <button className="type-card-body text-white/55 transition hover:text-white/80">
             View All →
           </button>
         </div>
@@ -111,7 +111,7 @@ export default function FeaturedProjects() {
               key={project.title}
               className="rounded-[28px] border border-white/10 bg-white/[0.02] p-6 transition hover:border-white/15 hover:bg-white/[0.03]"
             >
-              <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-white/95">
+              <h3 className="type-card-title font-semibold tracking-[-0.02em] text-white/95">
                 {project.title}
               </h3>
 

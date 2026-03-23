@@ -11,18 +11,18 @@ export default function QuoteBlock() {
       >
         <div className="text-white/25 text-3xl">”</div>
 
-        <p className="mx-auto mt-4 max-w-3xl text-xl italic leading-9 text-white/72">
+        <p className="type-page-body mx-auto mt-4 max-w-3xl italic leading-9 text-white/72">
           I enjoy building systems that reduce manual work, improve visibility,
           and turn complexity into something simple and usable.
         </p>
 
-        <div className="mt-6 text-sm text-white/45">
+        <div className="type-card-body mt-6 text-white/45">
           — JasonD
         </div>
 
         <div className="mx-auto mt-10 h-px max-w-3xl bg-white/10" />
 
-        <p className="mt-8 text-sm text-white/45">
+        <p className="type-card-body mt-8 text-white/45">
           You’re viewing a premium portfolio prototype built with Next.js.
         </p>
       </div>

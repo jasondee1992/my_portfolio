@@ -45,11 +45,11 @@ export default function InfoCards() {
     <section className="container-page mt-24 grid gap-8 md:grid-cols-[minmax(0,1.7fr)_minmax(0,0.9fr)]">
       {/* LEFT - ABOUT */}
       <div className="glass-card soft-hover rounded-3xl p-8 md:p-10">
-        <h2 className="mb-4 text-[20px] font-semibold tracking-[-0.02em] text-white/95">
+        <h2 className="type-section-title mb-4 font-semibold tracking-[-0.02em] text-white/95">
           About Me
         </h2>
 
-        <div className="space-y-4 text-[15px] leading-8 text-white/72">
+        <div className="type-page-body space-y-4 leading-8 text-white/72">
           {aboutParagraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -60,35 +60,35 @@ export default function InfoCards() {
       <div className="min-w-0 flex flex-col gap-8">
         {/* ACHIEVEMENTS */}
         <div className="glass-card min-w-0 rounded-3xl p-8">
-          <h2 className="mb-6 text-[18px] font-semibold tracking-[-0.02em] text-white/95">
+          <h2 className="type-section-title mb-6 font-semibold tracking-[-0.02em] text-white/95">
             Achievements
           </h2>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between rounded-2xl border border-white/10 p-4">
               <div>
-                <p className="text-[15px] font-semibold text-white/90">
+                <p className="type-card-title font-semibold text-white/90">
                   Automation Systems Development
                 </p>
-                <p className="mt-1 text-sm text-white/50">
+                <p className="type-card-body mt-1 text-white/50">
                   Internal Platform
                 </p>
               </div>
-              <span className="text-xs font-medium tracking-[0.12em] text-white/35">
+              <span className="type-card-body font-medium tracking-[0.12em] text-white/35">
                 2025
               </span>
             </div>
 
             <div className="flex items-center justify-between rounded-2xl border border-white/10 p-4">
               <div>
-                <p className="text-[15px] font-semibold text-white/90">
+                <p className="type-card-title font-semibold text-white/90">
                   Data Engineering Automation
                 </p>
-                <p className="mt-1 text-sm text-white/50">
+                <p className="type-card-body mt-1 text-white/50">
                   Enterprise Projects
                 </p>
               </div>
-              <span className="text-xs font-medium tracking-[0.12em] text-white/35">
+              <span className="type-card-body font-medium tracking-[0.12em] text-white/35">
                 2024
               </span>
             </div>
@@ -98,11 +98,11 @@ export default function InfoCards() {
         {/* TECH STACK */}
         <div className="glass-card rounded-3xl p-8">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-[18px] font-semibold tracking-[-0.02em] text-white/95">
+            <h2 className="type-section-title font-semibold tracking-[-0.02em] text-white/95">
               Tech Stack
             </h2>
 
-            <button className="text-[12px] text-white/55 transition hover:text-white/50">
+            <button className="type-card-body text-white/55 transition hover:text-white/50">
               View All →
             </button>
           </div>

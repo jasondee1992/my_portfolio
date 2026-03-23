@@ -63,12 +63,12 @@ export default function Hero() {
           {/* Right content */}
           <div className="flex-1">
             {/* 2. Name smaller */}
-            <h1 className="section-title text-3xl font-smaller tracking-tight md:text-4xl">
+            <h1 className="type-page-title section-title font-smaller tracking-tight">
               Jasond Delos Santos
             </h1>
 
             {/* 4. plain words only, no rounded backgrounds */}
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/50 md:text-sm">
+            <div className="type-card-body mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-white/50">
               {metaItems.map((item, index) => (
                 <div key={item} className="flex items-center gap-4">
                   <span>{item}</span>
