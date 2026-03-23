@@ -1,0 +1,141 @@
+{
+  "internal_projects": [
+    {
+      "no": "01",
+      "title": "Money Movement Monitoring",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "SQLite"
+      ],
+      "description": "Developed a backend-driven monitoring solution that provides visibility into daily Money Movement volumes and helps identify missed requests, including client-requested transactions that were not fulfilled by the bank. The system supports data consolidation, service manager-level reporting, and process tracking to improve operational visibility and reporting accuracy.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "02",
+      "title": "Leave Experience Mini-CRM",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "Dash",
+        "SQLite",
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "Web Scraping"
+      ],
+      "description": "Built an internal mini-CRM application that streamlines the handling of employee leave and time-off requests, including parental, medical, bereavement, and other leave types. The tool helps teams manage reminders, tasks, and workflow actions involving employees, HR, and clients, improving process organization and reducing manual follow-ups.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "03",
+      "title": "Payment Process Analysis",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "Dash",
+        "SQLite",
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "Web Scraping"
+      ],
+      "description": "Developed a process analysis dashboard focused on tracking average monthly payment volumes, manual processing time, and recurring pre-submission errors. The solution helps teams identify inefficiencies, monitor error trends, and support data-driven process improvement initiatives.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "04",
+      "title": "Snowflake Quality Report Automation",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "SQLite"
+      ],
+      "description": "Created an automated reporting solution that extracts data from Snowflake and generates structured quality reports in Excel. This project reduced manual reporting effort, improved consistency, and helped teams monitor data quality and operational performance more efficiently.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "05",
+      "title": "New Hire Experience",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "REST API",
+        "Dash",
+        "NoSQL",
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "Web Scraping"
+      ],
+      "description": "Built an internal tracking and reporting solution for monitoring new hire progress, including licensing status, quiz performance, and management reporting. The system provides better visibility into onboarding readiness and helps management track compliance and training progress more effectively.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "06",
+      "title": "Ticket Auto-Assignment and Workforce Management Dashboard",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "React",
+        "REST API",
+        "NoSQL",
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Snowflake",
+        "Web Scraping"
+      ],
+      "description": "Designed and developed an automated ticket assignment and workforce management solution that routes tickets based on stakeholder-defined rules and operational conditions. The platform includes a real-time dashboard for monitoring ticket flow, assignment status, and worker availability, while allowing managers to enable or disable specific workers from receiving tickets. This improved workload balancing, operational control, and real-time visibility across the team.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    },
+    {
+      "no": "07",
+      "title": "Location Mapping",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Internal Operations Dashboard",
+      "tech_stack": [
+        "React",
+        "PostgreSQL",
+        "Python",
+        "Django"
+      ],
+      "description": "Developed a location mapping solution designed to visualize and manage location-based operational data through a responsive web interface. The application supports structured data handling, mapping-related workflows, and backend integration for improved usability and operational reference.",
+      "note": "Internal enterprise project; live demo not publicly available."
+    }
+  ],
+  "other_works": [
+    {
+      "no": "08",
+      "title": "Invoice Generator",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Personal Project",
+      "tech_stack": [
+        "Python"
+      ],
+      "description": "Developed a Python-based invoice generation tool that creates professional PDF invoices from Excel source data and supporting evidence images stored in a folder. The solution automates document generation, organizes supporting attachments, and helps reduce manual formatting work for invoice preparation."
+    },
+    {
+      "no": "09",
+      "title": "My Portfolio",
+      "role": "Developer / Process Automation Engineer",
+      "project_type": "Personal Project",
+      "tech_stack": [
+        "Next.js",
+        "AI Agent"
+      ],
+      "description": "Built a personal portfolio website to showcase projects, skills, and development work in a modern web interface. The portfolio also includes AI-agent-related functionality to support a more interactive and personalized user experience."
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "company": "JPMorgan Chase & Co.",
+    "role": "Associate - Process Improvement (Python Developer)",
+    "date_range": "Oct 2023 - Present",
+    "location": "Philippines",
+    "details": [
+      "Built and maintained end-to-end Python applications to automate internal business processes, covering backend logic, APIs, dashboards, and production support.",
+      "Developed full-stack dashboards using React and Dash Bootstrap to manage user access, monitor ticket status, and automate ticket assignment, improving reporting efficiency by about 40%.",
+      "Created Python-based web applications to automate data extraction from Snowflake, removing the need for manual SQL queries and saving approximately 5 hours per week.",
+      "Automated legacy workflows previously handled in Alteryx and ClickView, significantly reducing manual effort and operational dependency on non-Python tools.",
+      "Designed and implemented Python schedulers for automated report generation and delivery across multiple departments.",
+      "Collaborated with India-based analytics teams to productionize and schedule automated reporting pipelines.",
+      "Automated SAP report extraction using Python Selenium and web scraping due to lack of direct API access.",
+      "Built Python pipelines to clean, transform, and upload SAP-sourced data into shared repositories and Snowflake, reducing manual workload by over 90%.",
+      "Developed and maintained dashboards integrating SAP data to provide near real-time operational visibility for management.",
+      "Supported applications post-deployment, handling enhancements, fixes, and production updates in coordination with DevOps teams via AWS deployment pipelines."
+    ]
+  },
+  {
+    "company": "Weserv System International Inc. (Fujitsu Philippines)",
+    "role": "Application System Engineer",
+    "date_range": "Jan 2021 - Nov 2023",
+    "location": "Taguig, Metro Manila",
+    "details": [
+      "Developed a Location Mapping Application using React, Python (Django), and PostgreSQL in collaboration with US- and Japan-based teams.",
+      "Built and maintained backend APIs and frontend components to improve location data accuracy and system usability.",
+      "Maintained and optimized existing production systems built with Ruby on Rails and JavaScript, resolving bugs and improving application reliability.",
+      "Designed and implemented automation testing processes, significantly reducing manual testing effort and release time.",
+      "Led manual testing and QA activities, ensuring application stability, functional accuracy, and improved user experience.",
+      "Worked closely with cross-functional and international teams to support deployments, fixes, and continuous system improvements."
+    ]
+  },
+  {
+    "company": "Go Motion Production",
+    "role": "IT & Broadcast Engineer",
+    "date_range": "Sept 2016 - Jan 2021",
+    "location": "Makati City, Metro Manila",
+    "details": [
+      "Provided end-to-end IT and infrastructure support for a production and broadcast environment supporting editors, colorists, and broadcast staff.",
+      "Managed on-premise server infrastructure, including file servers and shared storage used for media production workflows.",
+      "Designed and maintained structured cabling and network layout across multiple floors (2nd to 4th floor), including patch panels, switches, routers, and modems.",
+      "Deployed and maintained Synology NAS for centralized file storage, backups, and shared access for video editing and production teams.",
+      "Administered Active Directory, user accounts, access controls, domains, and internal websites.",
+      "Installed, configured, and supported production software including Adobe Creative Suite, Cinema 4D, and related broadcast tools.",
+      "Provided technical support for online and offline editors, color grading workstations, and media rendering systems.",
+      "Installed and maintained CCTV systems and internal security infrastructure.",
+      "Troubleshot hardware, software, and network issues to ensure uninterrupted broadcast and production operations."
+    ]
+  },
+  {
+    "company": "ThermaPrime Well Services Inc.",
+    "role": "Encoder",
+    "date_range": "July 2015 - Dec 2015",
+    "location": "Pasig City, Metro Manila",
+    "details": [
+      "Developed Excel-based database systems with macros, queries, and pivot tables for contractor costing."
+    ]
+  },
+  {
+    "company": "GG&A Clubshares Brokers Inc.",
+    "role": "IT Staff (OJT)",
+    "date_range": "June 2014 - Oct 2014",
+    "location": "Makati City, Metro Manila",
+    "details": [
+      "Provided hardware and software support for Linux- and Windows-based systems."
+    ]
+  },
+  {
+    "company": "Jollibee Corporation",
+    "role": "Service Crew",
+    "date_range": "Sept 2009 - March 2010",
+    "location": "Ground Floor Agustin Bldg. Emerald Ave",
+    "details": [
+      "Worked as a Service Crew."
+    ]
+  }
+]
