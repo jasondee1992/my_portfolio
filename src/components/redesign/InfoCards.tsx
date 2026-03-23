@@ -1,5 +1,7 @@
 "use client";
 
+import { aboutParagraphs } from "@/data/aboutContent";
+
 const techStackRow1 = [
   { name: "AWS", icon: "/icons/skills/AWS.png" },
   { name: "Css3", icon: "/icons/skills/css3.png" },
@@ -48,40 +50,9 @@ export default function InfoCards() {
         </h2>
 
         <div className="space-y-4 text-[15px] leading-8 text-white/72">
-          <p>
-            I’m a Python Developer specializing in building end-to-end internal
-            applications for enterprise environments. My work focuses on
-            automating business processes by developing full-stack Python
-            solutions, from backend APIs to interactive dashboards used by
-            internal teams.
-          </p>
-
-          <p>
-            I design and develop backend services using Python and REST APIs,
-            while building frontend applications using Dash and Bootstrap. I
-            typically manage the full development lifecycle including
-            requirements analysis, API design, UI development, backend logic,
-            testing, and deployment to AWS in collaboration with DevOps teams.
-          </p>
-
-          <p>
-            I also maintain and enhance the applications I build by delivering
-            production updates, performance improvements, and new features. This
-            hands-on ownership allows me to deeply understand both technical
-            systems and business workflows across multiple projects.
-          </p>
-
-          <p>
-            My experience includes internal automation platforms, monitoring
-            dashboards, workflow tools, and data-driven applications that help
-            improve efficiency and operational visibility for business users.
-          </p>
-
-          <p>
-            Currently, I continue to expand my skills in backend architecture,
-            data engineering, cloud-based deployment, and AI-driven systems to
-            build scalable and impactful automation platforms.
-          </p>
+          {aboutParagraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </div>
       </div>
 
