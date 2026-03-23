@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import data from "@/data/portfolio.json";
 
 type Msg = { role: "user" | "assistant"; text: string };
 
 const PORTFOLIO_GUARDRAIL =
-  "I can only answer questions about JasonD’s portfolio (projects, skills, experience, achievements).";
+  "I answer only from JasonD’s portfolio knowledge base.";
+
+const FALLBACK_MESSAGE =
+  "I don’t have that information in my current portfolio knowledge base.";
 
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
@@ -45,53 +47,39 @@ export default function ChatbotWidget() {
     setMessages((m) => [...m, { role: "user", text: q }]);
     setLoading(true);
 
-    const lower = q.toLowerCase();
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: q }),
+      });
 
-    const keywords =
-      (data.skills as string[]).some((s) => lower.includes(s.toLowerCase())) ||
-      (data.projects as Array<{ name: string }>).some((p) =>
-        lower.includes(p.name.toLowerCase())
-      ) ||
-      lower.includes("project") ||
-      lower.includes("dash") ||
-      lower.includes("snowflake") ||
-      lower.includes("automation") ||
-      lower.includes("achievement") ||
-      lower.includes("experience") ||
-      lower.includes("skill") ||
-      lower.includes("ai");
+      if (!response.ok) {
+        throw new Error("Chat request failed.");
+      }
 
-    await new Promise((r) => setTimeout(r, 300));
+      const result = (await response.json()) as { answer?: string };
 
-    if (!keywords) {
       setMessages((m) => [
         ...m,
         {
           role: "assistant",
-          text: `${PORTFOLIO_GUARDRAIL}\n\nTry asking: List your AI projects.`,
+          text: result.answer?.trim() || FALLBACK_MESSAGE,
         },
       ]);
+    } catch {
+      setMessages((m) => [
+        ...m,
+        {
+          role: "assistant",
+          text: FALLBACK_MESSAGE,
+        },
+      ]);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const topProjects = (data.projects as Array<{ name: string; description: string }>)
-      .slice(0, 3)
-      .map((p) => `• ${p.name} — ${p.description}`)
-      .join("\n");
-
-    setMessages((m) => [
-      ...m,
-      {
-        role: "assistant",
-        text:
-          `Here’s what I can share from JasonD’s portfolio:\n\n` +
-          `Top projects:\n${topProjects}\n\n` +
-          `Skills: ${(data.skills as string[]).join(", ")}`,
-      },
-    ]);
-
-    setLoading(false);
   }
 
   return (
@@ -147,7 +135,7 @@ export default function ChatbotWidget() {
           >
             <div>
               <div style={{ fontWeight: 600 }}>JasonD AI</div>
-              <div style={{ fontSize: 12, opacity: 0.6 }}>Portfolio-only assistant</div>
+              <div style={{ fontSize: 12, opacity: 0.6 }}>Knowledge-based personal AI</div>
             </div>
 
             <button
@@ -197,6 +185,59 @@ export default function ChatbotWidget() {
                 </div>
               </div>
             ))}
+            {loading && (
+              <div
+                style={{
+                  marginBottom: 12,
+                  textAlign: "left",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    maxWidth: "85%",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.06)",
+                    color: "white",
+                  }}
+                >
+                  <span style={{ opacity: 0.75 }}>JasonD AI is thinking</span>
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0s",
+                    }}
+                  />
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0.18s",
+                    }}
+                  />
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0.36s",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             <div ref={endRef} />
           </div>
 
@@ -253,6 +294,22 @@ export default function ChatbotWidget() {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes chatDotPulse {
+          0%,
+          80%,
+          100% {
+            transform: translateY(0);
+            opacity: 0.35;
+          }
+
+          40% {
+            transform: translateY(-3px);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </>
   );
 }
