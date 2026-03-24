@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 type Msg = { role: "user" | "assistant"; text: string };
 
 const PORTFOLIO_GUARDRAIL =
-  "I answer only from JasonD’s portfolio knowledge base.";
+  "Ask me about my projects, skills, experience, background, and portfolio.";
 
 const FALLBACK_MESSAGE =
-  "I don’t have that information in my current portfolio knowledge base.";
+  "I don’t have enough verified information about that in my current portfolio data, but I’d be happy to talk about my projects, skills, experience, and background.";
 
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
@@ -18,7 +18,7 @@ export default function ChatbotWidget() {
     {
       role: "assistant",
       text:
-        "Hi! I’m JasonD’s portfolio assistant. Ask me about projects, skills, experience, or achievements.\n\nExample: What projects did you build with Dash?",
+        "Hi — I’m Jasond Delos Santos. Feel free to ask about my projects, work, skills, experience, or background.",
     },
   ]);
 
@@ -134,8 +134,8 @@ export default function ChatbotWidget() {
             }}
           >
             <div>
-              <div style={{ fontWeight: 600 }}>JasonD AI</div>
-              <div style={{ fontSize: 12, opacity: 0.6 }}>Knowledge-based personal AI</div>
+              <div style={{ fontWeight: 600 }}>Jasond Delos Santos</div>
+              <div style={{ fontSize: 12, opacity: 0.6 }}>Chat with me</div>
             </div>
 
             <button
@@ -204,7 +204,7 @@ export default function ChatbotWidget() {
                     color: "white",
                   }}
                 >
-                  <span style={{ opacity: 0.75 }}>JasonD AI is thinking</span>
+                  <span style={{ opacity: 0.75 }}>Thinking...</span>
                   <span
                     style={{
                       width: 6,

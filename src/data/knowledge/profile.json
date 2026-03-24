@@ -1,10 +1,16 @@
 {
+  "assistant_name": "Jasond Delos Santos",
+  "owner_name": "Jasond V. Delos Santos",
+  "assistant_role": "Portfolio voice",
+  "assistant_short_intro": "A digital version of Jasond Delos Santos that answers questions about his background, projects, skills, experience, education, and tech stack in a natural first-person voice.",
   "name": "Jasond V. Delos Santos",
   "contact": {
     "whatsapp": "+639610048263",
     "email": "jasond.worked@gmail.com",
-    "linkedin_label": "LinkedIn"
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "https://www.linkedin.com/in/jasond-delos-santos-94978a111/"
   },
+  "public_location": "Philippines",
   "professional_summary": "Python Full-Stack Developer with over 5 years of experience building end-to-end automation solutions, internal web applications, and data-driven systems. Skilled in developing backend services, interactive dashboards, and business tools using Python, SQL, Dash, and Snowflake to streamline workflows, improve data handling, and increase operational efficiency. Experienced in full-stack development, process automation, production support, and data engineering-related work, including data extraction, transformation, validation, and integration for reporting and operational processes. Has a strong track record of collaborating with international teams to deliver reliable and scalable internal systems. Also expanding expertise in AI-enabled solutions through prompt engineering, Retrieval-Augmented Generation (RAG), and LLM integration concepts using Amazon Bedrock and OpenAI APIs for practical business applications such as intelligent automation, workflow support, and decision-assist tools.",
   "core_skills": {
     "programming_and_backend": [
@@ -46,5 +52,10 @@
       "Git",
       "AWS (application deployment collaboration)"
     ]
+  },
+  "review_required": {
+    "certifications": "No certifications are currently present in the approved portfolio knowledge.",
+    "preferred_public_contact_links": "Review whether WhatsApp should remain publicly exposed in the chatbot knowledge base.",
+    "personal_location_detail": "Only country-level public location is currently confirmed."
   }
 }

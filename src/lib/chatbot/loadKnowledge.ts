@@ -48,6 +48,10 @@ type ProjectsFile = {
 };
 
 type ProfileFile = {
+  assistant_name?: string;
+  owner_name?: string;
+  assistant_role?: string;
+  assistant_short_intro?: string;
   name: string;
   professional_summary: string;
   contact: Record<string, string>;
@@ -79,6 +83,13 @@ function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
     .join(" | ");
 
   const content = [
+    `Assistant Name: ${profileData.assistant_name ?? "JasonD AI"}`,
+    `Owner Name: ${profileData.owner_name ?? profileData.name}`,
+    `Assistant Role: ${profileData.assistant_role ?? "Portfolio assistant"}`,
+    `Assistant Introduction: ${
+      profileData.assistant_short_intro ??
+      "A portfolio assistant that helps visitors explore JasonD's background, projects, skills, and experience."
+    }`,
     `Name: ${profileData.name}`,
     `Professional Summary: ${profileData.professional_summary}`,
     `Contact: ${contactText}`,
@@ -91,6 +102,11 @@ function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
     title: profileData.name,
     content,
     keywords: makeKeywords([
+      profileData.assistant_name ?? "JasonD AI",
+      profileData.owner_name ?? profileData.name,
+      profileData.assistant_role ?? "Portfolio assistant",
+      profileData.assistant_short_intro ??
+        "A portfolio assistant that helps visitors explore JasonD's background, projects, skills, and experience.",
       profileData.name,
       profileData.professional_summary,
       contactText,

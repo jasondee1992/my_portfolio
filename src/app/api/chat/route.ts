@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { loadKnowledgeBase } from "@/lib/chatbot/loadKnowledge";
 import { retrieveKnowledge, type RetrievalMatch } from "@/lib/chatbot/retrieveKnowledge";
 import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
+import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
 import {
   CHATBOT_FALLBACK,
   CHATBOT_SYSTEM_PROMPT,
@@ -132,7 +133,7 @@ export async function POST(request: Request) {
         },
         {
           role: "user",
-          content: `Portfolio context:\n${context}\n\nQuestion: ${message}`,
+          content: `Tone and style examples:\n${CHATBOT_CONVERSATION_EXAMPLES}\n\nPortfolio context:\n${context}\n\nQuestion: ${message}`,
         },
       ],
     });
