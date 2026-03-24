@@ -49,21 +49,38 @@ const SAFE_INTENT_RESPONSES = {
     taglish:
       "Yes, kaya kong umintindi ng English, Filipino, Tagalog, at Taglish, and kaya ko ring mag-match sa language style mo.",
   },
-  identity: {
+  name: {
     english: [
       "I’m Jasond Delos Santos.",
-      "I’m Jasond Delos Santos — a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
-      "I’m Jasond Delos Santos. A lot of my work revolves around automation, reporting workflows, dashboards, and practical internal tools.",
+      "I’m Jasond Delos Santos. Nice to meet you.",
+      "Jasond Delos Santos.",
     ],
     filipino: [
       "Ako si Jasond Delos Santos.",
-      "Ako si Jasond Delos Santos — isang Python-focused developer na madalas gumagawa ng automation, dashboards, internal tools, at business-focused solutions.",
-      "Ako si Jasond Delos Santos. Madalas umiikot ang work ko sa automation, reporting workflows, dashboards, at practical internal tools.",
+      "Ako si Jasond Delos Santos. Nice to meet you.",
+      "Jasond Delos Santos.",
     ],
     taglish: [
       "I’m Jasond Delos Santos.",
+      "Ako si Jasond Delos Santos.",
+      "I’m Jasond Delos Santos. Nice to meet you.",
+    ],
+  },
+  identity: {
+    english: [
+      "I’m Jasond Delos Santos — a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
+      "I’m Jasond Delos Santos. A lot of my work revolves around automation, reporting workflows, dashboards, and practical internal tools.",
+      "I’m Jasond Delos Santos, and I mainly build practical solutions around automation, reporting, internal tools, and data-driven workflows.",
+    ],
+    filipino: [
+      "Ako si Jasond Delos Santos — isang Python-focused developer na madalas gumagawa ng automation, dashboards, internal tools, at business-focused solutions.",
+      "Ako si Jasond Delos Santos. Madalas umiikot ang work ko sa automation, reporting workflows, dashboards, at practical internal tools.",
+      "Ako si Jasond Delos Santos, at kadalasan ang work ko ay tungkol sa automation, reporting, internal tools, at data-driven workflows.",
+    ],
+    taglish: [
       "I’m Jasond Delos Santos — a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
       "Ako si Jasond Delos Santos, and a lot of my work is centered on automation, reporting, dashboards, and practical internal tools.",
+      "I’m Jasond Delos Santos. Most of my work is around automation, dashboards, internal tools, and business-focused solutions.",
     ],
   },
   introduction: {
@@ -106,6 +123,9 @@ const PROFILE_IDENTITY = {
     profile.assistant_short_intro ??
     "A digital version of Jasond Delos Santos that answers questions about his background, projects, skills, experience, education, and tech stack in a natural first-person voice.",
 };
+
+const DISPLAY_NAME = PROFILE_IDENTITY.assistantName;
+const FORMAL_NAME = PROFILE_IDENTITY.ownerName;
 
 function includesAny(text: string, patterns: readonly string[]) {
   return patterns.some((pattern) => text.includes(pattern));
@@ -178,6 +198,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       "ano pangalan mo",
       "pangalan mo",
       "your name",
+      "name mo",
       "who are you",
       "sino ka",
       "what are you",
@@ -189,10 +210,33 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       "ikaw ba si jasond",
       "ikaw ba si jasond ai",
       "are you jasond ai",
-      "are you jasond ai",
       "jasond ai ka ba",
     ])
   ) {
+    if (
+      includesAny(text, [
+        "what's your name",
+        "what is your name",
+        "whats your name",
+        "ano name mo",
+        "ano pangalan mo",
+        "pangalan mo",
+        "your name",
+        "name mo",
+      ])
+    ) {
+      return {
+        answer: pickVariant(
+          SAFE_INTENT_RESPONSES.name[languageStyle].map((item) =>
+            item
+              .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
+              .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
+          ),
+          text
+        ),
+      };
+    }
+
     if (
       includesAny(text, [
         "introduce yourself",
@@ -205,8 +249,9 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
         answer: pickVariant(
           SAFE_INTENT_RESPONSES.introduction[languageStyle].map((item) =>
             item
-              .replaceAll("JasonD AI", PROFILE_IDENTITY.assistantName)
-              .replaceAll("Jasond Delos Santos", PROFILE_IDENTITY.ownerName)
+              .replaceAll("JasonD AI", DISPLAY_NAME)
+              .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
+              .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
           ),
           text
         ),
@@ -217,12 +262,22 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       answer: pickVariant(
         SAFE_INTENT_RESPONSES.identity[languageStyle].map((item) =>
           item
-            .replaceAll("JasonD AI", PROFILE_IDENTITY.assistantName)
-            .replaceAll("Jasond Delos Santos", PROFILE_IDENTITY.ownerName)
+            .replaceAll("JasonD AI", DISPLAY_NAME)
+            .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
+            .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
         ),
         text
       ),
     };
+  }
+
+  if (
+    includesAny(text, [
+      "who are you",
+      "sino ka",
+    ])
+  ) {
+    return null;
   }
 
   if (

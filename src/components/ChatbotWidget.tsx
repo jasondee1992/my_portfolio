@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Msg = { role: "user" | "assistant"; text: string };
@@ -9,6 +10,8 @@ const PORTFOLIO_GUARDRAIL =
 
 const FALLBACK_MESSAGE =
   "I don’t have enough verified information about that in my current portfolio data, but I’d be happy to talk about my projects, skills, experience, and background.";
+
+const PROFILE_IMAGE_SRC = "/images/profile/profile.jpeg";
 
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
@@ -133,9 +136,43 @@ export default function ChatbotWidget() {
               color: "white",
             }}
           >
-            <div>
-              <div style={{ fontWeight: 600 }}>Jasond Delos Santos</div>
-              <div style={{ fontSize: 12, opacity: 0.6 }}>Chat with me</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ position: "relative", width: 42, height: 42 }}>
+                <Image
+                  src={PROFILE_IMAGE_SRC}
+                  alt="Jasond Delos Santos"
+                  fill
+                  sizes="42px"
+                  style={{
+                    borderRadius: "9999px",
+                    objectFit: "cover",
+                    border: "1px solid rgba(255,255,255,0.14)",
+                  }}
+                />
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontWeight: 600,
+                  }}
+                >
+                  <span>Jasond Delos Santos</span>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "9999px",
+                      background: "#22c55e",
+                      boxShadow: "0 0 0 4px rgba(34,197,94,0.16)",
+                    }}
+                  />
+                </div>
+                <div style={{ fontSize: 12, opacity: 0.6 }}>Online now</div>
+              </div>
             </div>
 
             <button
@@ -166,9 +203,36 @@ export default function ChatbotWidget() {
                 key={i}
                 style={{
                   marginBottom: 12,
-                  textAlign: m.role === "user" ? "right" : "left",
+                  display: "flex",
+                  justifyContent:
+                    m.role === "user" ? "flex-end" : "flex-start",
+                  gap: 10,
+                  alignItems: "flex-end",
                 }}
               >
+                {m.role === "assistant" && (
+                  <div
+                    style={{
+                      position: "relative",
+                      width: 34,
+                      height: 34,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Image
+                      src={PROFILE_IMAGE_SRC}
+                      alt="Jasond Delos Santos"
+                      fill
+                      sizes="34px"
+                      style={{
+                        borderRadius: "9999px",
+                        objectFit: "cover",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                      }}
+                    />
+                  </div>
+                )}
+
                 <div
                   style={{
                     display: "inline-block",
@@ -183,15 +247,61 @@ export default function ChatbotWidget() {
                 >
                   {m.text}
                 </div>
+
+                {m.role === "user" && (
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      flexShrink: 0,
+                      borderRadius: "9999px",
+                      background:
+                        "linear-gradient(135deg, rgba(37,99,235,0.95), rgba(96,165,250,0.9))",
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      border: "1px solid rgba(255,255,255,0.12)",
+                    }}
+                  >
+                    You
+                  </div>
+                )}
               </div>
             ))}
             {loading && (
               <div
                 style={{
                   marginBottom: 12,
-                  textAlign: "left",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  gap: 10,
+                  alignItems: "flex-end",
                 }}
               >
+                <div
+                  style={{
+                    position: "relative",
+                    width: 34,
+                    height: 34,
+                    flexShrink: 0,
+                  }}
+                >
+                  <Image
+                    src={PROFILE_IMAGE_SRC}
+                    alt="Jasond Delos Santos"
+                    fill
+                    sizes="34px"
+                    style={{
+                      borderRadius: "9999px",
+                      objectFit: "cover",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                    }}
+                  />
+                </div>
+
                 <div
                   style={{
                     display: "inline-flex",
