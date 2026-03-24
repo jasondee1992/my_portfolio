@@ -107,7 +107,7 @@ const PROFILE_IDENTITY = {
     "A digital version of Jasond Delos Santos that answers questions about his background, projects, skills, experience, education, and tech stack in a natural first-person voice.",
 };
 
-function includesAny(text: string, patterns: string[]) {
+function includesAny(text: string, patterns: readonly string[]) {
   return patterns.some((pattern) => text.includes(pattern));
 }
 
@@ -156,7 +156,7 @@ function detectLanguageStyle(text: string): LanguageStyle {
   return "english";
 }
 
-function pickVariant(options: string[], seed: string) {
+function pickVariant(options: readonly string[], seed: string) {
   const value = Array.from(seed).reduce((sum, char) => sum + char.charCodeAt(0), 0);
   return options[value % options.length];
 }
