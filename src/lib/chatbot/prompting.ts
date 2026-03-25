@@ -59,11 +59,15 @@ ${JSON.stringify(memory, null, 2)}
 export function buildUserPrompt(params: {
   message: string;
   portfolioContext: string;
+  conversationFocus: string;
   conversationExamples: string;
 }) {
   return `
 Tone and style examples:
 ${params.conversationExamples}
+
+Recent conversation focus:
+${params.conversationFocus}
 
 Approved portfolio context:
 ${params.portfolioContext}

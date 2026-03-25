@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Msg = { role: "user" | "assistant"; text: string };
+const MAX_HISTORY_MESSAGES = 12;
 
 const PORTFOLIO_GUARDRAIL =
   "Ask me about my projects, skills, experience, background, and portfolio.";
@@ -58,7 +59,7 @@ export default function ChatbotWidget() {
         },
         body: JSON.stringify({
           message: q,
-          history: messages.slice(-8).map((message) => ({
+          history: messages.slice(-MAX_HISTORY_MESSAGES).map((message) => ({
             role: message.role,
             content: message.text,
           })),

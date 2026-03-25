@@ -6,6 +6,7 @@ import { checkRestrictedInput, getMissingInformationFallback } from "@/lib/chatb
 import { buildSystemPrompt, buildUserPrompt, type ChatHistoryMessage } from "@/lib/chatbot/prompting";
 import { sanitizeChatbotAnswer } from "@/lib/chatbot/response";
 import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
+import { buildContextualMessage, buildConversationFocus } from "@/lib/chatbot/conversationContext";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
 import { getTenureResponse } from "@/lib/chatbot/tenure";
 import type { ResponseInput } from "openai/resources/responses/responses";
@@ -13,7 +14,7 @@ import type { ResponseInput } from "openai/resources/responses/responses";
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const CHATBOT_FALLBACK = getMissingInformationFallback();
 const MIN_TOP_SCORE = 3;
-const MAX_HISTORY_MESSAGES = 8;
+const MAX_HISTORY_MESSAGES = 12;
 const KNOWLEDGE_BASE = loadKnowledgeBase();
 
 function filterHighConfidenceMatches(matches: RetrievalMatch[]) {
@@ -118,6 +119,9 @@ export async function POST(request: Request) {
       });
     }
 
+    const contextualMessage = buildContextualMessage(message, history);
+    const conversationFocus = buildConversationFocus(history);
+
     const safeIntentResponse = getSafeIntentResponse(message);
 
     if (safeIntentResponse) {
@@ -127,7 +131,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const tenureResponse = getTenureResponse(message);
+    const tenureResponse = getTenureResponse(contextualMessage);
 
     if (tenureResponse) {
       return NextResponse.json({
@@ -136,10 +140,10 @@ export async function POST(request: Request) {
       });
     }
 
-    const retrievalMatches = retrieveKnowledge(KNOWLEDGE_BASE, message);
+    const retrievalMatches = retrieveKnowledge(KNOWLEDGE_BASE, contextualMessage);
     let matches = filterHighConfidenceMatches(retrievalMatches);
 
-    if (matches.length === 0 && isPortfolioQuestion(message)) {
+    if (matches.length === 0 && isPortfolioQuestion(contextualMessage)) {
       matches = buildPortfolioFallbackContext(KNOWLEDGE_BASE).map((entry) => ({
         entry,
         score: 1,
@@ -165,6 +169,7 @@ export async function POST(request: Request) {
     const userPrompt = buildUserPrompt({
       message,
       portfolioContext: context,
+      conversationFocus,
       conversationExamples: CHATBOT_CONVERSATION_EXAMPLES,
     });
 
