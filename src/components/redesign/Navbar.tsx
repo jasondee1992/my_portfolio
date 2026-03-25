@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -15,30 +15,36 @@ export default function Navbar() {
     { label: "Gallery", href: "/gallery" },
   ];
 
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
-
   return (
     <header className="container-page sticky top-4 z-40 pt-4 md:pt-6">
-      <div className="glass-card mx-auto rounded-[28px] px-5 py-4 md:px-7">
+      <div className="glass-card mx-auto rounded-[30px] px-5 py-4 md:px-7">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="group flex items-center gap-3">
             <div
-              className="soft-hover flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold"
+              className="soft-hover flex h-12 w-12 items-center justify-center rounded-full text-base font-bold"
               style={{
-                border: "1px solid rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.10)",
                 background:
-                  "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(255,255,255,0.04))",
-                color: "rgba(255,255,255,0.96)",
-                letterSpacing: "-0.03em",
+                  "linear-gradient(160deg, rgba(143,184,255,0.2), rgba(255,255,255,0.04))",
+                color: "rgba(245,247,250,0.96)",
+                boxShadow: "0 14px 35px rgba(16,26,44,0.3)",
+                letterSpacing: "-0.05em",
               }}
             >
               J
             </div>
+
+            <div className="hidden md:block">
+              <div className="text-sm font-semibold tracking-[0.18em] text-white/85">
+                Jasond
+              </div>
+              <div className="text-xs uppercase tracking-[0.28em] text-white/35">
+                Portfolio
+              </div>
+            </div>
           </Link>
 
-          <nav className="hidden items-center gap-9 md:flex">
+          <nav className="hidden items-center gap-3 rounded-full border border-white/6 bg-white/[0.03] px-3 py-2 md:flex">
             {links.map((link) => {
               const active = pathname === link.href;
 
@@ -46,18 +52,20 @@ export default function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="relative text-sm font-medium transition"
+                  className="relative rounded-full px-4 py-2 text-sm font-medium transition"
                   style={{
-                    color: active
-                      ? "rgba(255,255,255,0.96)"
-                      : "rgba(255,255,255,0.62)",
+                    color: active ? "rgba(255,255,255,0.98)" : "rgba(255,255,255,0.62)",
+                    background: active ? "rgba(255,255,255,0.07)" : "transparent",
                   }}
                 >
                   {link.label}
                   {active && (
                     <span
-                      className="absolute -bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
-                      style={{ background: "rgba(255,255,255,0.85)" }}
+                      className="absolute inset-x-4 -bottom-px h-px rounded-full"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, transparent, rgba(143,184,255,0.95), transparent)",
+                      }}
                     />
                   )}
                 </Link>
@@ -69,15 +77,10 @@ export default function Navbar() {
             href="/resume/Jasond_Delos_Santos_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="soft-hover hidden rounded-full px-5 py-3 text-sm font-semibold md:inline-flex"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.10)",
-              color: "rgba(255,255,255,0.92)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.30)",
-            }}
+            className="premium-button hidden md:inline-flex"
           >
-            Hire Me →
+            Hire Me
+            <span aria-hidden="true">↗</span>
           </a>
 
           <button
@@ -97,9 +100,7 @@ export default function Navbar() {
                 className="block h-0.5 w-5 rounded-full transition-transform duration-200"
                 style={{
                   background: "currentColor",
-                  transform: mobileMenuOpen
-                    ? "translateY(8px) rotate(45deg)"
-                    : "none",
+                  transform: mobileMenuOpen ? "translateY(8px) rotate(45deg)" : "none",
                 }}
               />
               <span
@@ -113,9 +114,7 @@ export default function Navbar() {
                 className="block h-0.5 w-5 rounded-full transition-transform duration-200"
                 style={{
                   background: "currentColor",
-                  transform: mobileMenuOpen
-                    ? "translateY(-8px) rotate(-45deg)"
-                    : "none",
+                  transform: mobileMenuOpen ? "translateY(-8px) rotate(-45deg)" : "none",
                 }}
               />
             </span>
@@ -134,14 +133,11 @@ export default function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
                   className="block rounded-2xl px-4 py-3 text-sm font-medium transition"
                   style={{
-                    background: active
-                      ? "rgba(255,255,255,0.08)"
-                      : "rgba(255,255,255,0.03)",
-                    color: active
-                      ? "rgba(255,255,255,0.96)"
-                      : "rgba(255,255,255,0.72)",
+                    background: active ? "rgba(143,184,255,0.16)" : "rgba(255,255,255,0.03)",
+                    color: active ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.72)",
                     border: "1px solid rgba(255,255,255,0.08)",
                   }}
                 >
@@ -154,15 +150,10 @@ export default function Navbar() {
               href="/resume/Jasond_Delos_Santos_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 block rounded-2xl px-4 py-3 text-center text-sm font-semibold"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                color: "rgba(255,255,255,0.92)",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.30)",
-              }}
+              className="premium-button mt-3 flex w-full"
             >
-              Hire Me →
+              Hire Me
+              <span aria-hidden="true">↗</span>
             </a>
           </div>
         )}

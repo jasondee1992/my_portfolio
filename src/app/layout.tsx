@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import ChatbotWidget from "@/components/ChatbotWidget";
+
+const ubuntu = Ubuntu({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-ubuntu",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "JasonD — Portfolio",
@@ -19,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen antialiased">
+      <body className={`${ubuntu.variable} min-h-screen antialiased`}>
         {children}
         <ChatbotWidget />
       </body>

@@ -122,14 +122,17 @@ const timeline = [
 
 export default function JourneyTimeline() {
   return (
-    <section className="container-page mt-20">
+    <section className="container-page section-shell">
       <div className="mx-auto max-w-5xl">
-        <h2 className="type-section-title mb-12 text-center font-semibold text-white/95">
-          My Journey
-        </h2>
+        <div className="section-header items-center text-center">
+          <div className="section-eyebrow">Journey</div>
+          <h2 className="type-section-title section-title font-semibold text-white/95">
+            Career timeline
+          </h2>
+        </div>
 
-        <div className="relative mx-auto max-w-5xl">
-          <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/20 md:block" />
+        <div className="relative mx-auto mt-12 max-w-5xl">
+          <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/12 md:block" />
 
           <div className="space-y-10">
             {timeline.map((item) => (
@@ -139,26 +142,15 @@ export default function JourneyTimeline() {
                   item.side === "left" ? "md:justify-start" : "md:justify-end"
                 }`}
               >
-                <div
-                  className="w-full rounded-[28px] p-7 md:w-[44%]"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    boxShadow: "0 18px 50px rgba(0,0,0,0.35)",
-                  }}
-                >
+                <div className="section-panel w-full p-7 md:w-[44%]">
                   <div className="flex items-start justify-between gap-6">
-                    <div className="type-journey-year font-semibold text-white/95">
-                      {item.year}
-                    </div>
+                    <div className="type-journey-year font-semibold text-white/95">{item.year}</div>
                     <div className="type-card-title pt-2 text-right font-semibold text-white/90">
                       {item.title}
                     </div>
                   </div>
 
-                  <p className="type-card-body mt-5 leading-8 text-white/60">
-                    {item.description}
-                  </p>
+                  <p className="type-card-body mt-5 leading-8 text-white/60">{item.description}</p>
                 </div>
               </div>
             ))}

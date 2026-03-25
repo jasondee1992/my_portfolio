@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 
 type GalleryImage = {
@@ -20,25 +20,25 @@ export default function GalleryLightboxClient({
   const selectedImage =
     selectedIndex === null ? null : images[selectedIndex] ?? null;
 
-  function closeLightbox() {
+  const closeLightbox = useCallback(() => {
     setSelectedIndex(null);
-  }
+  }, []);
 
   function openLightbox(index: number) {
     setSelectedIndex(index);
   }
 
-  function showPrev() {
+  const showPrev = useCallback(() => {
     if (selectedIndex === null || images.length === 0) return;
 
     setSelectedIndex((selectedIndex - 1 + images.length) % images.length);
-  }
+  }, [images.length, selectedIndex]);
 
-  function showNext() {
+  const showNext = useCallback(() => {
     if (selectedIndex === null || images.length === 0) return;
 
     setSelectedIndex((selectedIndex + 1) % images.length);
-  }
+  }, [images.length, selectedIndex]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -51,7 +51,7 @@ export default function GalleryLightboxClient({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedIndex]);
+  }, [closeLightbox, selectedIndex, showNext, showPrev]);
 
   if (images.length === 0) {
     return (

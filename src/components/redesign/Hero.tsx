@@ -1,10 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 
-const metaItems = [
-  "Python Developer",
-  "jasond.worked@gmail.com",
-  "Based in Philippines",
-];
+const metaItems = ["10 years in IT", "5 years in programming", "5 years in Python"];
 
 const socialLinks = [
   {
@@ -14,7 +11,7 @@ const socialLinks = [
   },
   {
     name: "GitHub",
-    href: "https://https://github.com/jasondee1992",
+    href: "https://github.com/jasondee1992",
     icon: "/icons/social/github.png",
   },
   {
@@ -24,86 +21,101 @@ const socialLinks = [
   },
 ];
 
-const skillIcons = [
-  { name: "Python", icon: "/icons/skills/python.png" },
-  { name: "Dash", icon: "/icons/skills/dash.svg" },
-  { name: "Snowflake", icon: "/icons/skills/snowflake.svg" },
-  { name: "Automation", icon: "/icons/skills/automation.svg" },
-  { name: "AI", icon: "/icons/skills/ai.svg" },
-];
-
 export default function Hero() {
   return (
-    <section className="container-page relative overflow-hidden pt-16 pb-8 md:pt-20">
+    <section className="container-page relative overflow-hidden pt-14 pb-8 md:pt-20">
       <div className="hero-glow" />
 
-      <div className="relative z-10">
-        <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
-          {/* Profile image */}
-          <div className="shrink-0">
-            <div
-              className="glass-card overflow-hidden rounded-full"
-              style={{
-                width: 160,
-                height: 160,
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <Image
-                src="/images/profile/profile.jpeg"
-                alt="Jasond Delos Santos"
-                width={150}
-                height={150}
-                className="h-full w-full object-cover"
-                priority
-              />
-            </div>
-          </div>
+      <div className="section-panel relative z-10 px-6 py-8 md:px-10 md:py-12">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="section-eyebrow">Python Full-Stack Developer</div>
 
-          {/* Right content */}
-          <div className="flex-1">
-            {/* 2. Name smaller */}
-            <h1 className="type-page-title section-title font-smaller tracking-tight">
+            <h1 className="section-title gradient-text mt-6 max-w-4xl text-4xl font-bold md:text-6xl">
               Jasond Delos Santos
             </h1>
 
-            {/* 4. plain words only, no rounded backgrounds */}
-            <div className="type-card-body mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-white/50">
-              {metaItems.map((item, index) => (
-                <div key={item} className="flex items-center gap-4">
-                  <span>{item}</span>
-                  {index !== metaItems.length - 1 && (
-                    <span className="hidden text-white/25 md:inline">•</span>
-                  )}
+            <p className="type-page-subtitle mt-5 max-w-2xl leading-8 text-white/70 md:leading-9">
+              I build premium internal tools, automation systems, and data-driven
+              applications designed to make complex work feel simple, reliable, and efficient.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-3">
+              {metaItems.map((item) => (
+                <div key={item} className="glass-chip rounded-full px-4 py-2 text-sm font-medium">
+                  {item}
                 </div>
               ))}
             </div>
 
-            {/* 5. social icons only */}
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                href="/resume/Jasond_Delos_Santos_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="premium-button"
+              >
+                Hire Me
+                <span aria-hidden="true">↗</span>
+              </a>
+
+              <Link href="/projects" className="premium-button-secondary">
+                View Projects
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               {socialLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   target={link.name === "Email" ? undefined : "_blank"}
                   rel={link.name === "Email" ? undefined : "noopener noreferrer"}
-                  className="soft-hover flex h-11 w-11 items-center justify-center rounded-full"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.10)",
-                  }}
+                  className="soft-hover flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-3"
                   aria-label={link.name}
                   title={link.name}
                 >
                   <Image
                     src={link.icon}
                     alt={link.name}
-                    width={80}
-                    height={80}
+                    width={22}
+                    height={22}
                     className="object-contain opacity-85"
                   />
+                  <span className="text-sm font-medium text-white/72">{link.name}</span>
                 </a>
               ))}
+            </div>
+          </div>
+
+          <div className="flex shrink-0 flex-col gap-5 lg:w-[320px]">
+            <div
+              className="glass-card overflow-hidden rounded-[36px]"
+              style={{
+                width: "100%",
+                height: 380,
+                border: "1px solid rgba(255,255,255,0.10)",
+              }}
+            >
+              <Image
+                src="/images/profile/profile.jpeg"
+                alt="Jasond Delos Santos"
+                width={420}
+                height={520}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
+
+            <div className="premium-card p-5">
+              <div className="text-xs uppercase tracking-[0.2em] text-white/38">Current focus</div>
+              <div className="mt-3 text-lg font-semibold text-white/92">
+                Automation, internal platforms, data workflows, and AI-enabled tooling
+              </div>
+              <p className="mt-3 text-sm leading-7 text-white/58">
+                Building practical software that improves workflow visibility, removes manual effort, and keeps systems clean to operate.
+              </p>
             </div>
           </div>
         </div>

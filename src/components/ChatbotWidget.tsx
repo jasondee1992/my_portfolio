@@ -98,62 +98,88 @@ export default function ChatbotWidget() {
         onClick={() => setOpen(true)}
         style={{
           position: "fixed",
-          right: 24,
-          bottom: 24,
+          right: 20,
+          bottom: 20,
           zIndex: 2147483647,
-          background: "rgba(255,255,255,0.06)",
-          color: "#fff",
-          padding: "12px 16px",
+          minWidth: 132,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+          padding: "14px 18px",
           borderRadius: 9999,
           border: "1px solid rgba(255,255,255,0.10)",
-          backdropFilter: "blur(10px)",
-          boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
+          background:
+            "linear-gradient(135deg, rgba(20,28,37,0.92), rgba(10,13,18,0.92))",
+          color: "rgba(245,247,250,0.96)",
+          backdropFilter: "blur(18px)",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.45)",
           cursor: "pointer",
           fontWeight: 600,
+          letterSpacing: "0.01em",
         }}
       >
-        💬 Chat
+        <span
+          style={{
+            width: 26,
+            height: 26,
+            borderRadius: 9999,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(143,184,255,0.14)",
+            boxShadow: "0 0 0 1px rgba(143,184,255,0.12)",
+          }}
+        >
+          <span style={{ fontSize: 14 }}>💬</span>
+        </span>
+        Chat
       </button>
 
       {open && (
         <div
           style={{
             position: "fixed",
-            right: 24,
-            bottom: 90,
-            width: 360,
-            height: 500,
-            background: "#0b0b0c",
+            right: 20,
+            bottom: 84,
+            width: "min(420px, calc(100vw - 24px))",
+            height: "min(680px, calc(100vh - 120px))",
+            background:
+              "linear-gradient(180deg, rgba(16,22,29,0.97), rgba(8,10,14,0.98))",
             border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 16,
-            boxShadow: "0 20px 60px rgba(0,0,0,0.7)",
+            borderRadius: 26,
+            boxShadow: "0 28px 90px rgba(0,0,0,0.62)",
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
             zIndex: 2147483647,
+            backdropFilter: "blur(22px)",
           }}
         >
           <div
             style={{
-              padding: "12px 16px",
+              padding: "16px 18px",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               color: "white",
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ position: "relative", width: 42, height: 42 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ position: "relative", width: 48, height: 48 }}>
                 <Image
                   src={PROFILE_IMAGE_SRC}
                   alt="Jasond Delos Santos"
                   fill
-                  sizes="42px"
+                  sizes="48px"
                   style={{
                     borderRadius: "9999px",
                     objectFit: "cover",
                     border: "1px solid rgba(255,255,255,0.14)",
+                    boxShadow: "0 10px 24px rgba(0,0,0,0.34)",
                   }}
                 />
               </div>
@@ -174,20 +200,25 @@ export default function ChatbotWidget() {
                       height: 8,
                       borderRadius: "9999px",
                       background: "#22c55e",
-                      boxShadow: "0 0 0 4px rgba(34,197,94,0.16)",
+                      boxShadow: "0 0 0 5px rgba(34,197,94,0.12)",
                     }}
                   />
                 </div>
-                <div style={{ fontSize: 12, opacity: 0.6 }}>Online now</div>
+                <div style={{ fontSize: 12, opacity: 0.56, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  Portfolio AI
+                </div>
               </div>
             </div>
 
             <button
               onClick={() => setOpen(false)}
               style={{
-                background: "transparent",
+                width: 38,
+                height: 38,
+                borderRadius: 9999,
+                background: "rgba(255,255,255,0.05)",
                 color: "white",
-                border: "none",
+                border: "1px solid rgba(255,255,255,0.08)",
                 cursor: "pointer",
                 fontSize: 16,
               }}
@@ -199,20 +230,21 @@ export default function ChatbotWidget() {
           <div
             style={{
               flex: 1,
-              padding: 16,
+              padding: 18,
               overflowY: "auto",
               fontSize: 14,
               color: "white",
+              background:
+                "radial-gradient(circle at top right, rgba(143,184,255,0.08), transparent 30%)",
             }}
           >
             {messages.map((m, i) => (
               <div
                 key={i}
                 style={{
-                  marginBottom: 12,
+                  marginBottom: 14,
                   display: "flex",
-                  justifyContent:
-                    m.role === "user" ? "flex-end" : "flex-start",
+                  justifyContent: m.role === "user" ? "flex-end" : "flex-start",
                   gap: 10,
                   alignItems: "flex-end",
                 }}
@@ -243,13 +275,24 @@ export default function ChatbotWidget() {
                 <div
                   style={{
                     display: "inline-block",
-                    maxWidth: "85%",
-                    padding: "10px 12px",
-                    borderRadius: 12,
+                    maxWidth: "84%",
+                    padding: "12px 14px",
+                    borderRadius: m.role === "user" ? "20px 20px 6px 20px" : "20px 20px 20px 6px",
                     whiteSpace: "pre-wrap",
                     background:
-                      m.role === "user" ? "#2563eb" : "rgba(255,255,255,0.06)",
+                      m.role === "user"
+                        ? "linear-gradient(135deg, rgba(90,123,255,0.94), rgba(127,163,255,0.88))"
+                        : "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04))",
+                    border:
+                      m.role === "user"
+                        ? "1px solid rgba(156,184,255,0.22)"
+                        : "1px solid rgba(255,255,255,0.08)",
                     color: "white",
+                    lineHeight: 1.6,
+                    boxShadow:
+                      m.role === "user"
+                        ? "0 16px 34px rgba(42,67,141,0.28)"
+                        : "0 12px 26px rgba(0,0,0,0.22)",
                   }}
                 >
                   {m.text}
@@ -263,14 +306,14 @@ export default function ChatbotWidget() {
                       flexShrink: 0,
                       borderRadius: "9999px",
                       background:
-                        "linear-gradient(135deg, rgba(37,99,235,0.95), rgba(96,165,250,0.9))",
+                        "linear-gradient(135deg, rgba(69,101,189,0.95), rgba(124,162,255,0.9))",
                       color: "white",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: 700,
-                      border: "1px solid rgba(255,255,255,0.12)",
+                      border: "1px solid rgba(255,255,255,0.14)",
                     }}
                   >
                     You
@@ -278,10 +321,11 @@ export default function ChatbotWidget() {
                 )}
               </div>
             ))}
+
             {loading && (
               <div
                 style={{
-                  marginBottom: 12,
+                  marginBottom: 14,
                   display: "flex",
                   justifyContent: "flex-start",
                   gap: 10,
@@ -315,9 +359,10 @@ export default function ChatbotWidget() {
                     alignItems: "center",
                     gap: 6,
                     maxWidth: "85%",
-                    padding: "10px 12px",
-                    borderRadius: 12,
-                    background: "rgba(255,255,255,0.06)",
+                    padding: "12px 14px",
+                    borderRadius: "20px 20px 20px 6px",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04))",
+                    border: "1px solid rgba(255,255,255,0.08)",
                     color: "white",
                   }}
                 >
@@ -360,12 +405,13 @@ export default function ChatbotWidget() {
 
           <div
             style={{
-              padding: 12,
+              padding: 14,
               borderTop: "1px solid rgba(255,255,255,0.06)",
               display: "flex",
-              gap: 8,
+              gap: 10,
               flexDirection: "column",
-              background: "#0b0b0c",
+              background:
+                "linear-gradient(180deg, rgba(10,13,18,0.82), rgba(7,9,13,0.94))",
             }}
           >
             <div style={{ display: "flex", gap: 8 }}>
@@ -375,15 +421,16 @@ export default function ChatbotWidget() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") onSend();
                 }}
-                placeholder="Ask about JasonD..."
+                placeholder="Ask about Jasond..."
                 style={{
                   flex: 1,
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  background: "#111",
+                  padding: "14px 16px",
+                  borderRadius: 16,
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.04)",
                   color: "white",
                   outline: "none",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
                 }}
               />
 
@@ -391,21 +438,24 @@ export default function ChatbotWidget() {
                 onClick={onSend}
                 disabled={loading}
                 style={{
-                  background: "white",
-                  color: "black",
+                  minWidth: 84,
+                  background:
+                    "linear-gradient(135deg, rgba(141,180,255,0.95), rgba(191,210,255,0.86))",
+                  color: "#071019",
                   border: "none",
-                  borderRadius: 10,
-                  padding: "10px 14px",
+                  borderRadius: 16,
+                  padding: "10px 16px",
                   cursor: "pointer",
-                  fontWeight: 600,
+                  fontWeight: 700,
                   opacity: loading ? 0.7 : 1,
+                  boxShadow: "0 14px 30px rgba(53,89,168,0.28)",
                 }}
               >
                 {loading ? "..." : "Send"}
               </button>
             </div>
 
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", lineHeight: 1.5 }}>
               {PORTFOLIO_GUARDRAIL}
             </div>
           </div>
@@ -424,6 +474,12 @@ export default function ChatbotWidget() {
           40% {
             transform: translateY(-3px);
             opacity: 1;
+          }
+        }
+
+        @media (max-width: 640px) {
+          button[aria-expanded] {
+            right: 16px;
           }
         }
       `}</style>

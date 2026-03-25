@@ -3,8 +3,8 @@
 const links = [
   {
     title: "Email",
-    value: "Jason.worked@gmail.com",
-    href: "mailto:Jason.worked@gmail.com",
+    value: "jasond.worked@gmail.com",
+    href: "mailto:jasond.worked@gmail.com",
   },
   {
     title: "GitHub",
@@ -29,33 +29,25 @@ export default function ConnectSection() {
   }
 
   return (
-    <section className="container-page mt-20">
-      <div
-        className="mx-auto max-w-5xl rounded-[32px] p-8 md:p-10"
-        style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 18px 50px rgba(0,0,0,0.35)",
-        }}
-      >
-        <h2 className="text-3xl font-semibold text-white/95">Let’s Connect</h2>
-        <p className="mt-3 text-white/60">
-          I’m always interested in new opportunities and collaborations.
-        </p>
+    <section className="container-page section-shell">
+      <div className="section-panel mx-auto max-w-5xl p-8 md:p-10">
+        <div className="section-header">
+          <div className="section-eyebrow">Connect</div>
+          <h2 className="text-3xl font-semibold text-white/95">Let’s connect</h2>
+          <p className="mt-1 max-w-2xl text-white/60">
+            Open to thoughtful opportunities, collaborations, and conversations around software, automation, and practical product work.
+          </p>
+        </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {links.map((link) => (
+          {links.map((link) =>
             "href" in link ? (
               <a
                 key={link.title}
                 href={link.href}
-                target={link.title === "GitHub" ? "_blank" : undefined}
-                rel={link.title === "GitHub" ? "noopener noreferrer" : undefined}
-                className="rounded-[24px] p-5 text-left transition hover:-translate-y-0.5"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                }}
+                target={link.title === "GitHub" || link.title === "LinkedIn" ? "_blank" : undefined}
+                rel={link.title === "GitHub" || link.title === "LinkedIn" ? "noopener noreferrer" : undefined}
+                className="premium-card p-5 text-left transition hover:-translate-y-0.5"
               >
                 <div className="text-lg font-semibold text-white/90">{link.title}</div>
                 <div className="mt-1 text-white/55">{link.value}</div>
@@ -65,17 +57,13 @@ export default function ConnectSection() {
                 key={link.title}
                 type="button"
                 onClick={handleChatbotOpen}
-                className="rounded-[24px] p-5 text-left transition hover:-translate-y-0.5"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                }}
+                className="premium-card p-5 text-left transition hover:-translate-y-0.5"
               >
                 <div className="text-lg font-semibold text-white/90">{link.title}</div>
                 <div className="mt-1 text-white/55">{link.value}</div>
               </button>
             )
-          ))}
+          )}
         </div>
       </div>
     </section>

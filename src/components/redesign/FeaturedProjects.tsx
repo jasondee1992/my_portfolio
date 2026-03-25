@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 type Project = {
@@ -31,10 +33,10 @@ const projects: Project[] = [
     description:
       "A reporting workflow that generates and distributes reports from Snowflake data sources to stakeholders. It automates repetitive reporting tasks, standardizes outputs, and ensures timely delivery of operational and management reports.",
     tech: [
-      { name: "Python", icon: "/icons/python.svg" },
-      { name: "Snowflake", icon: "/icons/snowflake.svg" },
-      { name: "SQL", icon: "/icons/sql.svg" },
-      { name: "ETL", icon: "/icons/etl.svg" },
+      { name: "Python", icon: "/icons/skills/python.png" },
+      { name: "Snowflake", icon: "/icons/skills/snowflakes.png" },
+      { name: "SQL", icon: "/icons/skills/SQLite.png" },
+      { name: "ETL", icon: "/icons/skills/Pandas.png" },
     ],
   },
   {
@@ -42,10 +44,10 @@ const projects: Project[] = [
     description:
       "A portfolio chatbot designed to answer questions only about JasonD’s experience, projects, and skills using structured content. The long-term goal is to evolve it into a more intelligent assistant powered by retrieval and AI workflows.",
     tech: [
-      { name: "Next.js", icon: "/icons/nextjs.svg" },
-      { name: "AI", icon: "/icons/ai.svg" },
-      { name: "RAG", icon: "/icons/rag.svg" },
-      { name: "FastAPI", icon: "/icons/fastapi.svg" },
+      { name: "Next.js", icon: "/icons/skills/react.png" },
+      { name: "AI", icon: "/icons/skills/ai.svg" },
+      { name: "RAG", icon: "/icons/skills/FastAPI.png" },
+      { name: "FastAPI", icon: "/icons/skills/FastAPI.png" },
     ],
   },
   {
@@ -53,10 +55,10 @@ const projects: Project[] = [
     description:
       "A dashboard for monitoring workflow status, processing metrics, and operational exceptions in real time. It improves visibility for managers and team leads by consolidating business-critical process health into a single interface.",
     tech: [
-      { name: "Dash", icon: "/icons/dash.svg" },
-      { name: "Plotly", icon: "/icons/plotly.svg" },
-      { name: "Python", icon: "/icons/python.svg" },
-      { name: "Analytics", icon: "/icons/analytics.svg" },
+      { name: "Dash", icon: "/icons/skills/plotly_dash.png" },
+      { name: "Plotly", icon: "/icons/skills/plotly.png" },
+      { name: "Python", icon: "/icons/skills/python.png" },
+      { name: "Analytics", icon: "/icons/skills/Pandas.png" },
     ],
   },
 ];
@@ -69,10 +71,8 @@ function ExpandableDescription({
   maxLength?: number;
 }) {
   const [expanded, setExpanded] = useState(false);
-
   const isLong = text.length > maxLength;
-  const visibleText =
-    !isLong || expanded ? text : `${text.slice(0, maxLength).trim()}...`;
+  const visibleText = !isLong || expanded ? text : `${text.slice(0, maxLength).trim()}...`;
 
   return (
     <div>
@@ -93,24 +93,30 @@ function ExpandableDescription({
 
 export default function FeaturedProjects() {
   return (
-    <section className="container-page mt-16">
-      <div className="glass-card rounded-[32px] p-6 md:p-8">
+    <section className="container-page section-shell">
+      <div className="section-panel p-6 md:p-8">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="type-section-title font-semibold tracking-[-0.02em] text-white/95">
-            Featured Projects
-          </h2>
+          <div>
+            <div className="section-eyebrow">Projects</div>
+            <h2 className="type-section-title mt-3 font-semibold tracking-[-0.02em] text-white/95">
+              Selected work with practical impact
+            </h2>
+          </div>
 
-          <button className="type-card-body text-white/55 transition hover:text-white/80">
-            View All →
-          </button>
+          <Link href="/projects" className="premium-button-secondary hidden md:inline-flex">
+            View All
+            <span aria-hidden="true">→</span>
+          </Link>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {projects.map((project) => (
             <article
               key={project.title}
-              className="rounded-[28px] border border-white/10 bg-white/[0.02] p-6 transition hover:border-white/15 hover:bg-white/[0.03]"
+              className="premium-card p-6 transition hover:border-white/15 hover:bg-white/[0.03]"
             >
+              <div className="mb-4 h-1.5 w-16 rounded-full bg-gradient-to-r from-[#8fb8ff] to-transparent" />
+
               <h3 className="type-card-title font-semibold tracking-[-0.02em] text-white/95">
                 {project.title}
               </h3>
@@ -123,11 +129,7 @@ export default function FeaturedProjects() {
                 {project.tech.map((item) => (
                   <div key={item.name} className="project-tech-item">
                     <div className="project-tech-icon-wrap">
-                      <img
-                        src={item.icon}
-                        alt={item.name}
-                        className="project-tech-icon"
-                      />
+                      <Image src={item.icon} alt={item.name} width={20} height={20} className="project-tech-icon" />
                     </div>
                     <span className="project-tech-label">{item.name}</span>
                   </div>
@@ -136,6 +138,11 @@ export default function FeaturedProjects() {
             </article>
           ))}
         </div>
+
+        <Link href="/projects" className="premium-button-secondary mt-8 inline-flex md:hidden">
+          View All
+          <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </section>
   );

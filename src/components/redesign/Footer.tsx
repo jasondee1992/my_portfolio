@@ -1,16 +1,34 @@
 export default function Footer() {
   return (
-    <footer className="container-page mt-14 pb-10">
-      <div className="h-px w-full bg-white/10" />
+    <footer className="container-page mt-20 pb-10">
+      <div className="section-panel px-6 py-7 md:px-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div className="section-eyebrow">Let&apos;s build</div>
+            <div className="mt-4 text-2xl font-semibold text-white/94">
+              Available for thoughtful full-time roles and freelance work.
+            </div>
+            <div className="mt-2 text-sm text-white/52">
+              © 2026 Jasond Delos Santos. All rights reserved.
+            </div>
+          </div>
 
-      <div className="mt-6 flex flex-col items-center justify-between gap-4 text-sm text-white/45 md:flex-row">
-        <div>© 2026 Jasond Delos Santos. All rights reserved.</div>
-
-        <div className="flex items-center gap-5 text-white/60">
-          <span>✉</span>
-          <span>⌘</span>
-          <span>in</span>
-          <span>💬</span>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-white/72">
+            <a className="glass-chip rounded-full px-4 py-2" href="mailto:jasond.worked@gmail.com">
+              Email
+            </a>
+            <a
+              className="glass-chip rounded-full px-4 py-2"
+              href="https://www.linkedin.com/in/jasond-delos-santos-94978a111/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            <button className="glass-chip rounded-full px-4 py-2" type="button">
+              Portfolio AI
+            </button>
+          </div>
         </div>
       </div>
     </footer>
