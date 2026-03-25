@@ -5,6 +5,11 @@ import { useEffect, useRef, useState } from "react";
 
 type Msg = { role: "user" | "assistant"; text: string };
 const MAX_HISTORY_MESSAGES = 12;
+const SUGGESTED_PROMPTS = [
+  "Tell me about yourself",
+  "What’s your tech stack?",
+  "Are you open to work?",
+] as const;
 
 const PORTFOLIO_GUARDRAIL =
   "Ask me about my projects, skills, experience, background, and portfolio.";
@@ -22,7 +27,7 @@ export default function ChatbotWidget() {
     {
       role: "assistant",
       text:
-        "Hi — I’m Jasond Delos Santos. Feel free to ask about my projects, work, skills, experience, or background.",
+        "Hi. I’m Jasond. You can ask me about my work, projects, skills, experience, or anything you’d like to know from my portfolio.",
     },
   ]);
 
@@ -43,8 +48,8 @@ export default function ChatbotWidget() {
     return () => window.removeEventListener("open-chatbot", handleOpenChatbot);
   }, []);
 
-  async function onSend() {
-    const q = input.trim();
+  async function sendMessage(rawMessage?: string) {
+    const q = (rawMessage ?? input).trim();
     if (!q || loading) return;
 
     setInput("");
@@ -91,6 +96,8 @@ export default function ChatbotWidget() {
       setLoading(false);
     }
   }
+
+  const showSuggestedPrompts = messages.length <= 1 && !loading;
 
   return (
     <>
@@ -142,11 +149,10 @@ export default function ChatbotWidget() {
             position: "fixed",
             right: 20,
             bottom: 84,
-            width: "min(420px, calc(100vw - 24px))",
-            height: "min(680px, calc(100vh - 120px))",
-            background:
-              "linear-gradient(180deg, rgba(16,22,29,0.97), rgba(8,10,14,0.98))",
-            border: "1px solid rgba(255,255,255,0.08)",
+            width: "min(360px, calc(100vw - 24px))",
+            height: "min(560px, calc(100vh - 120px))",
+            background: "rgba(12,12,13,0.98)",
+            border: "1px solid rgba(255,255,255,0.12)",
             borderRadius: 26,
             boxShadow: "0 28px 90px rgba(0,0,0,0.62)",
             display: "flex",
@@ -158,84 +164,71 @@ export default function ChatbotWidget() {
         >
           <div
             style={{
-              padding: "16px 18px",
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              padding: "14px 16px",
+              borderBottom: "1px solid rgba(255,255,255,0.10)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               color: "white",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ position: "relative", width: 48, height: 48 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ position: "relative", width: 28, height: 28 }}>
                 <Image
                   src={PROFILE_IMAGE_SRC}
                   alt="Jasond Delos Santos"
                   fill
-                  sizes="48px"
+                  sizes="28px"
                   style={{
                     borderRadius: "9999px",
                     objectFit: "cover",
-                    border: "1px solid rgba(255,255,255,0.14)",
-                    boxShadow: "0 10px 24px rgba(0,0,0,0.34)",
                   }}
                 />
               </div>
 
-              <div>
-                <div
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontWeight: 400,
+                  fontSize: 14,
+                }}
+              >
+                <span>Jasond Delos Santos</span>
+                <span
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontWeight: 600,
+                    width: 8,
+                    height: 8,
+                    borderRadius: "9999px",
+                    background: "#22c55e",
                   }}
-                >
-                  <span>Jasond Delos Santos</span>
-                  <span
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "9999px",
-                      background: "#22c55e",
-                      boxShadow: "0 0 0 5px rgba(34,197,94,0.12)",
-                    }}
-                  />
-                </div>
-                <div style={{ fontSize: 12, opacity: 0.56, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  Portfolio AI
-                </div>
+                />
               </div>
             </div>
 
             <button
               onClick={() => setOpen(false)}
               style={{
-                width: 38,
-                height: 38,
-                borderRadius: 9999,
-                background: "rgba(255,255,255,0.05)",
+                background: "transparent",
                 color: "white",
-                border: "1px solid rgba(255,255,255,0.08)",
+                border: "none",
                 cursor: "pointer",
-                fontSize: 16,
+                fontSize: 18,
+                lineHeight: 1,
               }}
             >
-              ✕
+              ×
             </button>
           </div>
 
           <div
             style={{
               flex: 1,
-              padding: 18,
+              padding: 16,
               overflowY: "auto",
               fontSize: 14,
               color: "white",
-              background:
-                "radial-gradient(circle at top right, rgba(143,184,255,0.08), transparent 30%)",
             }}
           >
             {messages.map((m, i) => (
@@ -253,8 +246,8 @@ export default function ChatbotWidget() {
                   <div
                     style={{
                       position: "relative",
-                      width: 34,
-                      height: 34,
+                      width: 28,
+                      height: 28,
                       flexShrink: 0,
                     }}
                   >
@@ -262,11 +255,10 @@ export default function ChatbotWidget() {
                       src={PROFILE_IMAGE_SRC}
                       alt="Jasond Delos Santos"
                       fill
-                      sizes="34px"
+                      sizes="28px"
                       style={{
                         borderRadius: "9999px",
                         objectFit: "cover",
-                        border: "1px solid rgba(255,255,255,0.12)",
                       }}
                     />
                   </div>
@@ -275,50 +267,25 @@ export default function ChatbotWidget() {
                 <div
                   style={{
                     display: "inline-block",
-                    maxWidth: "84%",
+                    maxWidth: "85%",
                     padding: "12px 14px",
-                    borderRadius: m.role === "user" ? "20px 20px 6px 20px" : "20px 20px 20px 6px",
+                    borderRadius: 18,
                     whiteSpace: "pre-wrap",
                     background:
                       m.role === "user"
                         ? "linear-gradient(135deg, rgba(90,123,255,0.94), rgba(127,163,255,0.88))"
-                        : "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04))",
-                    border:
-                      m.role === "user"
-                        ? "1px solid rgba(156,184,255,0.22)"
-                        : "1px solid rgba(255,255,255,0.08)",
+                        : "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.10)",
                     color: "white",
-                    lineHeight: 1.6,
+                    lineHeight: 1.65,
                     boxShadow:
                       m.role === "user"
                         ? "0 16px 34px rgba(42,67,141,0.28)"
-                        : "0 12px 26px rgba(0,0,0,0.22)",
+                        : "inset 0 0 0 1px rgba(255,255,255,0.03)",
                   }}
                 >
                   {m.text}
                 </div>
-
-                {m.role === "user" && (
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      flexShrink: 0,
-                      borderRadius: "9999px",
-                      background:
-                        "linear-gradient(135deg, rgba(69,101,189,0.95), rgba(124,162,255,0.9))",
-                      color: "white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      border: "1px solid rgba(255,255,255,0.14)",
-                    }}
-                  >
-                    You
-                  </div>
-                )}
               </div>
             ))}
 
@@ -335,8 +302,8 @@ export default function ChatbotWidget() {
                 <div
                   style={{
                     position: "relative",
-                    width: 34,
-                    height: 34,
+                    width: 28,
+                    height: 28,
                     flexShrink: 0,
                   }}
                 >
@@ -344,11 +311,10 @@ export default function ChatbotWidget() {
                     src={PROFILE_IMAGE_SRC}
                     alt="Jasond Delos Santos"
                     fill
-                    sizes="34px"
+                    sizes="28px"
                     style={{
                       borderRadius: "9999px",
                       objectFit: "cover",
-                      border: "1px solid rgba(255,255,255,0.12)",
                     }}
                   />
                 </div>
@@ -360,9 +326,9 @@ export default function ChatbotWidget() {
                     gap: 6,
                     maxWidth: "85%",
                     padding: "12px 14px",
-                    borderRadius: "20px 20px 20px 6px",
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04))",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 18,
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.10)",
                     color: "white",
                   }}
                 >
@@ -400,18 +366,54 @@ export default function ChatbotWidget() {
                 </div>
               </div>
             )}
+
+            {showSuggestedPrompts && (
+              <div
+                style={{
+                  marginTop: 88,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => void sendMessage(prompt)}
+                    style={{
+                      width: "fit-content",
+                      maxWidth: "100%",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "11px 16px",
+                      borderRadius: 9999,
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: "rgba(255,255,255,0.03)",
+                      color: "rgba(255,255,255,0.88)",
+                      fontWeight: 400,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div ref={endRef} />
           </div>
 
           <div
             style={{
-              padding: 14,
-              borderTop: "1px solid rgba(255,255,255,0.06)",
+              padding: 12,
+              borderTop: "1px solid rgba(255,255,255,0.10)",
               display: "flex",
-              gap: 10,
+              gap: 8,
               flexDirection: "column",
-              background:
-                "linear-gradient(180deg, rgba(10,13,18,0.82), rgba(7,9,13,0.94))",
+              background: "rgba(16,16,17,0.96)",
             }}
           >
             <div style={{ display: "flex", gap: 8 }}>
@@ -419,43 +421,45 @@ export default function ChatbotWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") onSend();
+                  if (e.key === "Enter") {
+                    void sendMessage();
+                  }
                 }}
-                placeholder="Ask about Jasond..."
+                placeholder="Ask me anything..."
                 style={{
                   flex: 1,
-                  padding: "14px 16px",
-                  borderRadius: 16,
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "12px 14px",
+                  borderRadius: 14,
+                  border: "1px solid rgba(255,255,255,0.10)",
                   background: "rgba(255,255,255,0.04)",
                   color: "white",
                   outline: "none",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
                 }}
               />
 
               <button
-                onClick={onSend}
+                onClick={() => void sendMessage()}
                 disabled={loading}
                 style={{
-                  minWidth: 84,
+                  width: 48,
+                  height: 48,
                   background:
-                    "linear-gradient(135deg, rgba(141,180,255,0.95), rgba(191,210,255,0.86))",
-                  color: "#071019",
+                    "linear-gradient(180deg, rgba(0,132,255,0.98), rgba(0,102,255,0.94))",
+                  color: "white",
                   border: "none",
-                  borderRadius: 16,
-                  padding: "10px 16px",
+                  borderRadius: 9999,
                   cursor: "pointer",
-                  fontWeight: 700,
+                  fontWeight: 400,
                   opacity: loading ? 0.7 : 1,
-                  boxShadow: "0 14px 30px rgba(53,89,168,0.28)",
+                  fontSize: 20,
+                  boxShadow: "0 12px 26px rgba(0,102,255,0.32)",
                 }}
               >
-                {loading ? "..." : "Send"}
+                ➤
               </button>
             </div>
 
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.42)", lineHeight: 1.5 }}>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.40)", lineHeight: 1.5 }}>
               {PORTFOLIO_GUARDRAIL}
             </div>
           </div>
@@ -474,12 +478,6 @@ export default function ChatbotWidget() {
           40% {
             transform: translateY(-3px);
             opacity: 1;
-          }
-        }
-
-        @media (max-width: 640px) {
-          button[aria-expanded] {
-            right: 16px;
           }
         }
       `}</style>

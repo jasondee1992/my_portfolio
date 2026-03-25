@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { internalProjects } from "@/data/projects";
+import { getProjectTechIcon } from "@/lib/projectTechIcons";
 
 export default function FeaturedProjectsGrid() {
   return (
@@ -25,11 +27,20 @@ export default function FeaturedProjectsGrid() {
 
             <p className="mt-4 text-sm leading-7 text-white/60">{project.description}</p>
 
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-3">
               {project.tags.map((tag) => (
-                <span key={tag} className="glass-chip rounded-full px-3 py-1.5 text-xs">
-                  {tag}
-                </span>
+                <div key={tag} className="project-tech-item">
+                  <div className="project-tech-icon-wrap">
+                    <Image
+                      src={getProjectTechIcon(tag)}
+                      alt={tag}
+                      width={24}
+                      height={24}
+                      className="project-tech-icon"
+                    />
+                  </div>
+                  <span className="project-tech-label">{tag}</span>
+                </div>
               ))}
             </div>
 

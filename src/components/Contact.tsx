@@ -8,7 +8,7 @@ export default function Contact() {
       <div className="panel panel-inner">
         <h2 className="text-2xl font-semibold text-white/90">Get in touch</h2>
         <p className="mt-2 muted max-w-2xl">
-          Open for collaboration & freelance. Let’s build something clean and useful.
+          Open for full-time opportunities. Let’s build something clean and useful.
         </p>
 
         <div className="mt-6 grid gap-3 text-sm text-white/70">

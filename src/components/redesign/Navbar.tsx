@@ -73,15 +73,17 @@ export default function Navbar() {
             })}
           </nav>
 
-          <a
-            href="/resume/Jasond_Delos_Santos_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="premium-button hidden md:inline-flex"
-          >
-            Hire Me
-            <span aria-hidden="true">↗</span>
-          </a>
+          <div className="hidden md:block">
+            <a
+              href="/resume/Jasond_Delos_Santos_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="premium-button"
+            >
+              Hire Me
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
 
           <button
             type="button"

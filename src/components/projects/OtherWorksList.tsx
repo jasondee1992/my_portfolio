@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { otherWorks } from "@/data/projects";
+import { getProjectTechIcon } from "@/lib/projectTechIcons";
 
 export default function OtherWorksList() {
   return (
@@ -27,11 +29,20 @@ export default function OtherWorksList() {
 
                 <p className="mt-3 max-w-4xl text-sm leading-7 text-white/60">{work.description}</p>
 
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-3">
                   {work.tags.map((tag) => (
-                    <span key={tag} className="glass-chip rounded-full px-3 py-1.5 text-xs">
-                      {tag}
-                    </span>
+                    <div key={tag} className="project-tech-item">
+                      <div className="project-tech-icon-wrap">
+                        <Image
+                          src={getProjectTechIcon(tag)}
+                          alt={tag}
+                          width={24}
+                          height={24}
+                          className="project-tech-icon"
+                        />
+                      </div>
+                      <span className="project-tech-label">{tag}</span>
+                    </div>
                   ))}
                 </div>
               </div>

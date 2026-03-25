@@ -31,7 +31,7 @@ export default function Hero() {
           <div className="max-w-3xl">
             <div className="section-eyebrow">Python Full-Stack Developer</div>
 
-            <h1 className="section-title gradient-text mt-6 max-w-4xl text-4xl font-bold md:text-6xl">
+            <h1 className="section-title gradient-text mt-6 max-w-4xl text-4xl font-bold md:text-5xl">
               Jasond Delos Santos
             </h1>
 
@@ -79,8 +79,8 @@ export default function Hero() {
                   <Image
                     src={link.icon}
                     alt={link.name}
-                    width={22}
-                    height={22}
+                    width={28}
+                    height={28}
                     className="object-contain opacity-85"
                   />
                   <span className="text-sm font-medium text-white/72">{link.name}</span>

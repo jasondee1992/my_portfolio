@@ -6,7 +6,7 @@ export default function Footer() {
           <div>
             <div className="section-eyebrow">Let&apos;s build</div>
             <div className="mt-4 text-2xl font-semibold text-white/94">
-              Available for thoughtful full-time roles and freelance work.
+              Available for thoughtful full-time roles.
             </div>
             <div className="mt-2 text-sm text-white/52">
               © 2026 Jasond Delos Santos. All rights reserved.
