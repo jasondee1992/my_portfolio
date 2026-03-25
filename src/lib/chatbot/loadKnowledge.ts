@@ -17,6 +17,8 @@ type ExperienceItem = {
   company: string;
   role: string;
   date_range: string;
+  start_date?: string | null;
+  end_date?: string | null;
   location: string;
   details: string[];
 };
@@ -96,6 +98,62 @@ function makeKeywords(parts: string[]) {
         .filter(Boolean)
     )
     .filter((item, index, array) => array.indexOf(item) === index);
+}
+
+function parseYearMonth(value?: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const match = value.match(/^(\d{4})-(\d{2})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, yearText, monthText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+
+  if (month < 1 || month > 12) {
+    return null;
+  }
+
+  return { year, month };
+}
+
+function formatDurationFromDates(startDate?: string | null, endDate?: string | null) {
+  const start = parseYearMonth(startDate);
+
+  if (!start) {
+    return "";
+  }
+
+  const now = new Date();
+  const end = parseYearMonth(endDate) ?? {
+    year: now.getUTCFullYear(),
+    month: now.getUTCMonth() + 1,
+  };
+
+  const totalMonths = (end.year - start.year) * 12 + (end.month - start.month);
+
+  if (totalMonths < 0) {
+    return "";
+  }
+
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  const parts: string[] = [];
+
+  if (years > 0) {
+    parts.push(`${years} year${years === 1 ? "" : "s"}`);
+  }
+
+  if (months > 0 || parts.length === 0) {
+    parts.push(`${months} month${months === 1 ? "" : "s"}`);
+  }
+
+  return parts.join(" ");
 }
 
 function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
@@ -188,6 +246,7 @@ function buildPersonaEntries(memory: PersonaMemoryFile): KnowledgeEntry[] {
 function buildExperienceEntries(items: ExperienceItem[]): KnowledgeEntry[] {
   return items.map((item, index) => {
     const detailsText = item.details.join(" ");
+    const durationText = formatDurationFromDates(item.start_date, item.end_date);
 
     return {
       id: `experience-${index + 1}`,
@@ -197,6 +256,7 @@ function buildExperienceEntries(items: ExperienceItem[]): KnowledgeEntry[] {
         `Company: ${item.company}`,
         `Role: ${item.role}`,
         `Date Range: ${item.date_range}`,
+        `Duration: ${durationText}`,
         `Location: ${item.location}`,
         `Details: ${detailsText}`,
       ].join("\n"),
@@ -204,6 +264,7 @@ function buildExperienceEntries(items: ExperienceItem[]): KnowledgeEntry[] {
         item.company,
         item.role,
         item.date_range,
+        durationText,
         item.location,
         detailsText,
       ]),

@@ -19,6 +19,10 @@ const PUBLIC_SUMMARY =
   PERSONA_MEMORY.basic_identity.short_summary ??
   "Python Full-Stack Developer focused on automation, internal tools, dashboards, and data-driven systems.";
 const PUBLIC_EMAIL = PERSONA_MEMORY.basic_identity.public_contact_email;
+const CURRENT_ROLE =
+  typeof PERSONA_MEMORY.work_background?.current_role === "string"
+    ? PERSONA_MEMORY.work_background.current_role
+    : "";
 const LINKEDIN_URL =
   typeof profile.contact.linkedin_url === "string" ? profile.contact.linkedin_url : "";
 
@@ -133,6 +137,17 @@ const SAFE_INTENT_RESPONSES = {
     taglish: PUBLIC_EMAIL
       ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
       : "You can connect with me through the public contact details shared on this portfolio.",
+  },
+  currentEmployer: {
+    english: CURRENT_ROLE
+      ? `I’m currently working as ${CURRENT_ROLE}.`
+      : "I’m currently working in a Python development role focused on process improvement and automation.",
+    filipino: CURRENT_ROLE
+      ? `Sa ngayon, ${CURRENT_ROLE} ako.`
+      : "Sa ngayon, nasa Python development role ako na focused sa process improvement at automation.",
+    taglish: CURRENT_ROLE
+      ? `I’m currently working as ${CURRENT_ROLE}.`
+      : "Sa ngayon, nasa Python development role ako focused on process improvement and automation.",
   },
 } as const;
 
@@ -398,6 +413,24 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
     ])
   ) {
     return { answer: SAFE_INTENT_RESPONSES.contact[languageStyle] };
+  }
+
+  if (
+    includesAny(normalizedText, [
+      " current employer ",
+      " current company ",
+      " current role ",
+      " who is your current employer ",
+      " who's your current employer ",
+      " what is your current company ",
+      " where do you work now ",
+      " where are you working now ",
+      " saan ka nagwowork ngayon ",
+      " saan ka nagtatrabaho ngayon ",
+      " current work mo ",
+    ])
+  ) {
+    return { answer: SAFE_INTENT_RESPONSES.currentEmployer[languageStyle] };
   }
 
   if (

@@ -7,6 +7,7 @@ import { buildSystemPrompt, buildUserPrompt, type ChatHistoryMessage } from "@/l
 import { sanitizeChatbotAnswer } from "@/lib/chatbot/response";
 import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
+import { getTenureResponse } from "@/lib/chatbot/tenure";
 import type { ResponseInput } from "openai/resources/responses/responses";
 
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
@@ -122,6 +123,15 @@ export async function POST(request: Request) {
     if (safeIntentResponse) {
       return NextResponse.json({
         answer: safeIntentResponse.answer,
+        sources: [],
+      });
+    }
+
+    const tenureResponse = getTenureResponse(message);
+
+    if (tenureResponse) {
+      return NextResponse.json({
+        answer: tenureResponse.answer,
         sources: [],
       });
     }

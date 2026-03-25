@@ -2,7 +2,9 @@
   {
     "company": "JPMorgan Chase & Co.",
     "role": "Associate - Process Improvement (Python Developer)",
-    "date_range": "Oct 2023 - Present",
+    "date_range": "Nov 2023 - Present",
+    "start_date": "2023-11",
+    "end_date": null,
     "location": "Philippines",
     "details": [
       "Built and maintained end-to-end Python applications to automate internal business processes, covering backend logic, APIs, dashboards, and production support.",
@@ -21,6 +23,8 @@
     "company": "Weserv System International Inc. (Fujitsu Philippines)",
     "role": "Application System Engineer",
     "date_range": "Jan 2021 - Nov 2023",
+    "start_date": "2021-01",
+    "end_date": "2023-11",
     "location": "Taguig, Metro Manila",
     "details": [
       "Developed a Location Mapping Application using React, Python (Django), and PostgreSQL in collaboration with US- and Japan-based teams.",
@@ -35,6 +39,8 @@
     "company": "Go Motion Production",
     "role": "IT & Broadcast Engineer",
     "date_range": "Sept 2016 - Jan 2021",
+    "start_date": "2016-09",
+    "end_date": "2021-01",
     "location": "Makati City, Metro Manila",
     "details": [
       "Provided end-to-end IT and infrastructure support for a production and broadcast environment supporting editors, colorists, and broadcast staff.",
@@ -52,6 +58,8 @@
     "company": "ThermaPrime Well Services Inc.",
     "role": "Encoder",
     "date_range": "July 2015 - Dec 2015",
+    "start_date": "2015-07",
+    "end_date": "2015-12",
     "location": "Pasig City, Metro Manila",
     "details": [
       "Developed Excel-based database systems with macros, queries, and pivot tables for contractor costing."
