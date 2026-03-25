@@ -1,10 +1,26 @@
 import profile from "@/data/knowledge/profile.json";
+import { getPersonaMemory } from "@/lib/chatbot/memory";
 
 type SafeIntentResult = {
   answer: string;
 };
 
 type LanguageStyle = "english" | "filipino" | "taglish";
+
+const PERSONA_MEMORY = getPersonaMemory();
+const SHORT_INTRO =
+  PERSONA_MEMORY.preferred_introduction.short_intro ??
+  "Hi, I’m Jasond. I’m a Python-focused developer who works a lot on automation, dashboards, and practical business tools.";
+const MEDIUM_INTRO =
+  PERSONA_MEMORY.preferred_introduction.medium_intro ?? SHORT_INTRO;
+const CASUAL_INTRO =
+  PERSONA_MEMORY.preferred_introduction.casual_intro ?? SHORT_INTRO;
+const PUBLIC_SUMMARY =
+  PERSONA_MEMORY.basic_identity.short_summary ??
+  "Python Full-Stack Developer focused on automation, internal tools, dashboards, and data-driven systems.";
+const PUBLIC_EMAIL = PERSONA_MEMORY.basic_identity.public_contact_email;
+const LINKEDIN_URL =
+  typeof profile.contact.linkedin_url === "string" ? profile.contact.linkedin_url : "";
 
 const SAFE_INTENT_RESPONSES = {
   greeting: {
@@ -69,7 +85,7 @@ const SAFE_INTENT_RESPONSES = {
   identity: {
     english: [
       "I’m Jasond Delos Santos — a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
-      "I’m Jasond Delos Santos. A lot of my work revolves around automation, reporting workflows, dashboards, and practical internal tools.",
+      `I’m Jasond Delos Santos. ${PUBLIC_SUMMARY}`,
       "I’m Jasond Delos Santos, and I mainly build practical solutions around automation, reporting, internal tools, and data-driven workflows.",
     ],
     filipino: [
@@ -84,18 +100,12 @@ const SAFE_INTENT_RESPONSES = {
     ],
   },
   introduction: {
-    english: [
-      "Sure — I’m a Python-focused developer who works a lot on automation, dashboards, reporting workflows, and internal tools. I like building practical solutions that help teams work more efficiently.",
-      "Sure — I’m Jasond Delos Santos. My work is centered on automation, dashboards, internal tools, and data-driven systems, especially solutions that improve workflows and operational efficiency.",
-    ],
+    english: [SHORT_INTRO, MEDIUM_INTRO],
     filipino: [
       "Sure — ako si Jasond Delos Santos. Python-focused developer ako, at madalas akong gumagawa ng automation, dashboards, reporting workflows, at internal tools.",
       "Ako si Jasond Delos Santos. Ang work ko ay naka-focus sa practical solutions tulad ng automation, dashboards, internal tools, at data-driven systems.",
     ],
-    taglish: [
-      "Sure — I’m a Python-focused developer who works a lot on automation, dashboards, reporting workflows, and internal tools. I like building practical solutions that help teams work more efficiently.",
-      "Ako si Jasond Delos Santos. My work is centered on automation, dashboards, internal tools, and data-driven systems that help improve workflows.",
-    ],
+    taglish: [SHORT_INTRO, CASUAL_INTRO],
   },
   help: {
     english:
@@ -113,6 +123,17 @@ const SAFE_INTENT_RESPONSES = {
     taglish:
       "You’re welcome. If you want, I can also share more about my projects, experience, or skills.",
   },
+  contact: {
+    english: PUBLIC_EMAIL
+      ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
+      : "You can connect with me through the public contact details shared on this portfolio.",
+    filipino: PUBLIC_EMAIL
+      ? `Pwede mo akong i-contact sa email na ${PUBLIC_EMAIL}. If you want, pwede rin tayong mag-connect sa LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
+      : "Pwede mo akong i-contact gamit ang public contact details na nasa portfolio na ito.",
+    taglish: PUBLIC_EMAIL
+      ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
+      : "You can connect with me through the public contact details shared on this portfolio.",
+  },
 } as const;
 
 const PROFILE_IDENTITY = {
@@ -127,8 +148,26 @@ const PROFILE_IDENTITY = {
 const DISPLAY_NAME = PROFILE_IDENTITY.assistantName;
 const FORMAL_NAME = PROFILE_IDENTITY.ownerName;
 
-function includesAny(text: string, patterns: readonly string[]) {
-  return patterns.some((pattern) => text.includes(pattern));
+function normalizeForIntentMatching(text: string) {
+  return ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim()} `;
+}
+
+function includesPattern(normalizedText: string, pattern: string) {
+  const normalizedPattern = pattern
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!normalizedPattern) {
+    return false;
+  }
+
+  return normalizedText.includes(` ${normalizedPattern} `);
+}
+
+function includesAny(normalizedText: string, patterns: readonly string[]) {
+  return patterns.some((pattern) => includesPattern(normalizedText, pattern));
 }
 
 function detectLanguageStyle(text: string): LanguageStyle {
@@ -183,6 +222,7 @@ function pickVariant(options: readonly string[], seed: string) {
 
 export function getSafeIntentResponse(message: string): SafeIntentResult | null {
   const text = message.toLowerCase().trim();
+  const normalizedText = normalizeForIntentMatching(text);
   const languageStyle = detectLanguageStyle(text);
 
   if (!text) {
@@ -190,7 +230,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "what's your name",
       "what is your name",
       "whats your name",
@@ -214,7 +254,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
     ])
   ) {
     if (
-      includesAny(text, [
+      includesAny(normalizedText, [
         "what's your name",
         "what is your name",
         "whats your name",
@@ -238,7 +278,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
     }
 
     if (
-      includesAny(text, [
+      includesAny(normalizedText, [
         "introduce yourself",
         "tell me about yourself",
         "pakilala ka nga",
@@ -272,7 +312,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "who are you",
       "sino ka",
     ])
@@ -281,7 +321,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "how are you",
       "how are you doing",
       "how's it going",
@@ -303,7 +343,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "hello",
       "hi",
       "hey",
@@ -325,7 +365,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "kaya mo ba mag tagalog",
       "marunong ka ba mag tagalog",
       "can you speak tagalog",
@@ -342,6 +382,26 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
 
   if (
     includesAny(text, [
+      "how to connect with you",
+      "how can i connect with you",
+      "how can i contact you",
+      "how do i contact you",
+      "how can i reach you",
+      "how do i reach you",
+      "contact you",
+      "reach you",
+      "connect with you",
+      "email you",
+      "your email",
+      "linkedin",
+      "contact details",
+    ])
+  ) {
+    return { answer: SAFE_INTENT_RESPONSES.contact[languageStyle] };
+  }
+
+  if (
+    includesAny(normalizedText, [
       "help",
       "tulong",
       "ano pwede itanong",
@@ -356,7 +416,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
+    includesAny(normalizedText, [
       "thank you",
       "thanks",
       "thank u",

@@ -1,0 +1,95 @@
+{
+  "blocked_topics": [
+    {
+      "name": "credentials_and_secrets",
+      "keywords": [
+        "password",
+        "passcode",
+        "api key",
+        "token",
+        "secret",
+        "private key",
+        "ssh key",
+        "login"
+      ]
+    },
+    {
+      "name": "financial_and_legal",
+      "keywords": [
+        "bank account",
+        "account number",
+        "credit card",
+        "debit card",
+        "salary",
+        "tax",
+        "passport",
+        "ssn",
+        "social security"
+      ]
+    },
+    {
+      "name": "private_contact_and_location",
+      "keywords": [
+        "home address",
+        "exact location",
+        "where do you live exactly",
+        "phone number",
+        "personal number"
+      ]
+    }
+  ],
+  "sensitive_categories": [
+    {
+      "name": "family_sensitive",
+      "keywords": [
+        "family details",
+        "spouse",
+        "children",
+        "parents",
+        "private family"
+      ]
+    },
+    {
+      "name": "employer_confidential",
+      "keywords": [
+        "confidential",
+        "nda",
+        "internal system",
+        "client secret",
+        "proprietary",
+        "private company data"
+      ]
+    },
+    {
+      "name": "security_related",
+      "keywords": [
+        "admin access",
+        "server credentials",
+        "database password",
+        "security process"
+      ]
+    }
+  ],
+  "private_fields": [
+    "passwords",
+    "api_keys",
+    "financial_details",
+    "private_family_information",
+    "exact_addresses",
+    "phone_numbers",
+    "government_ids",
+    "legal_documents",
+    "employer_confidential_information",
+    "security_related_information"
+  ],
+  "safe_answer": {
+    "restricted_topic": "I’d rather keep private or sensitive details private, but I can still share a safer public summary if that helps.",
+    "missing_information": "I don’t have enough approved information to answer that clearly yet, but I’d be happy to talk about my projects, skills, experience, and background.",
+    "prompt_or_memory_request": "I can’t share my internal instructions or raw memory files, but I can still answer using approved public information."
+  },
+  "refusal_rules": {
+    "be_polite": true,
+    "be_brief": true,
+    "offer_safe_alternative": true
+  }
+}

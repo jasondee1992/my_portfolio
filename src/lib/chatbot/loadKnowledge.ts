@@ -1,5 +1,6 @@
 import education from "@/data/knowledge/education.json";
 import experience from "@/data/knowledge/experience.json";
+import personaMemory from "@/data/knowledge/persona-memory.json";
 import profile from "@/data/knowledge/profile.json";
 import projectHighlights from "@/data/knowledge/project-highlights.json";
 import projects from "@/data/knowledge/projects.json";
@@ -47,6 +48,29 @@ type ProjectsFile = {
   other_works: ProjectItem[];
 };
 
+type PersonaFaqItem = {
+  question: string;
+  answer: string;
+};
+
+type PersonaMemoryFile = {
+  basic_identity: {
+    public_name?: string;
+    name: string;
+    preferred_name?: string;
+    role?: string;
+    location?: string;
+    short_summary?: string;
+    public_contact_email?: string;
+  };
+  preferred_introduction?: Record<string, string>;
+  work_background?: Record<string, unknown>;
+  skills_and_tech_stack?: Record<string, unknown>;
+  portfolio_info?: Record<string, unknown>;
+  safe_life_background?: Record<string, unknown>;
+  faq?: PersonaFaqItem[];
+};
+
 type ProfileFile = {
   assistant_name?: string;
   owner_name?: string;
@@ -55,6 +79,7 @@ type ProfileFile = {
   name: string;
   professional_summary: string;
   contact: Record<string, string>;
+  public_location?: string;
   core_skills: Record<string, string[]>;
 };
 
@@ -79,6 +104,7 @@ function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
     .join(" | ");
 
   const contactText = Object.entries(profileData.contact)
+    .filter(([key]) => ["email", "linkedin_label", "linkedin_url"].includes(key))
     .map(([key, value]) => `${key}: ${value}`)
     .join(" | ");
 
@@ -91,6 +117,7 @@ function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
       "A portfolio assistant that helps visitors explore JasonD's background, projects, skills, and experience."
     }`,
     `Name: ${profileData.name}`,
+    `Public Location: ${profileData.public_location ?? ""}`,
     `Professional Summary: ${profileData.professional_summary}`,
     `Contact: ${contactText}`,
     `Core Skills: ${skillsText}`,
@@ -108,11 +135,54 @@ function buildProfileEntry(profileData: ProfileFile): KnowledgeEntry {
       profileData.assistant_short_intro ??
         "A portfolio assistant that helps visitors explore JasonD's background, projects, skills, and experience.",
       profileData.name,
+      profileData.public_location ?? "",
       profileData.professional_summary,
       contactText,
       skillsText,
     ]),
   };
+}
+
+function buildPersonaEntries(memory: PersonaMemoryFile): KnowledgeEntry[] {
+  const introText = Object.values(memory.preferred_introduction ?? {})
+    .filter((value): value is string => typeof value === "string" && value.length > 0)
+    .join(" | ");
+
+  const identityContent = [
+    `Public Name: ${memory.basic_identity.public_name ?? memory.basic_identity.name}`,
+    `Preferred Name: ${memory.basic_identity.preferred_name ?? memory.basic_identity.name}`,
+    `Role: ${memory.basic_identity.role ?? ""}`,
+    `Public Location: ${memory.basic_identity.location ?? ""}`,
+    `Short Summary: ${memory.basic_identity.short_summary ?? ""}`,
+    `Public Email: ${memory.basic_identity.public_contact_email ?? ""}`,
+    `Introductions: ${introText}`,
+  ].join("\n");
+
+  const publicSummaryEntry: KnowledgeEntry = {
+    id: "persona-public-summary",
+    category: "persona",
+    title: memory.basic_identity.public_name ?? memory.basic_identity.name,
+    content: identityContent,
+    keywords: makeKeywords([
+      memory.basic_identity.public_name ?? memory.basic_identity.name,
+      memory.basic_identity.preferred_name ?? "",
+      memory.basic_identity.role ?? "",
+      memory.basic_identity.location ?? "",
+      memory.basic_identity.short_summary ?? "",
+      memory.basic_identity.public_contact_email ?? "",
+      introText,
+    ]),
+  };
+
+  const faqEntries = (memory.faq ?? []).map((item, index) => ({
+    id: `persona-faq-${index + 1}`,
+    category: "persona-faq",
+    title: item.question,
+    content: `Question: ${item.question}\nAnswer: ${item.answer}`,
+    keywords: makeKeywords([item.question, item.answer]),
+  }));
+
+  return [publicSummaryEntry, ...faqEntries];
 }
 
 function buildExperienceEntries(items: ExperienceItem[]): KnowledgeEntry[] {
@@ -203,6 +273,7 @@ function buildProjectEntries(items: ProjectItem[], category: string): KnowledgeE
 
 export function loadKnowledgeBase(): KnowledgeEntry[] {
   const profileEntry = buildProfileEntry(profile as ProfileFile);
+  const personaEntries = buildPersonaEntries(personaMemory as PersonaMemoryFile);
   const experienceEntries = buildExperienceEntries(experience as ExperienceItem[]);
   const educationEntries = buildEducationEntries(education as EducationItem[]);
   const highlightEntries = buildHighlightEntries(projectHighlights as HighlightItem[]);
@@ -215,6 +286,7 @@ export function loadKnowledgeBase(): KnowledgeEntry[] {
 
   return [
     profileEntry,
+    ...personaEntries,
     ...experienceEntries,
     ...educationEntries,
     ...highlightEntries,

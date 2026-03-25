@@ -2,15 +2,18 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { loadKnowledgeBase } from "@/lib/chatbot/loadKnowledge";
 import { retrieveKnowledge, type RetrievalMatch } from "@/lib/chatbot/retrieveKnowledge";
+import { checkRestrictedInput, getMissingInformationFallback } from "@/lib/chatbot/filters";
+import { buildSystemPrompt, buildUserPrompt, type ChatHistoryMessage } from "@/lib/chatbot/prompting";
+import { sanitizeChatbotAnswer } from "@/lib/chatbot/response";
 import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
-import {
-  CHATBOT_FALLBACK,
-  CHATBOT_SYSTEM_PROMPT,
-} from "@/lib/chatbot/systemPrompt";
+import type { ResponseInput } from "openai/resources/responses/responses";
 
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+const CHATBOT_FALLBACK = getMissingInformationFallback();
 const MIN_TOP_SCORE = 3;
+const MAX_HISTORY_MESSAGES = 8;
+const KNOWLEDGE_BASE = loadKnowledgeBase();
 
 function filterHighConfidenceMatches(matches: RetrievalMatch[]) {
   if (matches.length === 0) {
@@ -59,6 +62,8 @@ function isPortfolioQuestion(message: string) {
 function buildPortfolioFallbackContext(knowledgeBase: ReturnType<typeof loadKnowledgeBase>) {
   return knowledgeBase.filter(
     (entry) =>
+      entry.category === "persona" ||
+      entry.category === "persona-faq" ||
       entry.category === "profile" ||
       entry.category === "experience" ||
       entry.category === "education" ||
@@ -79,14 +84,37 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const body = (await request.json()) as { message?: string };
+    const body = (await request.json()) as {
+      message?: string;
+      history?: ChatHistoryMessage[];
+    };
     const message = body.message?.trim();
+    const history = Array.isArray(body.history)
+      ? body.history
+          .filter(
+            (item): item is ChatHistoryMessage =>
+              !!item &&
+              (item.role === "user" || item.role === "assistant") &&
+              typeof item.content === "string" &&
+              item.content.trim().length > 0
+          )
+          .slice(-MAX_HISTORY_MESSAGES)
+      : [];
 
     if (!message) {
       return NextResponse.json(
         { error: "Message is required." },
         { status: 400 }
       );
+    }
+
+    const restrictedResponse = checkRestrictedInput(message);
+
+    if (restrictedResponse) {
+      return NextResponse.json({
+        answer: restrictedResponse,
+        sources: [],
+      });
     }
 
     const safeIntentResponse = getSafeIntentResponse(message);
@@ -98,12 +126,11 @@ export async function POST(request: Request) {
       });
     }
 
-    const knowledgeBase = loadKnowledgeBase();
-    const retrievalMatches = retrieveKnowledge(knowledgeBase, message);
+    const retrievalMatches = retrieveKnowledge(KNOWLEDGE_BASE, message);
     let matches = filterHighConfidenceMatches(retrievalMatches);
 
     if (matches.length === 0 && isPortfolioQuestion(message)) {
-      matches = buildPortfolioFallbackContext(knowledgeBase).map((entry) => ({
+      matches = buildPortfolioFallbackContext(KNOWLEDGE_BASE).map((entry) => ({
         entry,
         score: 1,
         keywordHits: 0,
@@ -124,21 +151,35 @@ export async function POST(request: Request) {
       )
       .join("\n\n");
 
-    const response = await client.responses.create({
-      model: DEFAULT_MODEL,
-      input: [
-        {
-          role: "system",
-          content: CHATBOT_SYSTEM_PROMPT,
-        },
-        {
-          role: "user",
-          content: `Tone and style examples:\n${CHATBOT_CONVERSATION_EXAMPLES}\n\nPortfolio context:\n${context}\n\nQuestion: ${message}`,
-        },
-      ],
+    const systemPrompt = buildSystemPrompt();
+    const userPrompt = buildUserPrompt({
+      message,
+      portfolioContext: context,
+      conversationExamples: CHATBOT_CONVERSATION_EXAMPLES,
     });
 
-    const answer = response.output_text?.trim() || CHATBOT_FALLBACK;
+    const input: ResponseInput = [
+      {
+        role: "system",
+        content: systemPrompt,
+      },
+      ...history.map((item) => ({
+        role: item.role,
+        content: item.content,
+      })),
+      {
+        role: "user",
+        content: userPrompt,
+      },
+    ];
+
+    const response = await client.responses.create({
+      model: DEFAULT_MODEL,
+      input,
+      temperature: 0.7,
+    });
+
+    const answer = sanitizeChatbotAnswer(response.output_text) || CHATBOT_FALLBACK;
 
     return NextResponse.json({
       answer,

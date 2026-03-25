@@ -56,7 +56,13 @@ export default function ChatbotWidget() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: q }),
+        body: JSON.stringify({
+          message: q,
+          history: messages.slice(-8).map((message) => ({
+            role: message.role,
+            content: message.text,
+          })),
+        }),
       });
 
       if (!response.ok) {
