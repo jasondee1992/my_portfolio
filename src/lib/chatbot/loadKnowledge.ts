@@ -4,6 +4,7 @@ import personaMemory from "@/data/knowledge/persona-memory.json";
 import profile from "@/data/knowledge/profile.json";
 import projectHighlights from "@/data/knowledge/project-highlights.json";
 import projects from "@/data/knowledge/projects.json";
+import { aboutParagraphs } from "@/data/aboutContent";
 
 export type KnowledgeEntry = {
   id: string;
@@ -243,6 +244,94 @@ function buildPersonaEntries(memory: PersonaMemoryFile): KnowledgeEntry[] {
   return [publicSummaryEntry, ...faqEntries];
 }
 
+function buildAboutEntry(paragraphs: string[]): KnowledgeEntry {
+  const content = paragraphs.join("\n");
+
+  return {
+    id: "about-main",
+    category: "about",
+    title: "About Jasond",
+    content,
+    keywords: makeKeywords([
+      "about jasond",
+      "about me",
+      "background",
+      "work style",
+      "internal applications",
+      "automation",
+      "enterprise environments",
+      content,
+    ]),
+  };
+}
+
+function buildHomepageEntry(
+  profileData: ProfileFile,
+  highlights: HighlightItem[],
+  projectsFile: ProjectsFile
+): KnowledgeEntry {
+  const selectedWork = [...projectsFile.internal_projects, ...projectsFile.other_works]
+    .slice(0, 4)
+    .map((item) => item.title)
+    .join(", ");
+  const highlightsText = highlights
+    .map((item) => `${item.title}: ${item.summary}`)
+    .join(" | ");
+  const content = [
+    "Homepage Focus: Building useful software with clear outcomes.",
+    `Hero Summary: ${profileData.professional_summary}`,
+    "Current Focus: Automation, internal platforms, data workflows, and AI-enabled tooling.",
+    "Recent Impact: Automation systems development and data engineering automation in enterprise environments.",
+    `Selected Work: ${selectedWork}`,
+    `Homepage Highlights: ${highlightsText}`,
+  ].join("\n");
+
+  return {
+    id: "homepage-main",
+    category: "homepage",
+    title: "Homepage Overview",
+    content,
+    keywords: makeKeywords([
+      "homepage",
+      "home page",
+      "featured work",
+      "recent impact",
+      "current focus",
+      "building useful software with clear outcomes",
+      profileData.professional_summary,
+      selectedWork,
+      highlightsText,
+    ]),
+  };
+}
+
+function buildProjectsOverviewEntry(projectsFile: ProjectsFile): KnowledgeEntry {
+  const internalTitles = projectsFile.internal_projects.map((item) => item.title).join(", ");
+  const otherWorkTitles = projectsFile.other_works.map((item) => item.title).join(", ");
+  const content = [
+    "Projects Page Summary: A mix of internal enterprise systems and personal projects.",
+    `Internal Projects: ${internalTitles}`,
+    `Other Works: ${otherWorkTitles}`,
+    "Project Themes: automation, dashboards, reporting workflows, data-driven tools, process improvement, and practical business applications.",
+  ].join("\n");
+
+  return {
+    id: "projects-overview",
+    category: "projects-overview",
+    title: "Projects Overview",
+    content,
+    keywords: makeKeywords([
+      "projects page",
+      "projects overview",
+      "internal enterprise systems",
+      "personal projects",
+      internalTitles,
+      otherWorkTitles,
+      "automation dashboards reporting workflows data-driven tools process improvement business applications",
+    ]),
+  };
+}
+
 function buildExperienceEntries(items: ExperienceItem[]): KnowledgeEntry[] {
   return items.map((item, index) => {
     const detailsText = item.details.join(" ");
@@ -335,10 +424,17 @@ function buildProjectEntries(items: ProjectItem[], category: string): KnowledgeE
 export function loadKnowledgeBase(): KnowledgeEntry[] {
   const profileEntry = buildProfileEntry(profile as ProfileFile);
   const personaEntries = buildPersonaEntries(personaMemory as PersonaMemoryFile);
+  const aboutEntry = buildAboutEntry(aboutParagraphs);
   const experienceEntries = buildExperienceEntries(experience as ExperienceItem[]);
   const educationEntries = buildEducationEntries(education as EducationItem[]);
   const highlightEntries = buildHighlightEntries(projectHighlights as HighlightItem[]);
   const projectsFile = projects as ProjectsFile;
+  const homepageEntry = buildHomepageEntry(
+    profile as ProfileFile,
+    projectHighlights as HighlightItem[],
+    projectsFile
+  );
+  const projectsOverviewEntry = buildProjectsOverviewEntry(projectsFile);
   const internalProjectEntries = buildProjectEntries(
     projectsFile.internal_projects,
     "internal-project"
@@ -348,6 +444,9 @@ export function loadKnowledgeBase(): KnowledgeEntry[] {
   return [
     profileEntry,
     ...personaEntries,
+    homepageEntry,
+    aboutEntry,
+    projectsOverviewEntry,
     ...experienceEntries,
     ...educationEntries,
     ...highlightEntries,
