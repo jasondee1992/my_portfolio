@@ -7,6 +7,12 @@ const PORTFOLIO_SIGNALS = [
   "about yourself",
   "your background",
   "your experience",
+  "work experience",
+  "professional experience",
+  "professional background",
+  "career background",
+  "work history",
+  "career history",
   "your project",
   "your projects",
   "your skills",
@@ -25,6 +31,37 @@ const PORTFOLIO_SIGNALS = [
   "jpmorgan",
   "fujitsu",
   "weserv",
+].map((item) => item.toLowerCase());
+
+const PROFILE_TOPIC_SIGNALS = [
+  "work experience",
+  "professional experience",
+  "experience",
+  "background",
+  "professional background",
+  "career background",
+  "work history",
+  "career history",
+  "projects",
+  "project",
+  "skills",
+  "skill",
+  "tech stack",
+  "roles",
+  "roles have you had",
+].map((item) => item.toLowerCase());
+
+const PROFILE_FOLLOW_UP_SIGNALS = [
+  "how about",
+  "what about",
+  "tell me about",
+  "can you share",
+  "what is your",
+  "what s your",
+  "what kind of",
+  "pwede mo bang ikwento",
+  "ano",
+  "anong",
 ].map((item) => item.toLowerCase());
 
 const PERSONAL_SIGNALS = [
@@ -167,6 +204,12 @@ function detectLanguageStyle(message: string): LanguageStyle {
   return "english";
 }
 
+function isProfileTopicFollowUp(message: string) {
+  const lowered = normalizeText(message);
+
+  return includesAny(lowered, PROFILE_FOLLOW_UP_SIGNALS) && includesAny(lowered, PROFILE_TOPIC_SIGNALS);
+}
+
 function pickVariant(options: string[], seed: string) {
   const sum = Array.from(seed).reduce((total, char) => total + char.charCodeAt(0), 0);
   return options[sum % options.length];
@@ -224,6 +267,10 @@ export function analyzeQuestionScope(message: string): {
   const hasPersonalReference = includesAny(lowered, PERSONAL_REFERENCE_SIGNALS);
 
   if (includesAny(lowered, PORTFOLIO_SIGNALS)) {
+    return { scope: "portfolio", coreTopic, languageStyle };
+  }
+
+  if (isProfileTopicFollowUp(lowered)) {
     return { scope: "portfolio", coreTopic, languageStyle };
   }
 
