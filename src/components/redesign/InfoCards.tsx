@@ -63,39 +63,51 @@ const highlightAccents = [
   },
 ] as const;
 
+function splitSummaryParagraphs(text: string) {
+  return text
+    .split(/(?<=\.)\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 function ExpandableHighlightDescription({
-  leadSentence,
-  details,
+  text,
+  platform,
 }: {
-  leadSentence: string;
-  details: string;
+  text: string;
+  platform?: string;
 }) {
-  if (!details) {
-    return (
-      <p className="type-card-body mt-5 leading-7 text-white/82">
-        {leadSentence.endsWith(".") ? leadSentence : `${leadSentence}.`}
-      </p>
-    );
-  }
+  const paragraphs = splitSummaryParagraphs(text);
 
   return (
-    <details className="group mt-5">
+    <details className="group mt-3">
       <summary className="list-none [&::-webkit-details-marker]:hidden">
-        <p className="type-card-body leading-7 text-white/82">
-          {leadSentence.endsWith(".") ? leadSentence : `${leadSentence}.`}
-        </p>
-        <span className="mt-3 inline-flex text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:hidden">
-          See more...
-        </span>
-        <span className="mt-3 hidden text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:inline-flex">
-          See less
-        </span>
+        <div className="flex items-center justify-between gap-3">
+          {platform ? (
+            <span className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-white/48 md:text-[10px]">
+              {platform}
+            </span>
+          ) : (
+            <span />
+          )}
+
+          <span className="inline-flex text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:hidden">
+            See more...
+          </span>
+          <span className="hidden text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:inline-flex">
+            See less
+          </span>
+        </div>
       </summary>
 
       <div className="mt-4 rounded-[22px] border border-white/8 bg-black/18 p-4">
-        <p className="type-card-body border-l border-white/10 pl-4 leading-7 text-white/56">
-          {details}
-        </p>
+        <div className="space-y-3 border-l border-white/10 pl-4">
+          {paragraphs.map((paragraph) => (
+            <p key={paragraph} className="type-card-body leading-7 text-white/56">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
     </details>
   );
@@ -139,8 +151,6 @@ export default function InfoCards() {
           <div className="mt-6 space-y-4">
             {highlights.map((item, index) => {
               const accent = highlightAccents[index % highlightAccents.length];
-              const [leadSentence, ...restSentences] = item.summary.split(". ");
-              const details = restSentences.join(". ").trim();
               const itemKey = `${item.title}-${item.year ?? ""}`;
 
               return (
@@ -167,13 +177,6 @@ export default function InfoCards() {
                       <p className="type-card-title font-normal text-white/92">
                         {item.title}
                       </p>
-                      {item.platform ? (
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-white/48 md:text-[10px]">
-                            {item.platform}
-                          </span>
-                        </div>
-                      ) : null}
                     </div>
 
                     {item.year && (
@@ -184,8 +187,8 @@ export default function InfoCards() {
                   </div>
 
                   <ExpandableHighlightDescription
-                    leadSentence={leadSentence}
-                    details={details}
+                    text={item.summary}
+                    platform={item.platform}
                   />
                 </article>
               );
