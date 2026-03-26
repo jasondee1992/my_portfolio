@@ -1,5 +1,29 @@
 type QuestionScopeType = "portfolio" | "personal" | "tech" | "outside";
 type LanguageStyle = "english" | "filipino" | "taglish";
+type ProfileQuestionCategory =
+  | "self_intro"
+  | "current_role"
+  | "work_experience"
+  | "professional_background"
+  | "strongest_skills"
+  | "strengths_as_developer"
+  | "tech_stack"
+  | "projects_summary"
+  | "best_project"
+  | "proudest_project"
+  | "passions"
+  | "hobbies_or_free_time"
+  | "goals_in_five_years"
+  | "ai_interest"
+  | "work_availability"
+  | "freelance_availability"
+  | "contact_info";
+
+type ProfileQuestionRoute = {
+  category: ProfileQuestionCategory;
+  patterns: string[];
+  preferredKnowledgeCategories: string[];
+};
 
 const PORTFOLIO_SIGNALS = [
   "portfolio",
@@ -63,6 +87,247 @@ const PROFILE_FOLLOW_UP_SIGNALS = [
   "ano",
   "anong",
 ].map((item) => item.toLowerCase());
+
+const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
+  {
+    category: "self_intro",
+    patterns: [
+      "tell me about yourself",
+      "can you tell me about yourself",
+      "tell me something about yourself",
+      "introduce yourself",
+      "self intro",
+      "pakilala ka",
+      "pakilala ka nga",
+    ],
+    preferredKnowledgeCategories: ["homepage", "about", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "current_role",
+    patterns: [
+      "current role",
+      "current position",
+      "what do you do now",
+      "what is your current role",
+      "what is your current job",
+      "ano current role mo",
+      "anong role mo ngayon",
+    ],
+    preferredKnowledgeCategories: ["profile", "experience", "about", "persona", "persona-faq"],
+  },
+  {
+    category: "work_experience",
+    patterns: [
+      "work experience",
+      "professional experience",
+      "what is your work experience",
+      "tell me about your work experience",
+      "can you share your work experience",
+      "what kind of experience do you have",
+      "what is your professional experience",
+      "ano work experience mo",
+      "ano experience mo",
+      "experience mo",
+    ],
+    preferredKnowledgeCategories: ["experience", "about", "homepage", "profile", "persona-faq"],
+  },
+  {
+    category: "professional_background",
+    patterns: [
+      "professional background",
+      "career background",
+      "work history",
+      "career history",
+      "what is your background",
+      "what's your professional background",
+      "what's your career background",
+      "anong background mo sa work",
+      "what roles have you had",
+      "what is your professional background",
+    ],
+    preferredKnowledgeCategories: ["about", "experience", "homepage", "profile", "persona-faq"],
+  },
+  {
+    category: "strongest_skills",
+    patterns: [
+      "strongest skills",
+      "what are your strongest skills",
+      "top skills",
+      "main skills",
+      "best skills",
+      "strong skills",
+      "ano strongest skills mo",
+      "how about your skills",
+      "what about your skills",
+    ],
+    preferredKnowledgeCategories: ["homepage", "about", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "strengths_as_developer",
+    patterns: [
+      "strengths as a developer",
+      "what are your strengths as a developer",
+      "developer strengths",
+      "what makes you strong as a developer",
+      "strength mo as developer",
+    ],
+    preferredKnowledgeCategories: ["about", "homepage", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "tech_stack",
+    patterns: [
+      "tech stack",
+      "what is your tech stack",
+      "what technologies do you use",
+      "what tools do you use",
+      "what is your stack",
+      "anong tech stack mo",
+      "ano stack mo",
+    ],
+    preferredKnowledgeCategories: [
+      "homepage",
+      "about",
+      "projects-overview",
+      "profile",
+      "internal-project",
+      "other-work",
+      "persona-faq",
+    ],
+  },
+  {
+    category: "projects_summary",
+    patterns: [
+      "what projects have you built",
+      "tell me about your projects",
+      "what projects do you have",
+      "project summary",
+      "ano projects mo",
+      "how about your projects",
+      "what about your projects",
+    ],
+    preferredKnowledgeCategories: [
+      "homepage",
+      "projects-overview",
+      "project-highlight",
+      "internal-project",
+      "other-work",
+    ],
+  },
+  {
+    category: "best_project",
+    patterns: [
+      "best project",
+      "what is your best project",
+      "which project is your best",
+      "best project mo",
+    ],
+    preferredKnowledgeCategories: [
+      "project-highlight",
+      "internal-project",
+      "other-work",
+      "projects-overview",
+    ],
+  },
+  {
+    category: "proudest_project",
+    patterns: [
+      "proudest project",
+      "what project are you most proud of",
+      "what project are you proudest of",
+      "most proud project",
+      "project na pinaka proud ka",
+    ],
+    preferredKnowledgeCategories: [
+      "project-highlight",
+      "internal-project",
+      "other-work",
+      "projects-overview",
+    ],
+  },
+  {
+    category: "passions",
+    patterns: [
+      "what are you passionate about",
+      "what are your passions",
+      "passions",
+      "ano passion mo",
+      "what drives you",
+    ],
+    preferredKnowledgeCategories: ["about", "persona", "persona-faq", "homepage"],
+  },
+  {
+    category: "hobbies_or_free_time",
+    patterns: [
+      "free time",
+      "hobbies",
+      "what do you do in your free time",
+      "interests outside work",
+      "what do you do outside work",
+      "ano hobby mo",
+      "anong ginagawa mo sa free time",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "about"],
+  },
+  {
+    category: "goals_in_five_years",
+    patterns: [
+      "goals in five years",
+      "five year goals",
+      "where do you see yourself in five years",
+      "what are your goals in five years",
+      "goals in the next five years",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "about"],
+  },
+  {
+    category: "ai_interest",
+    patterns: [
+      "interest in ai",
+      "ai interest",
+      "why are you interested in ai",
+      "what is your interest in ai",
+      "interested ka ba sa ai",
+      "how about ai",
+    ],
+    preferredKnowledgeCategories: ["homepage", "about", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "work_availability",
+    patterns: [
+      "open to new opportunities",
+      "open to work",
+      "available for work",
+      "looking for opportunities",
+      "are you open to new opportunities",
+      "are you open to work",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "profile"],
+  },
+  {
+    category: "freelance_availability",
+    patterns: [
+      "open to freelance",
+      "open to project based work",
+      "freelance availability",
+      "are you available for freelance",
+      "open ka ba sa freelance",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "profile"],
+  },
+  {
+    category: "contact_info",
+    patterns: [
+      "contact info",
+      "contact details",
+      "how can i contact you",
+      "what is your email",
+      "how do i reach you",
+      "paano kita macocontact",
+      "ano email mo",
+    ],
+    preferredKnowledgeCategories: ["profile", "persona", "persona-faq"],
+  },
+];
 
 const PERSONAL_SIGNALS = [
   "free time",
@@ -210,6 +475,12 @@ function isProfileTopicFollowUp(message: string) {
   return includesAny(lowered, PROFILE_FOLLOW_UP_SIGNALS) && includesAny(lowered, PROFILE_TOPIC_SIGNALS);
 }
 
+function matchProfileQuestionRoute(message: string) {
+  const lowered = normalizeText(message);
+
+  return PROFILE_QUESTION_MAP.find((route) => includesAny(lowered, route.patterns)) ?? null;
+}
+
 function pickVariant(options: string[], seed: string) {
   const sum = Array.from(seed).reduce((total, char) => total + char.charCodeAt(0), 0);
   return options[sum % options.length];
@@ -260,18 +531,36 @@ export function analyzeQuestionScope(message: string): {
   scope: QuestionScopeType;
   coreTopic: string;
   languageStyle: LanguageStyle;
+  profileCategory?: ProfileQuestionCategory;
+  preferredKnowledgeCategories?: string[];
 } {
   const lowered = normalizeText(message);
   const coreTopic = extractCoreTopic(message);
   const languageStyle = detectLanguageStyle(message);
   const hasPersonalReference = includesAny(lowered, PERSONAL_REFERENCE_SIGNALS);
+  const matchedProfileRoute = matchProfileQuestionRoute(lowered);
+
+  if (matchedProfileRoute) {
+    return {
+      scope: "portfolio",
+      coreTopic,
+      languageStyle,
+      profileCategory: matchedProfileRoute.category,
+      preferredKnowledgeCategories: matchedProfileRoute.preferredKnowledgeCategories,
+    };
+  }
 
   if (includesAny(lowered, PORTFOLIO_SIGNALS)) {
     return { scope: "portfolio", coreTopic, languageStyle };
   }
 
   if (isProfileTopicFollowUp(lowered)) {
-    return { scope: "portfolio", coreTopic, languageStyle };
+    return {
+      scope: "portfolio",
+      coreTopic,
+      languageStyle,
+      preferredKnowledgeCategories: ["homepage", "about", "projects-overview", "profile", "persona", "persona-faq"],
+    };
   }
 
   if (hasPersonalReference && includesAny(lowered, PERSONAL_SIGNALS)) {

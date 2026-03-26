@@ -106,16 +106,34 @@ function filterHighConfidenceMatches(matches: RetrievalMatch[]) {
   return matches.filter((match) => match.score >= 2);
 }
 
-function buildPortfolioFallbackContext(knowledgeBase: ReturnType<typeof loadKnowledgeBase>) {
-  return knowledgeBase.filter(
-    (entry) =>
-      entry.category === "persona" ||
-      entry.category === "persona-faq" ||
-      entry.category === "profile" ||
-      entry.category === "experience" ||
-      entry.category === "education" ||
-      entry.category === "project-highlight"
-  );
+function buildPortfolioFallbackContext(
+  knowledgeBase: ReturnType<typeof loadKnowledgeBase>,
+  preferredCategories: string[] = []
+) {
+  const defaultCategories = [
+    "homepage",
+    "about",
+    "projects-overview",
+    "profile",
+    "persona",
+    "persona-faq",
+    "experience",
+    "education",
+    "project-highlight",
+    "internal-project",
+    "other-work",
+  ];
+  const orderedCategories = [...preferredCategories, ...defaultCategories];
+  const seen = new Set<string>();
+
+  return orderedCategories.flatMap((category) => {
+    if (seen.has(category)) {
+      return [];
+    }
+
+    seen.add(category);
+    return knowledgeBase.filter((entry) => entry.category === category);
+  });
 }
 
 export async function POST(request: Request) {
@@ -229,7 +247,10 @@ export async function POST(request: Request) {
     let matches = filterHighConfidenceMatches(retrievalMatches);
 
     if (matches.length === 0 && questionScope.scope === "portfolio") {
-      matches = buildPortfolioFallbackContext(KNOWLEDGE_BASE).map((entry) => ({
+      matches = buildPortfolioFallbackContext(
+        KNOWLEDGE_BASE,
+        questionScope.preferredKnowledgeCategories ?? []
+      ).map((entry) => ({
         entry,
         score: 1,
         keywordHits: 0,
