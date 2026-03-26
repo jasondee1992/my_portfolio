@@ -429,6 +429,7 @@ export default function ChatbotWidget() {
                 style={{
                   flex: 1,
                   padding: "12px 14px",
+                  fontSize: 13,
                   borderRadius: 14,
                   border: "1px solid rgba(255,255,255,0.10)",
                   background: "rgba(255,255,255,0.04)",

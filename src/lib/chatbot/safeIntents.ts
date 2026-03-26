@@ -127,6 +127,66 @@ const SAFE_INTENT_RESPONSES = {
     taglish:
       "You’re welcome. If you want, I can also share more about my projects, experience, or skills.",
   },
+  laughter: {
+    english: [
+      "Haha, appreciate that.",
+      "Haha, glad that made you smile.",
+      "Haha, ayos yan.",
+      "Haha, buti napatawa kita.",
+    ],
+    filipino: [
+      "Haha, salamat.",
+      "Haha, natuwa ako doon.",
+      "Haha, ayos yan.",
+      "Haha, buti napatawa kita.",
+    ],
+    taglish: [
+      "Haha, salamat. Glad you liked it.",
+      "Haha, appreciate it.",
+      "Haha, ayos yan.",
+      "Haha, natuwa ako doon.",
+    ],
+  },
+  acknowledgment: {
+    english: [
+      "Alright.",
+      "Sounds good.",
+      "Got it.",
+      "Noted.",
+    ],
+    filipino: [
+      "Sige.",
+      "Ayos.",
+      "Noted.",
+      "Okay.",
+    ],
+    taglish: [
+      "Okay, noted.",
+      "Sige, got it.",
+      "Ayos, noted.",
+      "Sounds good.",
+    ],
+  },
+  positiveReaction: {
+    english: [
+      "Glad you liked it.",
+      "Appreciate that.",
+      "Nice, glad that landed well.",
+      "Good to hear that.",
+    ],
+    filipino: [
+      "Salamat, natuwa ako na nagustuhan mo.",
+      "Ayos, salamat.",
+      "Nice, glad na okay sayo.",
+      "Appreciate ko yan.",
+    ],
+    taglish: [
+      "Salamat, glad you liked it.",
+      "Nice, appreciate that.",
+      "Haha, ang saya marinig niyan.",
+      "Good to hear that, salamat.",
+    ],
+  },
   contact: {
     english: PUBLIC_EMAIL
       ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
@@ -239,9 +299,65 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   const text = message.toLowerCase().trim();
   const normalizedText = normalizeForIntentMatching(text);
   const languageStyle = detectLanguageStyle(text);
+  const emojiOnly = /^[\p{Emoji}\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+$/u.test(
+    message.trim()
+  );
 
   if (!text) {
     return null;
+  }
+
+  if (
+    emojiOnly ||
+    includesAny(normalizedText, [
+      "haha",
+      "hahaha",
+      "hehe",
+      "hehehe",
+      "lol",
+      "lmao",
+      "rofl",
+    ])
+  ) {
+    return {
+      answer: pickVariant(SAFE_INTENT_RESPONSES.laughter[languageStyle], text),
+    };
+  }
+
+  if (
+    includesAny(normalizedText, [
+      "okay",
+      "ok",
+      "ah okay",
+      "okay noted",
+      "noted",
+      "sige",
+      "copy",
+      "got it",
+      "alright",
+      "ayos",
+    ])
+  ) {
+    return {
+      answer: pickVariant(SAFE_INTENT_RESPONSES.acknowledgment[languageStyle], text),
+    };
+  }
+
+  if (
+    includesAny(normalizedText, [
+      "nice",
+      "wow",
+      "grabe",
+      "omg",
+      "sheesh",
+      "ang galing",
+      "galing",
+      "cool",
+    ])
+  ) {
+    return {
+      answer: pickVariant(SAFE_INTENT_RESPONSES.positiveReaction[languageStyle], text),
+    };
   }
 
   if (
