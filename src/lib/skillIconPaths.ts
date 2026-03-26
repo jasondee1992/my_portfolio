@@ -1,0 +1,48 @@
+export const SKILL_ICON_MAP = {
+  AI: "/icons/skills/ai.svg",
+  Automation: "/icons/skills/automation.svg",
+  AWS: "/icons/skills/AWS.png",
+  CSS: "/icons/skills/css3.png",
+  ETL: "/icons/skills/data_engineer.png",
+  Django: "/icons/skills/Django.png",
+  Docker: "/icons/skills/Docker.png",
+  FastAPI: "/icons/skills/FastAPI.png",
+  Git: "/icons/skills/Git.png",
+  GitHub: "/icons/skills/github.svg",
+  HTML: "/icons/skills/HTML5.png",
+  JavaScript: "/icons/skills/JavaScript.png",
+  Linux: "/icons/skills/linux.svg",
+  NoSQL: "/icons/skills/NoSQL.png",
+  Pandas: "/icons/skills/Pandas.png",
+  Dash: "/icons/skills/plotly_dash.png",
+  Plotly: "/icons/skills/plotly.png",
+  PostgreSQL: "/icons/skills/PostgreSQL.png",
+  Postman: "/icons/skills/postman.svg",
+  "Python Dev": "/icons/skills/python_developer.png",
+  Python: "/icons/skills/python.png",
+  RAG: "/icons/skills/rag.svg",
+  React: "/icons/skills/react.png",
+  Snowflake: "/icons/skills/snowflakes.png",
+  SQL: "/icons/skills/sql.svg",
+  SQLite: "/icons/skills/SQLite.png",
+  "Tailwind CSS": "/icons/skills/tailwind.svg",
+  TypeScript: "/icons/skills/TypeScript.png",
+  Vercel: "/icons/skills/vercel.svg",
+  "Next.js": "/icons/skills/react.png",
+  "Prompt Engineering": "/icons/skills/ai.svg",
+  "Vector Search": "/icons/skills/rag.svg",
+  FAISS: "/icons/skills/ai.svg",
+  NumPy: "/icons/skills/Pandas.png",
+  "Web Scraping": "/icons/skills/automation.svg",
+  "REST API": "/icons/skills/FastAPI.png",
+  "AI Agent": "/icons/skills/ai.svg",
+  Analytics: "/icons/skills/Pandas.png",
+  Snowflakes: "/icons/skills/snowflakes.png",
+  "Plotly Dash": "/icons/skills/plotly_dash.png",
+} as const;
+
+export type SkillIconName = keyof typeof SKILL_ICON_MAP;
+
+export function getSkillIconPath(name: string) {
+  return SKILL_ICON_MAP[name as SkillIconName] ?? "/icons/skills/automation.svg";
+}
