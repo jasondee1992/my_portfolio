@@ -133,9 +133,11 @@
       "project_type": "Personal Project",
       "tech_stack": [
         "Next.js",
-        "AI Agent"
+        "TypeScript",
+        "Tailwind CSS",
+        "OpenAI API"
       ],
-      "description": "Built a personal portfolio website to showcase projects, skills, and development work in a modern web interface. The portfolio also includes AI-agent-related functionality to support a more interactive and personalized user experience."
+      "description": "Built a personal portfolio website with a premium dark UI to showcase projects, skills, career background, and development work in a polished modern interface. The site was developed using Next.js and TypeScript, with content structured for maintainability and presentation quality. It also includes an OpenAI-powered chatbot that answers portfolio-related questions in a more interactive and personalized way, reflecting a practical blend of frontend development and AI-assisted user experience design."
     }
   ]
 }

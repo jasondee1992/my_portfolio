@@ -170,6 +170,7 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
         </div>
 
         <div
+          className="chat-scroll-area"
           style={{
             flex: 1,
             padding: 16,
@@ -431,6 +432,42 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
 
         .chat-input-field {
           font-size: 13px;
+        }
+
+        .chat-scroll-area {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(143, 184, 255, 0.42) rgba(255, 255, 255, 0.04);
+        }
+
+        .chat-scroll-area::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        .chat-scroll-area::-webkit-scrollbar-track {
+          margin: 10px 0;
+          border-radius: 999px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.02),
+            rgba(255, 255, 255, 0.05)
+          );
+        }
+
+        .chat-scroll-area::-webkit-scrollbar-thumb {
+          border: 2px solid transparent;
+          border-radius: 999px;
+          background:
+            linear-gradient(180deg, rgba(184, 208, 255, 0.9), rgba(93, 122, 196, 0.92))
+            padding-box;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 10px rgba(143, 184, 255, 0.18);
+        }
+
+        .chat-scroll-area::-webkit-scrollbar-thumb:hover {
+          background:
+            linear-gradient(180deg, rgba(214, 228, 255, 0.96), rgba(118, 149, 226, 0.96))
+            padding-box;
         }
 
         @media (max-width: 768px) {

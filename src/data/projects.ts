@@ -97,8 +97,8 @@ export const otherWorks: ProjectItem[] = [
     role: "Developer / Process Automation Engineer",
     type: "Personal Project",
     description:
-      "Built a personal portfolio website to showcase projects, skills, and development work in a modern web interface. The portfolio also includes AI-agent-related functionality to support a more interactive and personalized user experience.",
-    tags: ["Next.js", "AI Agent"],
+      "Built a personal portfolio website with a premium dark UI to showcase my projects, skills, career background, and development work in a polished modern interface. I developed the site using Next.js and TypeScript, structured the content for maintainability, and added an OpenAI-powered chatbot that answers portfolio-related questions in a more interactive and personalized way. The project also reflects my focus on combining clean frontend presentation with practical AI-assisted user experiences.",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "OpenAI API"],
   },
 ];
 
