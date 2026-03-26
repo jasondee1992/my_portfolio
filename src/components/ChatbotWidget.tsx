@@ -418,6 +418,7 @@ export default function ChatbotWidget() {
           >
             <div style={{ display: "flex", gap: 8 }}>
               <input
+                className="chat-input-field"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -429,7 +430,6 @@ export default function ChatbotWidget() {
                 style={{
                   flex: 1,
                   padding: "12px 14px",
-                  fontSize: 13,
                   borderRadius: 14,
                   border: "1px solid rgba(255,255,255,0.10)",
                   background: "rgba(255,255,255,0.04)",
@@ -479,6 +479,16 @@ export default function ChatbotWidget() {
           40% {
             transform: translateY(-3px);
             opacity: 1;
+          }
+        }
+
+        .chat-input-field {
+          font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+          .chat-input-field {
+            font-size: 16px;
           }
         }
       `}</style>
