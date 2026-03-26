@@ -1,9 +1,7 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 import { aboutParagraphs } from "@/data/aboutContent";
 import projectHighlights from "@/data/knowledge/project-highlights.json";
+import { SKILL_ICON_MAP } from "@/lib/skillIconPaths";
 
 type ProjectHighlight = {
   title: string;
@@ -13,38 +11,38 @@ type ProjectHighlight = {
 };
 
 const techStackRow1 = [
-  { name: "AWS", icon: "/icons/skills/AWS.svg" },
-  { name: "Css3", icon: "/icons/skills/css3.svg" },
-  { name: "Django", icon: "/icons/skills/Django.svg" },
-  { name: "Docker", icon: "/icons/skills/Docker.svg" },
-  { name: "FastAPI", icon: "/icons/skills/FastAPI.svg" },
-  { name: "Git", icon: "/icons/skills/Git.svg" },
-  { name: "React", icon: "/icons/skills/react.svg" },
-  { name: "Snowflakes", icon: "/icons/skills/snowflakes.svg" },
-  { name: "SQLite", icon: "/icons/skills/SQLite.svg" },
-  { name: "TypeScript", icon: "/icons/skills/TypeScript.svg" },
+  { name: "AWS", icon: SKILL_ICON_MAP.AWS },
+  { name: "Css3", icon: SKILL_ICON_MAP.CSS },
+  { name: "Django", icon: SKILL_ICON_MAP.Django },
+  { name: "Docker", icon: SKILL_ICON_MAP.Docker },
+  { name: "FastAPI", icon: SKILL_ICON_MAP.FastAPI },
+  { name: "Git", icon: SKILL_ICON_MAP.Git },
+  { name: "React", icon: SKILL_ICON_MAP.React },
+  { name: "Snowflakes", icon: SKILL_ICON_MAP.Snowflakes },
+  { name: "SQLite", icon: SKILL_ICON_MAP.SQLite },
+  { name: "TypeScript", icon: SKILL_ICON_MAP.TypeScript },
 ];
 
 const techStackRow2 = [
-  { name: "HTML5", icon: "/icons/skills/HTML5.svg" },
-  { name: "JavaScript", icon: "/icons/skills/JavaScript.svg" },
-  { name: "NoSQL", icon: "/icons/skills/NoSQL.svg" },
-  { name: "Pandas", icon: "/icons/skills/Pandas.svg" },
-  { name: "plotly", icon: "/icons/skills/plotly.svg" },
-  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.svg" },
-  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.svg" },
-  { name: "Python", icon: "/icons/skills/python.svg" },
+  { name: "HTML5", icon: SKILL_ICON_MAP.HTML },
+  { name: "JavaScript", icon: SKILL_ICON_MAP.JavaScript },
+  { name: "NoSQL", icon: SKILL_ICON_MAP.NoSQL },
+  { name: "Pandas", icon: SKILL_ICON_MAP.Pandas },
+  { name: "plotly", icon: SKILL_ICON_MAP.Plotly },
+  { name: "plotly_dash", icon: SKILL_ICON_MAP["Plotly Dash"] },
+  { name: "PostgreSQL", icon: SKILL_ICON_MAP.PostgreSQL },
+  { name: "Python", icon: SKILL_ICON_MAP.Python },
 ];
 
 const techStackRow3 = [
-  { name: "HTML5", icon: "/icons/skills/HTML5.svg" },
-  { name: "JavaScript", icon: "/icons/skills/JavaScript.svg" },
-  { name: "NoSQL", icon: "/icons/skills/NoSQL.svg" },
-  { name: "Pandas", icon: "/icons/skills/Pandas.svg" },
-  { name: "plotly", icon: "/icons/skills/plotly.svg" },
-  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.svg" },
-  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.svg" },
-  { name: "Python", icon: "/icons/skills/python.svg" },
+  { name: "HTML5", icon: SKILL_ICON_MAP.HTML },
+  { name: "JavaScript", icon: SKILL_ICON_MAP.JavaScript },
+  { name: "NoSQL", icon: SKILL_ICON_MAP.NoSQL },
+  { name: "Pandas", icon: SKILL_ICON_MAP.Pandas },
+  { name: "plotly", icon: SKILL_ICON_MAP.Plotly },
+  { name: "plotly_dash", icon: SKILL_ICON_MAP["Plotly Dash"] },
+  { name: "PostgreSQL", icon: SKILL_ICON_MAP.PostgreSQL },
+  { name: "Python", icon: SKILL_ICON_MAP.Python },
 ];
 
 const highlightAccents = [
@@ -68,34 +66,43 @@ const highlightAccents = [
 function ExpandableHighlightDescription({
   leadSentence,
   details,
-  expanded,
 }: {
   leadSentence: string;
   details: string;
-  expanded: boolean;
 }) {
-  if (!expanded) {
-    return null;
+  if (!details) {
+    return (
+      <p className="type-card-body mt-5 leading-7 text-white/82">
+        {leadSentence.endsWith(".") ? leadSentence : `${leadSentence}.`}
+      </p>
+    );
   }
 
   return (
-    <div className="mt-5 rounded-[22px] border border-white/8 bg-black/18 p-4">
-      <p className="type-card-body leading-7 text-white/82">
-        {leadSentence.endsWith(".") ? leadSentence : `${leadSentence}.`}
-      </p>
+    <details className="group mt-5">
+      <summary className="list-none [&::-webkit-details-marker]:hidden">
+        <p className="type-card-body leading-7 text-white/82">
+          {leadSentence.endsWith(".") ? leadSentence : `${leadSentence}.`}
+        </p>
+        <span className="mt-3 inline-flex text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:hidden">
+          See more...
+        </span>
+        <span className="mt-3 hidden text-[0.72rem] font-normal text-white/58 transition hover:text-white/82 group-open:inline-flex">
+          See less
+        </span>
+      </summary>
 
-      {details ? (
-        <p className="type-card-body mt-3 border-l border-white/10 pl-4 leading-7 text-white/56">
+      <div className="mt-4 rounded-[22px] border border-white/8 bg-black/18 p-4">
+        <p className="type-card-body border-l border-white/10 pl-4 leading-7 text-white/56">
           {details}
         </p>
-      ) : null}
-    </div>
+      </div>
+    </details>
   );
 }
 
 export default function InfoCards() {
   const highlights = projectHighlights as ProjectHighlight[];
-  const [expandedHighlight, setExpandedHighlight] = useState<string | null>(null);
 
   return (
     <section className="container-page section-shell grid gap-8 md:grid-cols-[minmax(0,1.58fr)_minmax(0,1.02fr)]">
@@ -130,12 +137,11 @@ export default function InfoCards() {
           </div>
 
           <div className="mt-6 space-y-4">
-            {highlights.map((item) => {
-              const accent = highlightAccents[highlights.indexOf(item) % highlightAccents.length];
+            {highlights.map((item, index) => {
+              const accent = highlightAccents[index % highlightAccents.length];
               const [leadSentence, ...restSentences] = item.summary.split(". ");
               const details = restSentences.join(". ").trim();
               const itemKey = `${item.title}-${item.year ?? ""}`;
-              const isExpanded = expandedHighlight === itemKey;
 
               return (
                 <article
@@ -161,27 +167,13 @@ export default function InfoCards() {
                       <p className="type-card-title font-normal text-white/92">
                         {item.title}
                       </p>
-                      <div className="mt-3 flex items-center justify-between gap-2">
-                        <div className="min-w-0 flex items-center gap-2">
-                          {item.platform && (
-                            <span className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-white/48 md:text-[10px]">
-                              {item.platform}
-                            </span>
-                          )}
+                      {item.platform ? (
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-white/48 md:text-[10px]">
+                            {item.platform}
+                          </span>
                         </div>
-
-                        {details ? (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedHighlight((current) => (current === itemKey ? null : itemKey))
-                            }
-                            className="shrink-0 whitespace-nowrap text-[0.68rem] font-normal text-white/58 transition hover:text-white/82 md:text-[0.72rem]"
-                          >
-                            {isExpanded ? "See less" : "See more..."}
-                          </button>
-                        ) : null}
-                      </div>
+                      ) : null}
                     </div>
 
                     {item.year && (
@@ -194,7 +186,6 @@ export default function InfoCards() {
                   <ExpandableHighlightDescription
                     leadSentence={leadSentence}
                     details={details}
-                    expanded={isExpanded}
                   />
                 </article>
               );

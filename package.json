@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:logo": "python3 scripts/sync-logo-icons.py"
   },
   "dependencies": {
     "framer-motion": "^12.35.0",

@@ -7,17 +7,17 @@ const socialLinks = [
   {
     name: "Email",
     href: "mailto:jasond.worked@gmail.com",
-    icon: "/icons/social/gmail.svg",
+    icon: "/icons/social/gmail.webp",
   },
   {
     name: "GitHub",
     href: "https://github.com/jasondee1992",
-    icon: "/icons/social/github.svg",
+    icon: "/icons/social/github.webp",
   },
   {
     name: "LinkedIn",
     href: "https://www.linkedin.com/in/jasond-delos-santos-94978a111/",
-    icon: "/icons/social/linkedin.svg",
+    icon: "/icons/social/linkedin.webp",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function Hero() {
                 <span aria-hidden="true">↗</span>
               </a>
 
-              <Link href="/projects" className="premium-button-secondary">
+              <Link href="/projects" prefetch={false} className="premium-button-secondary">
                 View Projects
                 <span aria-hidden="true">→</span>
               </Link>
@@ -81,6 +81,7 @@ export default function Hero() {
                     alt={link.name}
                     width={28}
                     height={28}
+                    sizes="28px"
                     className="object-contain opacity-85"
                   />
                   <span className="text-sm font-medium text-white/72">{link.name}</span>
@@ -103,6 +104,7 @@ export default function Hero() {
                 alt="Jasond Delos Santos"
                 width={420}
                 height={520}
+                sizes="(max-width: 1024px) min(100vw, 320px), 320px"
                 className="h-full w-full object-cover"
                 priority
               />

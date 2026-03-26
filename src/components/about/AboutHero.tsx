@@ -1,13 +1,10 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { aboutParagraphs } from "@/data/aboutContent";
 
 export default function AboutHero() {
-  const [expanded, setExpanded] = useState(false);
   const previewCount = 2;
-  const visibleParagraphs = expanded ? aboutParagraphs : aboutParagraphs.slice(0, previewCount);
+  const previewParagraphs = aboutParagraphs.slice(0, previewCount);
+  const remainingParagraphs = aboutParagraphs.slice(previewCount);
   const hasMoreContent = aboutParagraphs.length > previewCount;
 
   return (
@@ -25,25 +22,33 @@ export default function AboutHero() {
 
           <div
             className={`type-page-body mx-auto mt-10 max-w-4xl text-left leading-9 text-white/65 ${
-              !expanded && hasMoreContent ? "about-copy-collapsed" : ""
+              hasMoreContent ? "about-copy-collapsed" : ""
             }`}
           >
-            {visibleParagraphs.map((paragraph) => (
+            {previewParagraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
 
           {hasMoreContent ? (
-            <div className="mt-6 flex justify-start">
-              <button
-                type="button"
-                onClick={() => setExpanded((current) => !current)}
-                className="about-toggle-button"
-              >
-                {expanded ? "Show less" : "Read more"}
-                <span aria-hidden="true">{expanded ? "\u2191" : "\u2193"}</span>
-              </button>
-            </div>
+            <details className="group mt-6">
+              <summary className="about-toggle-button inline-flex list-none [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">Read more</span>
+                <span className="hidden group-open:inline">Show less</span>
+                <span aria-hidden="true" className="group-open:hidden">
+                  ↓
+                </span>
+                <span aria-hidden="true" className="hidden group-open:inline">
+                  ↑
+                </span>
+              </summary>
+
+              <div className="type-page-body mx-auto mt-6 grid max-w-4xl gap-6 text-left leading-9 text-white/65">
+                {remainingParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </details>
           ) : null}
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -57,7 +62,7 @@ export default function AboutHero() {
               <span aria-hidden="true">↗</span>
             </a>
 
-            <Link href="/projects" className="premium-button-secondary">
+            <Link href="/projects" prefetch={false} className="premium-button-secondary">
               View Projects
               <span aria-hidden="true">→</span>
             </Link>

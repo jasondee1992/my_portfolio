@@ -65,7 +65,7 @@ export default function AlbumGalleryClient({
     <>
       <section className="container-page section-shell">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {albums.map((album) => (
+          {albums.map((album, index) => (
             <button
               key={album.slug}
               type="button"
@@ -80,6 +80,7 @@ export default function AlbumGalleryClient({
                     fill
                     className="object-cover transition duration-500 group-hover:scale-[1.05]"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={index === 0}
                   />
                 ) : (
                   <div className="h-full w-full bg-white/5" />
@@ -105,7 +106,14 @@ export default function AlbumGalleryClient({
           <div className="relative w-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
             <div className="relative mx-auto overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] shadow-[0_25px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
               <div className="relative aspect-[16/10] w-full">
-                <Image src={currentImage.src} alt={currentImage.alt} fill className="object-contain" sizes="100vw" priority />
+                <Image
+                  src={currentImage.src}
+                  alt={currentImage.alt}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1280px) 100vw, 1200px"
+                  priority
+                />
               </div>
             </div>
 

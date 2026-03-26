@@ -13,14 +13,16 @@ function getAlbums() {
   const folders = fs
     .readdirSync(galleryDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name);
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b));
 
   return folders.map((folder) => {
     const folderPath = path.join(galleryDir, folder);
 
     const files = fs
       .readdirSync(folderPath)
-      .filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file));
+      .filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file))
+      .sort((a, b) => a.localeCompare(b));
 
     return {
       slug: folder,

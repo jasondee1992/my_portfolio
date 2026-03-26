@@ -5,18 +5,18 @@ import ChatbotWidget from "@/components/ChatbotWidget";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500", "700"],
   variable: "--font-ubuntu",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "JasonD — Portfolio",
+  title: "JasonD",
   description: "Jasond Delos Santos | Python Developer • Data Engineer • Automation Builder",
   icons: {
-    icon: "/images/profile/profile.jpeg",
-    shortcut: "/images/profile/profile.jpeg",
-    apple: "/images/profile/profile.jpeg",
+    icon: "/favicon.ico?v=2",
+    shortcut: "/favicon.ico?v=2",
+    apple: "/apple-icon.png?v=2",
   },
 };
 

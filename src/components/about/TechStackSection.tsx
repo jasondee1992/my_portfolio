@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SKILL_ICON_MAP, type SkillIconName } from "@/lib/skillIconPaths";
 
 type TechItem = {
   name: string;
@@ -10,44 +11,6 @@ type TechGroup = {
   description: string;
   items: TechItem[];
 };
-
-const SKILL_ICON_MAP = {
-  AI: "/icons/skills/ai.svg",
-  Automation: "/icons/skills/automation.svg",
-  AWS: "/icons/skills/AWS.svg",
-  CSS: "/icons/skills/css3.svg",
-  ETL: "/icons/skills/data_engineer.svg",
-  Django: "/icons/skills/Django.svg",
-  Docker: "/icons/skills/Docker.svg",
-  FastAPI: "/icons/skills/FastAPI.svg",
-  Git: "/icons/skills/Git.svg",
-  GitHub: "/icons/skills/github.svg",
-  HTML: "/icons/skills/HTML5.svg",
-  JavaScript: "/icons/skills/JavaScript.svg",
-  Linux: "/icons/skills/linux.svg",
-  NoSQL: "/icons/skills/NoSQL.svg",
-  Pandas: "/icons/skills/Pandas.svg",
-  Dash: "/icons/skills/plotly_dash.svg",
-  Plotly: "/icons/skills/plotly.svg",
-  PostgreSQL: "/icons/skills/PostgreSQL.svg",
-  Postman: "/icons/skills/postman.svg",
-  "Python Dev": "/icons/skills/python_developer.svg",
-  Python: "/icons/skills/python.svg",
-  RAG: "/icons/skills/rag.svg",
-  React: "/icons/skills/react.svg",
-  Snowflake: "/icons/skills/snowflakes.svg",
-  SQL: "/icons/skills/sql.svg",
-  SQLite: "/icons/skills/SQLite.svg",
-  "Tailwind CSS": "/icons/skills/tailwind.svg",
-  TypeScript: "/icons/skills/TypeScript.svg",
-  Vercel: "/icons/skills/vercel.svg",
-  "Next.js": "/icons/skills/react.svg",
-  "Prompt Engineering": "/icons/skills/ai.svg",
-  "Vector Search": "/icons/skills/rag.svg",
-  FAISS: "/icons/skills/ai.svg",
-} as const;
-
-type SkillIconName = keyof typeof SKILL_ICON_MAP;
 
 const groups: TechGroup[] = [
   {

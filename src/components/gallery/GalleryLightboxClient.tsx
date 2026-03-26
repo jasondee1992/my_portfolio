@@ -130,7 +130,7 @@ export default function GalleryLightboxClient({
                   alt={selectedImage.alt}
                   fill
                   className="object-contain"
-                  sizes="100vw"
+                  sizes="(max-width: 1280px) 100vw, 1200px"
                   priority
                 />
               </div>

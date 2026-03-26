@@ -930,3 +930,28 @@ textarea {
     font-size: 1.04rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-glow,
+  .tech-marquee-left,
+  .tech-marquee-right,
+  .about-stack-spin-slow,
+  .about-stack-spin-reverse,
+  .about-stack-orbit-inner-points,
+  .about-stack-orbit-outer-points {
+    animation: none !important;
+  }
+
+  .premium-button,
+  .premium-button-secondary,
+  .soft-hover,
+  .tech-card,
+  .tech-marquee-row,
+  .group * {
+    transition: none !important;
+  }
+}

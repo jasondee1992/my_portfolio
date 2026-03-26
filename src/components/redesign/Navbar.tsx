@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -19,19 +20,17 @@ export default function Navbar() {
     <header className="container-page sticky top-4 z-40 pt-4 md:pt-6">
       <div className="glass-card mx-auto rounded-[30px] px-5 py-4 md:px-7">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="group flex items-center gap-3">
-            <div
-              className="soft-hover flex h-12 w-12 items-center justify-center rounded-full text-base font-bold"
-              style={{
-                border: "1px solid rgba(255,255,255,0.10)",
-                background:
-                  "linear-gradient(160deg, rgba(143,184,255,0.2), rgba(255,255,255,0.04))",
-                color: "rgba(245,247,250,0.96)",
-                boxShadow: "0 14px 35px rgba(16,26,44,0.3)",
-                letterSpacing: "-0.05em",
-              }}
-            >
-              J
+          <Link href="/" className="group flex items-center gap-2.5">
+            <div className="h-16 w-16 overflow-hidden rounded-[18px]">
+              <Image
+                src="/icons/logo/logo_page_nav.png"
+                alt="Jasond logo"
+                width={64}
+                height={64}
+                sizes="64px"
+                className="h-16 w-16 object-cover"
+                priority
+              />
             </div>
 
             <div className="hidden md:block">
