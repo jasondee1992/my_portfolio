@@ -1,4 +1,15 @@
-const timeline = [
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+type TimelineItem = {
+  year: string;
+  title: string;
+  description: string;
+  side: "left" | "right";
+};
+
+const timeline: TimelineItem[] = [
   {
     year: "2009",
     title: "Service Crew at Jollibee Corporation",
@@ -120,7 +131,85 @@ const timeline = [
   },
 ];
 
+const CONNECTOR_WIDTH = 6;
+const CONNECTOR_FADE_DISTANCE = 180;
+const VIEWPORT_ANCHOR = 0.34;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
 export default function JourneyTimeline() {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [lineProgress, setLineProgress] = useState(0);
+  const [itemProgress, setItemProgress] = useState<number[]>(() =>
+    timeline.map(() => 0)
+  );
+
+  useEffect(() => {
+    let frameId = 0;
+
+    const updateProgress = () => {
+      frameId = 0;
+
+      const track = trackRef.current;
+
+      if (!track) {
+        return;
+      }
+
+      const trackRect = track.getBoundingClientRect();
+      const viewportLine = window.innerHeight * VIEWPORT_ANCHOR;
+      const lineY = clamp(viewportLine - trackRect.top, 0, trackRect.height);
+      const nextLineProgress = trackRect.height > 0 ? lineY / trackRect.height : 0;
+
+      const nextItemProgress = timeline.map((_, index) => {
+        const item = itemRefs.current[index];
+
+        if (!item) {
+          return 0;
+        }
+
+        const itemRect = item.getBoundingClientRect();
+        const itemCenterInTrack =
+          itemRect.top - trackRect.top + itemRect.height / 2;
+
+        return clamp(
+          (lineY - itemCenterInTrack + CONNECTOR_FADE_DISTANCE / 2) /
+            CONNECTOR_FADE_DISTANCE,
+          0,
+          1
+        );
+      });
+
+      setLineProgress(nextLineProgress);
+      setItemProgress(nextItemProgress);
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== 0) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(updateProgress);
+    };
+
+    requestUpdate();
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      if (frameId !== 0) {
+        window.cancelAnimationFrame(frameId);
+      }
+
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+    };
+  }, []);
+
   return (
     <section className="container-page section-shell">
       <div className="mx-auto max-w-5xl">
@@ -131,29 +220,155 @@ export default function JourneyTimeline() {
           </h2>
         </div>
 
-        <div className="relative mx-auto mt-12 max-w-5xl">
-          <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/12 md:block" />
+        <div ref={trackRef} className="relative mx-auto mt-12 max-w-5xl">
+          <div
+            aria-hidden="true"
+            className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/10 md:block"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute left-1/2 top-0 hidden w-px -translate-x-1/2 md:block"
+            style={{
+              height: `${lineProgress * 100}%`,
+              background:
+                "linear-gradient(180deg, rgba(143,184,255,0.18), rgba(143,184,255,0.95), rgba(155,231,196,0.75))",
+              boxShadow:
+                "0 0 18px rgba(143,184,255,0.4), 0 0 32px rgba(155,231,196,0.18)",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute left-1/2 hidden h-4 w-4 -translate-x-1/2 rounded-full md:block"
+            style={{
+              top: `calc(${lineProgress * 100}% - 8px)`,
+              background:
+                "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.98), rgba(143,184,255,0.92) 45%, rgba(62,101,173,0.92) 100%)",
+              boxShadow:
+                "0 0 0 4px rgba(143,184,255,0.12), 0 0 18px rgba(143,184,255,0.55), 0 0 38px rgba(155,231,196,0.24)",
+            }}
+          />
 
           <div className="space-y-10">
-            {timeline.map((item) => (
-              <div
-                key={item.year}
-                className={`flex w-full ${
-                  item.side === "left" ? "md:justify-start" : "md:justify-end"
-                }`}
-              >
-                <div className="section-panel w-full p-7 md:w-[44%]">
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="type-journey-year font-normal text-white/95">{item.year}</div>
-                    <div className="type-card-title pt-2 text-right font-normal text-white/90">
-                      {item.title}
-                    </div>
-                  </div>
+            {timeline.map((item, index) => {
+              const progress = itemProgress[index] ?? 0;
+              const connectorTransformOrigin =
+                item.side === "left" ? "right center" : "left center";
+              const connectorLeft = item.side === "left" ? "44%" : "50%";
+              const travelerLeft =
+                item.side === "left"
+                  ? `${50 - progress * CONNECTOR_WIDTH}%`
+                  : `${50 + progress * CONNECTOR_WIDTH}%`;
 
-                  <p className="type-card-body mt-5 leading-8 text-white/60">{item.description}</p>
+              return (
+                <div
+                  key={item.year}
+                  className={`relative flex w-full ${
+                    item.side === "left" ? "md:justify-start" : "md:justify-end"
+                  }`}
+                >
+                  <div
+                    aria-hidden="true"
+                    className="absolute top-1/2 hidden h-px -translate-y-1/2 md:block"
+                    style={{
+                      left: connectorLeft,
+                      width: `${CONNECTOR_WIDTH}%`,
+                      background:
+                        "linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.14))",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute top-1/2 hidden h-px -translate-y-1/2 md:block"
+                    style={{
+                      left: connectorLeft,
+                      width: `${CONNECTOR_WIDTH}%`,
+                      transform: `translateY(-50%) scaleX(${progress})`,
+                      transformOrigin: connectorTransformOrigin,
+                      background:
+                        item.side === "left"
+                          ? "linear-gradient(90deg, rgba(155,231,196,0.18), rgba(143,184,255,0.98))"
+                          : "linear-gradient(90deg, rgba(143,184,255,0.98), rgba(155,231,196,0.18))",
+                      boxShadow: "0 0 18px rgba(143,184,255,0.4)",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute top-1/2 hidden h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full md:block"
+                    style={{
+                      left: travelerLeft,
+                      opacity: progress > 0.04 ? 1 : 0,
+                      background:
+                        "radial-gradient(circle at 35% 35%, rgba(255,255,255,0.98), rgba(143,184,255,0.94) 55%, rgba(80,118,196,0.92) 100%)",
+                      boxShadow:
+                        "0 0 10px rgba(143,184,255,0.72), 0 0 24px rgba(143,184,255,0.28)",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full md:block"
+                    style={{
+                      background:
+                        progress > 0.02
+                          ? "rgba(143,184,255,0.96)"
+                          : "rgba(255,255,255,0.22)",
+                      boxShadow:
+                        progress > 0.02
+                          ? "0 0 14px rgba(143,184,255,0.42)"
+                          : "none",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className={`absolute top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full md:block ${
+                      item.side === "left" ? "-translate-x-1/2" : "translate-x-1/2"
+                    }`}
+                    style={{
+                      left: item.side === "left" ? "44%" : "56%",
+                      background:
+                        progress > 0.8
+                          ? "rgba(155,231,196,0.94)"
+                          : "rgba(255,255,255,0.18)",
+                      boxShadow:
+                        progress > 0.8
+                          ? "0 0 12px rgba(155,231,196,0.46)"
+                          : "none",
+                    }}
+                  />
+
+                  <div
+                    ref={(element) => {
+                      itemRefs.current[index] = element;
+                    }}
+                    className="section-panel w-full p-7 transition-[border-color,box-shadow,transform] duration-300 md:w-[44%]"
+                    style={{
+                      borderColor:
+                        progress > 0.1
+                          ? "rgba(143,184,255,0.2)"
+                          : "rgba(255,255,255,0.08)",
+                      boxShadow:
+                        progress > 0.1
+                          ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 18px 44px rgba(9,15,26,0.3), 0 0 0 1px rgba(143,184,255,0.08)"
+                          : undefined,
+                      transform:
+                        progress > 0.1 ? "translateY(-2px)" : "translateY(0)",
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-6">
+                      <div className="type-journey-year font-normal text-white/95">
+                        {item.year}
+                      </div>
+                      <div className="type-card-title pt-2 text-right font-normal text-white/90">
+                        {item.title}
+                      </div>
+                    </div>
+
+                    <p className="type-card-body mt-5 leading-8 text-white/60">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="absolute bottom-0 left-1/2 hidden h-4 w-4 -translate-x-1/2 rounded-full bg-white/70 shadow-[0_0_30px_rgba(255,255,255,0.35)] md:block" />
