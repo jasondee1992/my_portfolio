@@ -46,7 +46,7 @@ const projects: Project[] = [
     tech: [
       { name: "Next.js", icon: "/icons/skills/react.png" },
       { name: "AI", icon: "/icons/skills/ai.svg" },
-      { name: "RAG", icon: "/icons/skills/FastAPI.png" },
+      { name: "RAG", icon: "/icons/skills/rag.svg" },
       { name: "FastAPI", icon: "/icons/skills/FastAPI.png" },
     ],
   },
@@ -98,7 +98,10 @@ export default function FeaturedProjects() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <div className="section-eyebrow">Projects</div>
-            <h2 className="type-section-title mt-3 font-semibold tracking-[-0.02em] text-white/95">
+            <h2
+              className="section-title mt-3 font-normal tracking-[-0.02em] text-white/95"
+              style={{ fontSize: "1.5rem", lineHeight: 1.05 }}
+            >
               Selected work with practical impact
             </h2>
           </div>

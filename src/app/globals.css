@@ -454,8 +454,9 @@ textarea {
   left: 0;
   background: linear-gradient(
     to right,
-    rgba(5, 8, 14, 0.96),
-    rgba(5, 8, 14, 0)
+    rgba(20, 28, 37, 0.96),
+    rgba(20, 28, 37, 0.82),
+    rgba(20, 28, 37, 0)
   );
 }
 
@@ -463,8 +464,9 @@ textarea {
   right: 0;
   background: linear-gradient(
     to left,
-    rgba(5, 8, 14, 0.96),
-    rgba(5, 8, 14, 0)
+    rgba(20, 28, 37, 0.96),
+    rgba(20, 28, 37, 0.82),
+    rgba(20, 28, 37, 0)
   );
 }
 
@@ -564,6 +566,50 @@ textarea {
   line-height: 1;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.74);
+}
+
+.about-copy-collapsed {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.about-copy-collapsed::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.2rem;
+  left: 0;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 13, 18, 0), rgba(10, 13, 18, 0.94));
+}
+
+.about-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0.68rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(245, 247, 250, 0.9);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.about-toggle-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 768px) {

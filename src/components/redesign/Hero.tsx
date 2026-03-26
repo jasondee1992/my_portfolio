@@ -31,11 +31,11 @@ export default function Hero() {
           <div className="max-w-3xl">
             <div className="section-eyebrow">Python Full-Stack Developer</div>
 
-            <h1 className="section-title gradient-text mt-6 max-w-4xl text-4xl font-bold md:text-5xl">
+            <h1 className="section-title gradient-text mt-6 max-w-4xl text-[2rem] font-normal md:text-[2.8rem]">
               Jasond Delos Santos
             </h1>
 
-            <p className="type-page-subtitle mt-5 max-w-2xl leading-8 text-white/70 md:leading-9">
+            <p className="mt-5 max-w-2xl text-[0.96rem] leading-7 text-white/70 md:text-[0.92rem] md:leading-8">
               I build premium internal tools, automation systems, and data-driven
               applications designed to make complex work feel simple, reliable, and efficient.
             </p>
@@ -110,7 +110,7 @@ export default function Hero() {
 
             <div className="premium-card p-5">
               <div className="text-xs uppercase tracking-[0.2em] text-white/38">Current focus</div>
-              <div className="mt-3 text-lg font-semibold text-white/92">
+              <div className="mt-3 text-lg font-normal text-white/92">
                 Automation, internal platforms, data workflows, and AI-enabled tooling
               </div>
               <p className="mt-3 text-sm leading-7 text-white/58">

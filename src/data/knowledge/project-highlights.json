@@ -1,14 +1,20 @@
 [
   {
     "title": "Automated Reporting System for Ticket Monitoring",
+    "year": "2024",
+    "platform": "Internal platform",
     "summary": "End-to-end Python-based reporting system that automatically tracks ticket status (missed, completed, pending). Includes backend data processing, scheduled report generation, and dashboard visibility, significantly reducing manual monitoring and improving operational transparency for managers."
   },
   {
     "title": "Dynamic Dashboard with Automated Ticket Assignment",
+    "year": "2025",
+    "platform": "Internal platform",
     "summary": "Developed a full-stack internal web application using Python and Dash (Bootstrap) to manage user access and automatically assign tickets based on defined business rules. Also explored the use of Amazon Bedrock and OpenAI models to support AI-driven logic, prompt-based recommendations, and intelligent automation use cases. The solution improved workload distribution, reduced manual assignment efforts, and provided real-time visibility for team leads and managers."
   },
   {
     "title": "Location Mapping Application",
+    "year": "2023",
+    "platform": "Internal platform",
     "summary": "Web-based application developed using Python (Django), React, and PostgreSQL to manage and visualize location data. Built in collaboration with international teams, improving location tracking accuracy and operational data management."
   }
 ]

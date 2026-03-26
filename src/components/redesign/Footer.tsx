@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="section-eyebrow">Let&apos;s build</div>
-            <div className="mt-4 text-2xl font-semibold text-white/94">
+            <div className="mt-4 text-2xl font-normal text-white/94">
               Available for thoughtful full-time roles.
             </div>
             <div className="mt-2 text-sm text-white/52">

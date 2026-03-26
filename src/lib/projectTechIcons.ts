@@ -13,6 +13,8 @@ export const PROJECT_TECH_ICON_MAP: Record<string, string> = {
   Django: "/icons/skills/Django.png",
   "Next.js": "/icons/skills/react.png",
   "AI Agent": "/icons/skills/ai.svg",
+  AI: "/icons/skills/ai.svg",
+  RAG: "/icons/skills/rag.svg",
 };
 
 export function getProjectTechIcon(tag: string) {
