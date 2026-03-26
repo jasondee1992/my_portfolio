@@ -33,7 +33,7 @@ export default function ConnectSection() {
       <div className="section-panel mx-auto max-w-5xl p-8 md:p-10">
         <div className="section-header">
           <div className="section-eyebrow">Connect</div>
-          <h2 className="text-3xl font-semibold text-white/95">Let’s connect</h2>
+          <h2 className="text-3xl font-normal text-white/95">Let’s connect</h2>
           <p className="mt-1 max-w-2xl text-white/60">
             Open to thoughtful opportunities, collaborations, and conversations around software, automation, and practical product work.
           </p>
@@ -49,7 +49,7 @@ export default function ConnectSection() {
                 rel={link.title === "GitHub" || link.title === "LinkedIn" ? "noopener noreferrer" : undefined}
                 className="premium-card p-5 text-left transition hover:-translate-y-0.5"
               >
-                <div className="text-lg font-semibold text-white/90">{link.title}</div>
+                <div className="text-lg font-normal text-white/90">{link.title}</div>
                 <div className="mt-1 text-white/55">{link.value}</div>
               </a>
             ) : (
@@ -59,7 +59,7 @@ export default function ConnectSection() {
                 onClick={handleChatbotOpen}
                 className="premium-card p-5 text-left transition hover:-translate-y-0.5"
               >
-                <div className="text-lg font-semibold text-white/90">{link.title}</div>
+                <div className="text-lg font-normal text-white/90">{link.title}</div>
                 <div className="mt-1 text-white/55">{link.value}</div>
               </button>
             )

@@ -126,7 +126,7 @@ export default function JourneyTimeline() {
       <div className="mx-auto max-w-5xl">
         <div className="section-header items-center text-center">
           <div className="section-eyebrow">Journey</div>
-          <h2 className="type-section-title section-title font-semibold text-white/95">
+          <h2 className="type-section-title section-title font-normal text-white/95">
             Career timeline
           </h2>
         </div>
@@ -144,8 +144,8 @@ export default function JourneyTimeline() {
               >
                 <div className="section-panel w-full p-7 md:w-[44%]">
                   <div className="flex items-start justify-between gap-6">
-                    <div className="type-journey-year font-semibold text-white/95">{item.year}</div>
-                    <div className="type-card-title pt-2 text-right font-semibold text-white/90">
+                    <div className="type-journey-year font-normal text-white/95">{item.year}</div>
+                    <div className="type-card-title pt-2 text-right font-normal text-white/90">
                       {item.title}
                     </div>
                   </div>

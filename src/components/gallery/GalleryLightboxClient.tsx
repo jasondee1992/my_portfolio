@@ -139,7 +139,7 @@ export default function GalleryLightboxClient({
             <button
               type="button"
               onClick={closeLightbox}
-              className="absolute right-4 top-4 rounded-full px-4 py-2 text-sm font-semibold text-white"
+              className="absolute right-4 top-4 rounded-full px-4 py-2 text-sm font-normal text-white"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.10)",

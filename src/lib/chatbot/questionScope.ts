@@ -7,6 +7,7 @@ type ProfileQuestionCategory =
   | "professional_background"
   | "strongest_skills"
   | "strengths_as_developer"
+  | "role_fit_skills"
   | "tech_stack"
   | "projects_summary"
   | "best_project"
@@ -15,6 +16,8 @@ type ProfileQuestionCategory =
   | "hobbies_or_free_time"
   | "goals_in_five_years"
   | "ai_interest"
+  | "why_apply"
+  | "motivation_for_role"
   | "work_availability"
   | "freelance_availability"
   | "contact_info";
@@ -51,6 +54,18 @@ const PORTFOLIO_SIGNALS = [
   "current role",
   "career",
   "education",
+  "apply for this position",
+  "apply for this company",
+  "apply for this role",
+  "interested in this role",
+  "interested in this position",
+  "want this role",
+  "join this company",
+  "fit for this role",
+  "suitable for this role",
+  "contribute to this role",
+  "bring to this position",
+  "value can you add",
   "jasond",
   "jpmorgan",
   "fujitsu",
@@ -174,6 +189,45 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
     preferredKnowledgeCategories: ["about", "homepage", "profile", "persona", "persona-faq"],
   },
   {
+    category: "role_fit_skills",
+    patterns: [
+      "what skills do you think you can contribute to this role",
+      "what skills can you contribute to this role",
+      "what can you contribute to this role",
+      "what can you bring to this position",
+      "what value can you add to this role",
+      "what value can you add to this company",
+      "how can you contribute to this company",
+      "why are you a fit for this role",
+      "what makes you suitable for this role",
+      "what strengths can you bring to this position",
+      "what are your strengths for this position",
+      "what strengths do you bring to this role",
+      "what can you contribute to this position",
+      "what can you bring to this role",
+      "why are you fit for this role",
+      "skills can you bring",
+      "contribute to this role",
+      "bring to this position",
+      "anong skills ang maico contribute mo sa role na to",
+      "anong skills ang maicocontribute mo sa role na to",
+      "ano maiaambag mong skills dito",
+      "ano maiaambag mo sa role na to",
+      "bakit ka bagay sa role na to",
+    ],
+    preferredKnowledgeCategories: [
+      "homepage",
+      "about",
+      "experience",
+      "project-highlight",
+      "internal-project",
+      "other-work",
+      "profile",
+      "persona",
+      "persona-faq",
+    ],
+  },
+  {
     category: "tech_stack",
     patterns: [
       "tech stack",
@@ -290,6 +344,47 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "how about ai",
     ],
     preferredKnowledgeCategories: ["homepage", "about", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "why_apply",
+    patterns: [
+      "why did you apply for this position",
+      "why did you apply for this company",
+      "why do you want this role",
+      "why are you interested in this role",
+      "why are you interested in this position",
+      "why do you want to join this company",
+      "what made you apply here",
+      "why are you applying for this job",
+      "why did you apply here",
+      "why do you want this position",
+      "bakit ka nag apply sa role na to",
+      "bakit ka nag apply sa position na to",
+      "bakit gusto mo tong position na to",
+      "bakit gusto mong sumali sa company na to",
+      "bakit mo gusto tong role na to",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "about", "experience", "homepage", "profile"],
+  },
+  {
+    category: "motivation_for_role",
+    patterns: [
+      "what interests you about this role",
+      "why are you interested in this role",
+      "what excites you about this position",
+      "what motivates you to apply",
+      "why does this opportunity interest you",
+      "what are you looking for in your next role",
+      "what interests you about this position",
+      "why are you interested in this opportunity",
+      "what motivates you for this role",
+      "what are you looking for in your next job",
+      "anong interested ka sa role na to",
+      "ano hinahanap mo sa next role mo",
+      "ano ang hinahanap mo sa next role mo",
+      "anong nakaka excite sayo sa role na to",
+    ],
+    preferredKnowledgeCategories: ["persona", "persona-faq", "about", "experience", "homepage", "profile"],
   },
   {
     category: "work_availability",

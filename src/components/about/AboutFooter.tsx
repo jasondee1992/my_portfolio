@@ -5,7 +5,7 @@ export default function AboutFooter() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="section-eyebrow">About page</div>
-            <div className="mt-4 text-xl font-semibold text-white/94">
+            <div className="mt-4 text-xl font-normal text-white/94">
               Thanks for taking a closer look at my background.
             </div>
             <div className="mt-2 text-sm text-white/52">

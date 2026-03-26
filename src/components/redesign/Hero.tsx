@@ -7,17 +7,17 @@ const socialLinks = [
   {
     name: "Email",
     href: "mailto:jasond.worked@gmail.com",
-    icon: "/icons/social/gmail.png",
+    icon: "/icons/social/gmail.svg",
   },
   {
     name: "GitHub",
     href: "https://github.com/jasondee1992",
-    icon: "/icons/social/github.png",
+    icon: "/icons/social/github.svg",
   },
   {
     name: "LinkedIn",
     href: "https://www.linkedin.com/in/jasond-delos-santos-94978a111/",
-    icon: "/icons/social/linkedin.png",
+    icon: "/icons/social/linkedin.svg",
   },
 ];
 

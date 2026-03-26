@@ -88,7 +88,7 @@ export default function AlbumGalleryClient({
                 <div className="absolute inset-0 bg-black/15 transition duration-300 group-hover:bg-black/35" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="text-xl font-semibold capitalize text-white">{album.name}</div>
+                  <div className="text-xl font-normal capitalize text-white">{album.name}</div>
                   <div className="mt-1 text-sm text-white/70">{album.images.length} photos</div>
                 </div>
               </div>

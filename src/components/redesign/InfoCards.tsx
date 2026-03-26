@@ -13,38 +13,38 @@ type ProjectHighlight = {
 };
 
 const techStackRow1 = [
-  { name: "AWS", icon: "/icons/skills/AWS.png" },
-  { name: "Css3", icon: "/icons/skills/css3.png" },
-  { name: "Django", icon: "/icons/skills/Django.png" },
-  { name: "Docker", icon: "/icons/skills/Docker.png" },
-  { name: "FastAPI", icon: "/icons/skills/FastAPI.png" },
-  { name: "Git", icon: "/icons/skills/Git.png" },
-  { name: "React", icon: "/icons/skills/react.png" },
-  { name: "Snowflakes", icon: "/icons/skills/snowflakes.png" },
-  { name: "SQLite", icon: "/icons/skills/SQLite.png" },
-  { name: "TypeScript", icon: "/icons/skills/TypeScript.png" },
+  { name: "AWS", icon: "/icons/skills/AWS.svg" },
+  { name: "Css3", icon: "/icons/skills/css3.svg" },
+  { name: "Django", icon: "/icons/skills/Django.svg" },
+  { name: "Docker", icon: "/icons/skills/Docker.svg" },
+  { name: "FastAPI", icon: "/icons/skills/FastAPI.svg" },
+  { name: "Git", icon: "/icons/skills/Git.svg" },
+  { name: "React", icon: "/icons/skills/react.svg" },
+  { name: "Snowflakes", icon: "/icons/skills/snowflakes.svg" },
+  { name: "SQLite", icon: "/icons/skills/SQLite.svg" },
+  { name: "TypeScript", icon: "/icons/skills/TypeScript.svg" },
 ];
 
 const techStackRow2 = [
-  { name: "HTML5", icon: "/icons/skills/HTML5.png" },
-  { name: "JavaScript", icon: "/icons/skills/JavaScript.png" },
-  { name: "NoSQL", icon: "/icons/skills/NoSQL.png" },
-  { name: "Pandas", icon: "/icons/skills/Pandas.png" },
-  { name: "plotly", icon: "/icons/skills/plotly.png" },
-  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.png" },
-  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.png" },
-  { name: "Python", icon: "/icons/skills/python.png" },
+  { name: "HTML5", icon: "/icons/skills/HTML5.svg" },
+  { name: "JavaScript", icon: "/icons/skills/JavaScript.svg" },
+  { name: "NoSQL", icon: "/icons/skills/NoSQL.svg" },
+  { name: "Pandas", icon: "/icons/skills/Pandas.svg" },
+  { name: "plotly", icon: "/icons/skills/plotly.svg" },
+  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.svg" },
+  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.svg" },
+  { name: "Python", icon: "/icons/skills/python.svg" },
 ];
 
 const techStackRow3 = [
-  { name: "HTML5", icon: "/icons/skills/HTML5.png" },
-  { name: "JavaScript", icon: "/icons/skills/JavaScript.png" },
-  { name: "NoSQL", icon: "/icons/skills/NoSQL.png" },
-  { name: "Pandas", icon: "/icons/skills/Pandas.png" },
-  { name: "plotly", icon: "/icons/skills/plotly.png" },
-  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.png" },
-  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.png" },
-  { name: "Python", icon: "/icons/skills/python.png" },
+  { name: "HTML5", icon: "/icons/skills/HTML5.svg" },
+  { name: "JavaScript", icon: "/icons/skills/JavaScript.svg" },
+  { name: "NoSQL", icon: "/icons/skills/NoSQL.svg" },
+  { name: "Pandas", icon: "/icons/skills/Pandas.svg" },
+  { name: "plotly", icon: "/icons/skills/plotly.svg" },
+  { name: "plotly_dash", icon: "/icons/skills/plotly_dash.svg" },
+  { name: "PostgreSQL", icon: "/icons/skills/PostgreSQL.svg" },
+  { name: "Python", icon: "/icons/skills/python.svg" },
 ];
 
 const highlightAccents = [

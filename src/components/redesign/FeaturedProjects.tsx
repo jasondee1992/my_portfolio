@@ -16,16 +16,16 @@ const projects: Project[] = [
     description:
       "An internal automation system that assigns tickets based on business rules, workload, and operational logic. It helps teams reduce manual routing effort, improve fairness in assignment, and speed up operational turnaround across internal workflows.",
     tech: [
-      { name: "Python", icon: "/icons/skills/python.png" },
-      { name: "Dash", icon: "/icons/skills/plotly_dash.png" },
-      { name: "SQLite", icon: "/icons/skills/SQLite.png" },
-      { name: "AWS", icon: "/icons/skills/AWS.png" },
-      { name: "Docker", icon: "/icons/skills/Docker.png" },
-      { name: "JavaScript", icon: "/icons/skills/JavaScript.png" },
-      { name: "Plotly Dash", icon: "/icons/skills/plotly_dash.png" },
-      { name: "Pandas", icon: "/icons/skills/Pandas.png" },
-      { name: "Snowflakes", icon: "/icons/skills/snowflakes.png" },
-      { name: "FastAPI", icon: "/icons/skills/FastAPI.png" },
+      { name: "Python", icon: "/icons/skills/python.svg" },
+      { name: "Dash", icon: "/icons/skills/plotly_dash.svg" },
+      { name: "SQLite", icon: "/icons/skills/SQLite.svg" },
+      { name: "AWS", icon: "/icons/skills/AWS.svg" },
+      { name: "Docker", icon: "/icons/skills/Docker.svg" },
+      { name: "JavaScript", icon: "/icons/skills/JavaScript.svg" },
+      { name: "Plotly Dash", icon: "/icons/skills/plotly_dash.svg" },
+      { name: "Pandas", icon: "/icons/skills/Pandas.svg" },
+      { name: "Snowflakes", icon: "/icons/skills/snowflakes.svg" },
+      { name: "FastAPI", icon: "/icons/skills/FastAPI.svg" },
     ],
   },
   {
@@ -33,10 +33,10 @@ const projects: Project[] = [
     description:
       "A reporting workflow that generates and distributes reports from Snowflake data sources to stakeholders. It automates repetitive reporting tasks, standardizes outputs, and ensures timely delivery of operational and management reports.",
     tech: [
-      { name: "Python", icon: "/icons/skills/python.png" },
-      { name: "Snowflake", icon: "/icons/skills/snowflakes.png" },
-      { name: "SQL", icon: "/icons/skills/SQLite.png" },
-      { name: "ETL", icon: "/icons/skills/Pandas.png" },
+      { name: "Python", icon: "/icons/skills/python.svg" },
+      { name: "Snowflake", icon: "/icons/skills/snowflakes.svg" },
+      { name: "SQL", icon: "/icons/skills/sql.svg" },
+      { name: "ETL", icon: "/icons/skills/Pandas.svg" },
     ],
   },
   {
@@ -44,10 +44,10 @@ const projects: Project[] = [
     description:
       "A portfolio chatbot designed to answer questions only about JasonD’s experience, projects, and skills using structured content. The long-term goal is to evolve it into a more intelligent assistant powered by retrieval and AI workflows.",
     tech: [
-      { name: "Next.js", icon: "/icons/skills/react.png" },
+      { name: "Next.js", icon: "/icons/skills/react.svg" },
       { name: "AI", icon: "/icons/skills/ai.svg" },
       { name: "RAG", icon: "/icons/skills/rag.svg" },
-      { name: "FastAPI", icon: "/icons/skills/FastAPI.png" },
+      { name: "FastAPI", icon: "/icons/skills/FastAPI.svg" },
     ],
   },
   {
@@ -55,10 +55,10 @@ const projects: Project[] = [
     description:
       "A dashboard for monitoring workflow status, processing metrics, and operational exceptions in real time. It improves visibility for managers and team leads by consolidating business-critical process health into a single interface.",
     tech: [
-      { name: "Dash", icon: "/icons/skills/plotly_dash.png" },
-      { name: "Plotly", icon: "/icons/skills/plotly.png" },
-      { name: "Python", icon: "/icons/skills/python.png" },
-      { name: "Analytics", icon: "/icons/skills/Pandas.png" },
+      { name: "Dash", icon: "/icons/skills/plotly_dash.svg" },
+      { name: "Plotly", icon: "/icons/skills/plotly.svg" },
+      { name: "Python", icon: "/icons/skills/python.svg" },
+      { name: "Analytics", icon: "/icons/skills/Pandas.svg" },
     ],
   },
 ];

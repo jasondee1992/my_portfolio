@@ -5,7 +5,7 @@ import { getProjectTechIcon } from "@/lib/projectTechIcons";
 export default function FeaturedProjectsGrid() {
   return (
     <section className="container-page section-shell">
-      <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-white/35">
+      <div className="mb-5 text-sm font-normal uppercase tracking-wider text-white/35">
         Internal Projects
       </div>
 
@@ -14,7 +14,7 @@ export default function FeaturedProjectsGrid() {
           <div key={project.title} className="section-panel p-5">
             <div className="mb-3 text-xs font-medium tracking-[0.18em] text-white/35">{project.no}</div>
 
-            <h3 className="text-xl font-semibold leading-8 text-white/95">{project.title}</h3>
+            <h3 className="text-xl font-normal leading-8 text-white/95">{project.title}</h3>
 
             <div className="mt-4 space-y-1 text-sm text-white/55">
               <div>

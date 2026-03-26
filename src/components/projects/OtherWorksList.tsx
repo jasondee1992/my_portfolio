@@ -5,7 +5,7 @@ import { getProjectTechIcon } from "@/lib/projectTechIcons";
 export default function OtherWorksList() {
   return (
     <section className="container-page section-shell">
-      <div className="mb-5 text-sm font-semibold uppercase tracking-wider text-white/35">
+      <div className="mb-5 text-sm font-normal uppercase tracking-wider text-white/35">
         Other Works
       </div>
 
@@ -16,7 +16,7 @@ export default function OtherWorksList() {
               <div className="flex-1">
                 <div className="mb-3 text-xs text-white/30">{work.no}</div>
 
-                <h3 className="text-2xl font-semibold text-white/95">{work.title}</h3>
+                <h3 className="text-2xl font-normal text-white/95">{work.title}</h3>
 
                 <div className="mt-4 space-y-1 text-sm text-white/55">
                   <div>
