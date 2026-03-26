@@ -10,13 +10,40 @@ const ubuntu = Ubuntu({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const socialImagePath = "/images/profile/profile.jpeg";
+const socialTitle = "JasonD";
+const socialDescription =
+  "Jasond Delos Santos | Python Developer • Data Engineer • Automation Builder";
+
 export const metadata: Metadata = {
-  title: "JasonD",
-  description: "Jasond Delos Santos | Python Developer • Data Engineer • Automation Builder",
+  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  title: socialTitle,
+  description: socialDescription,
   icons: {
     icon: "/favicon.ico?v=2",
     shortcut: "/favicon.ico?v=2",
     apple: "/apple-icon.png?v=2",
+  },
+  openGraph: {
+    title: socialTitle,
+    description: socialDescription,
+    type: "website",
+    url: siteUrl || "/",
+    images: [
+      {
+        url: socialImagePath,
+        width: 1200,
+        height: 630,
+        alt: "Jasond Delos Santos profile photo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: socialTitle,
+    description: socialDescription,
+    images: [socialImagePath],
   },
 };
 
