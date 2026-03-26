@@ -11,7 +11,7 @@
     "linkedin_url": "https://www.linkedin.com/in/jasond-delos-santos-94978a111/"
   },
   "public_location": "Mandaluyong, Metro Manila, Philippines",
-  "professional_summary": "Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience, building end-to-end automation solutions, internal web applications, and data-driven systems. Skilled in developing backend services, interactive dashboards, and business tools using Python, SQL, Dash, and Snowflake to streamline workflows, improve data handling, and increase operational efficiency. Experienced in full-stack development, process automation, production support, and data engineering-related work, including data extraction, transformation, validation, and integration for reporting and operational processes. Has a strong track record of collaborating with international teams to deliver reliable and scalable internal systems. Also expanding expertise in AI-enabled solutions through prompt engineering, Retrieval-Augmented Generation (RAG), and LLM integration concepts using Amazon Bedrock and OpenAI APIs for practical business applications such as intelligent automation, workflow support, and decision-assist tools.",
+  "professional_summary": "Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience, building end-to-end automation solutions, internal web applications, and data-driven systems. Skilled in developing backend services, interactive dashboards, and business tools using Python, SQL, Dash, Snowflake, and React to streamline workflows, improve data handling, and increase operational efficiency. Has around 2 to 3 years of React experience for frontend work in internal tools and web applications. Experienced in full-stack development, process automation, production support, and data engineering-related work, including data extraction, transformation, validation, and integration for reporting and operational processes. Has a strong track record of collaborating with international teams to deliver reliable and scalable internal systems. Also has practical exposure to AI-enabled solutions through Amazon Bedrock, OpenAI API usage, Hugging Face local models, prompt engineering, Retrieval-Augmented Generation (RAG), and lightweight local LLM experimentation using smaller open models within hardware limits.",
   "core_skills": {
     "programming_and_backend": [
       "Python",
@@ -29,17 +29,19 @@
       "Python-based web applications",
       "Role-based access dashboards",
       "Internal tools and reporting systems",
-      "React",
+      "React frontend development (around 2 to 3 years)",
       "NextJS",
       "Flask",
       "Angular"
     ],
     "ai_and_llm_learning": [
-      "Hands-on usage of OpenAI APIs",
-      "Deployment of Hugging Face-hosted models (non-local)",
+      "Hands-on usage of OpenAI API",
+      "Amazon Bedrock exposure from internal project work",
+      "Hugging Face local models",
       "Prompt engineering",
       "Retrieval-Augmented Generation (RAG)",
-      "Local LLM environment setup (exploratory)"
+      "Local LLM setup and lightweight experimentation",
+      "Practical exploration of Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek"
     ],
     "testing_and_quality_assurance": [
       "Automation testing",

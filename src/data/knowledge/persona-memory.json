@@ -18,6 +18,7 @@
     "years_of_experience": "10 years in IT, including 5 years of programming experience and 5 years of Python experience.",
     "programming_years": "5 years",
     "python_years": "5 years",
+    "react_years": "Around 2 to 3 years",
     "past_roles": [
       "Application System Engineer at Weserv System International Inc. (Fujitsu Philippines)",
       "IT & Broadcast Engineer at Go Motion Production",
@@ -29,6 +30,7 @@
       "Process automation",
       "Internal dashboards",
       "Backend development",
+      "React frontend development for internal web applications",
       "Reporting workflows",
       "Data extraction and transformation",
       "Production support"
@@ -61,9 +63,17 @@
     "ai_and_llm_exposure": [
       "OpenAI API",
       "Amazon Bedrock",
+      "Hugging Face local models",
       "Prompt engineering",
       "Retrieval-Augmented Generation (RAG)",
-      "Hugging Face-hosted models"
+      "Local LLM experimentation"
+    ],
+    "ai_and_llm_notes": [
+      "I have exposure to Amazon Bedrock from an internal project and used it for decision-making related use cases.",
+      "I have used React for frontend development in internal tools and web applications for around 2 to 3 years.",
+      "I have tried deploying smaller local LLMs on my own machine using models and context windows that fit my available GPU.",
+      "My local-model experience is practical and exploratory, focused on lightweight experimentation and hands-on learning rather than enterprise-scale production deployment.",
+      "I have explored or tried open models such as Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek through local experimentation."
     ]
   },
   "communication_style": {
@@ -163,6 +173,26 @@
     {
       "question": "What technologies do you use?",
       "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, and related tools for automation and internal applications."
+    },
+    {
+      "question": "What is your React experience?",
+      "answer": "I have around 2 to 3 years of React experience for frontend development. I’ve used it in internal tools and web applications alongside my broader full-stack and automation work."
+    },
+    {
+      "question": "Do you have Amazon Bedrock experience?",
+      "answer": "Yes. I already have exposure to Amazon Bedrock from one of my internal projects, where I used it for decision-making related use cases."
+    },
+    {
+      "question": "What AI tools or platforms have you used?",
+      "answer": "The main AI and LLM tools I’ve worked with or explored are Amazon Bedrock, the OpenAI API, and Hugging Face local models."
+    },
+    {
+      "question": "Have you tried local LLMs?",
+      "answer": "Yes. I’ve tried deploying smaller local LLMs on my own machine for lightweight experimentation. Because of hardware limits, I used models and context sizes that fit my available GPU."
+    },
+    {
+      "question": "What open models have you explored?",
+      "answer": "I’ve explored models such as Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek in the context of local experimentation, lightweight deployment, and hands-on learning."
     },
     {
       "question": "Can recruiters contact you?",
