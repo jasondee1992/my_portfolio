@@ -1,4 +1,5 @@
 import type { ChatHistoryMessage } from "@/lib/chatbot/prompting";
+import { getIntentExamples } from "@/lib/chatbot/intentDataset";
 
 type FollowUpResolution =
   | {
@@ -21,10 +22,14 @@ const ACCEPT_PATTERNS = [
   "go ahead",
   "please do",
   "continue",
+  "tell me more",
   "tell me",
   "kwento mo",
   "sige",
   "sige please",
+  "sure go ahead",
+  "more please",
+  ...getIntentExamples("accept_previous_offer"),
 ].map((item) => item.toLowerCase());
 
 const REJECT_PATTERNS = [

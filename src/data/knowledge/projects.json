@@ -2,7 +2,7 @@
   "internal_projects": [
     {
       "no": "01",
-      "title": "Money Movement Monitoring",
+      "title": "Operations Monitoring Dashboard",
       "role": "Developer / Process Automation Engineer",
       "project_type": "Internal Operations Dashboard",
       "tech_stack": [
@@ -12,12 +12,12 @@
         "Snowflake",
         "SQLite"
       ],
-      "description": "Developed a backend-driven monitoring solution that provides visibility into daily Money Movement volumes and helps identify missed requests, including client-requested transactions that were not fulfilled by the bank. The system supports data consolidation, service manager-level reporting, and process tracking to improve operational visibility and reporting accuracy.",
+      "description": "Developed a backend-driven monitoring solution for internal operational workflows in a financial-services environment. The system consolidated activity data, supported management reporting, and improved process visibility and reporting consistency for internal teams.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {
       "no": "02",
-      "title": "Leave Experience Mini-CRM",
+      "title": "Leave Operations Tracker",
       "role": "Developer / Process Automation Engineer",
       "project_type": "Internal Operations Dashboard",
       "tech_stack": [
@@ -29,12 +29,12 @@
         "Snowflake",
         "Web Scraping"
       ],
-      "description": "Built an internal mini-CRM application that streamlines the handling of employee leave and time-off requests, including parental, medical, bereavement, and other leave types. The tool helps teams manage reminders, tasks, and workflow actions involving employees, HR, and clients, improving process organization and reducing manual follow-ups.",
+      "description": "Built an internal workflow application for managing employee leave and time-off processes. The tool helped teams coordinate reminders, tasks, and status tracking across internal stakeholders, improving organization and reducing manual follow-ups.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {
       "no": "03",
-      "title": "Payment Process Analysis",
+      "title": "Process Analysis Dashboard",
       "role": "Developer / Process Automation Engineer",
       "project_type": "Internal Operations Dashboard",
       "tech_stack": [
@@ -46,7 +46,7 @@
         "Snowflake",
         "Web Scraping"
       ],
-      "description": "Developed a process analysis dashboard focused on tracking average monthly payment volumes, manual processing time, and recurring pre-submission errors. The solution helps teams identify inefficiencies, monitor error trends, and support data-driven process improvement initiatives.",
+      "description": "Developed a process analysis dashboard for internal operations workflows, focused on trend visibility, turnaround monitoring, and process improvement reporting. The solution helped teams identify inefficiencies at a high level, monitor recurring issues, and support data-driven improvement initiatives.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {
@@ -61,12 +61,12 @@
         "Snowflake",
         "SQLite"
       ],
-      "description": "Created an automated reporting solution that extracts data from Snowflake and generates structured quality reports in Excel. This project reduced manual reporting effort, improved consistency, and helped teams monitor data quality and operational performance more efficiently.",
+      "description": "Created an automated reporting solution that extracts data from Snowflake and generates structured quality reports in Excel. This reduced manual reporting effort, improved consistency, and helped teams monitor reporting quality and operational performance more efficiently.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {
       "no": "05",
-      "title": "New Hire Experience",
+      "title": "Onboarding Progress Tracker",
       "role": "Developer / Process Automation Engineer",
       "project_type": "Internal Operations Dashboard",
       "tech_stack": [
@@ -79,12 +79,12 @@
         "Snowflake",
         "Web Scraping"
       ],
-      "description": "Built an internal tracking and reporting solution for monitoring new hire progress, including licensing status, quiz performance, and management reporting. The system provides better visibility into onboarding readiness and helps management track compliance and training progress more effectively.",
+      "description": "Built an internal tracking and reporting solution for monitoring onboarding progress and management reporting. The system improved visibility into onboarding readiness and helped teams track training progress more effectively.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {
       "no": "06",
-      "title": "Ticket Auto-Assignment and Workforce Management Dashboard",
+      "title": "Automated Ticket Routing and Workforce Dashboard",
       "role": "Developer / Process Automation Engineer",
       "project_type": "Internal Operations Dashboard",
       "tech_stack": [
@@ -97,7 +97,7 @@
         "Snowflake",
         "Web Scraping"
       ],
-      "description": "Designed and developed an automated ticket assignment and workforce management solution that routes tickets based on stakeholder-defined rules and operational conditions. The platform includes a real-time dashboard for monitoring ticket flow, assignment status, and worker availability, while allowing managers to enable or disable specific workers from receiving tickets. This improved workload balancing, operational control, and real-time visibility across the team.",
+      "description": "Designed and developed an automated ticket-routing and workforce management solution for internal teams. The platform included a real-time dashboard for monitoring workflow status, assignment visibility, and team availability, improving workload balancing, operational control, and day-to-day visibility.",
       "note": "Internal enterprise project; live demo not publicly available."
     },
     {

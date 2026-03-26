@@ -1,3 +1,5 @@
+import { getIntentExamples } from "@/lib/chatbot/intentDataset";
+
 type QuestionScopeType = "portfolio" | "personal" | "tech" | "outside";
 type LanguageStyle = "english" | "filipino" | "taglish";
 type ProfileQuestionCategory =
@@ -7,8 +9,10 @@ type ProfileQuestionCategory =
   | "professional_background"
   | "strongest_skills"
   | "strengths_as_developer"
+  | "recruiter_hr_questions"
   | "role_fit_skills"
   | "tech_stack"
+  | "ai_experience"
   | "react_experience"
   | "bedrock_experience"
   | "ai_tools_experience"
@@ -57,8 +61,33 @@ const PORTFOLIO_SIGNALS = [
   "where do you work",
   "current company",
   "current role",
+  "profile",
+  "work profile",
+  "contact details",
+  "availability",
+  "new opportunities",
+  "opportunities",
+  "new role",
+  "full time roles",
+  "full-time roles",
+  "freelance",
+  "freelance work",
+  "project based work",
+  "project-based work",
+  "ai experience",
+  "llm experience",
   "career",
   "education",
+  "open to new opportunities",
+  "open for a new role",
+  "open to a new role",
+  "open for work",
+  "available for a new position",
+  "open to full time roles",
+  "open to full-time roles",
+  "freelance work",
+  "project based work",
+  "project-based work",
   "apply for this position",
   "apply for this company",
   "apply for this role",
@@ -91,6 +120,18 @@ const PROFILE_TOPIC_SIGNALS = [
   "skills",
   "skill",
   "tech stack",
+  "availability",
+  "contact info",
+  "contact details",
+  "opportunities",
+  "new opportunities",
+  "new role",
+  "freelance",
+  "freelance work",
+  "full time",
+  "full-time",
+  "ai experience",
+  "llm experience",
   "react",
   "frontend",
   "amazon bedrock",
@@ -112,6 +153,18 @@ const PROFILE_TOPIC_SIGNALS = [
   "qwen",
   "tinyllama",
   "deepseek",
+  "open to opportunities",
+  "new opportunities",
+  "new role",
+  "full time role",
+  "full-time role",
+  "full time roles",
+  "full-time roles",
+  "freelance",
+  "freelance work",
+  "project based work",
+  "project-based work",
+  "available for work",
   "roles",
   "roles have you had",
 ].map((item) => item.toLowerCase());
@@ -164,6 +217,10 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "what is your work experience",
       "tell me about your work experience",
       "can you share your work experience",
+      "how about work experience",
+      "what about work experience",
+      "how about your work experience",
+      "what about your work experience",
       "what kind of experience do you have",
       "what is your professional experience",
       "ano work experience mo",
@@ -213,6 +270,30 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "strength mo as developer",
     ],
     preferredKnowledgeCategories: ["about", "homepage", "profile", "persona", "persona-faq"],
+  },
+  {
+    category: "recruiter_hr_questions",
+    patterns: [
+      ...getIntentExamples("recruiter_hr_questions"),
+      "why are you a good fit for this role",
+      "why are you a good fit for this position",
+      "what makes you a strong candidate for this role",
+      "how do your skills fit this role",
+      "how are you fit for this role",
+      "bakit ka fit sa role na to",
+      "bakit ka bagay sa position na to",
+    ],
+    preferredKnowledgeCategories: [
+      "persona-faq",
+      "persona",
+      "about",
+      "experience",
+      "homepage",
+      "profile",
+      "project-highlight",
+      "internal-project",
+      "other-work",
+    ],
   },
   {
     category: "role_fit_skills",
@@ -275,8 +356,28 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
     ],
   },
   {
+    category: "ai_experience",
+    patterns: [
+      ...getIntentExamples("ai_experience"),
+      "what ai background do you have",
+      "tell me about your llm background",
+      "how much ai exposure do you have",
+      "anong ai background mo",
+    ],
+    preferredKnowledgeCategories: [
+      "persona-faq",
+      "persona",
+      "profile",
+      "about",
+      "project-highlight",
+      "internal-project",
+      "other-work",
+    ],
+  },
+  {
     category: "react_experience",
     patterns: [
+      ...getIntentExamples("react_experience"),
       "react experience",
       "experience with react",
       "react frontend experience",
@@ -310,6 +411,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "bedrock_experience",
     patterns: [
+      ...getIntentExamples("bedrock_experience"),
       "amazon bedrock experience",
       "bedrock experience",
       "do you have amazon bedrock experience",
@@ -366,6 +468,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "local_llm_experience",
     patterns: [
+      ...getIntentExamples("local_llm_experience"),
       "local llm experience",
       "have you tried local llms",
       "have you deployed a local model",
@@ -391,6 +494,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "open_model_familiarity",
     patterns: [
+      ...getIntentExamples("open_model_familiarity"),
       "have you tried mistral",
       "do you know meta llama",
       "have you used qwen",
@@ -555,29 +659,55 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "work_availability",
     patterns: [
+      ...getIntentExamples("work_availability"),
       "open to new opportunities",
       "open to work",
+      "open for work",
       "available for work",
+      "are you open for a new role",
+      "are you open to a new role",
+      "are you open for a new position",
+      "are you available for a new position",
+      "are you currently open to opportunities",
+      "are you open to opportunities",
       "looking for opportunities",
       "are you open to new opportunities",
       "are you open to work",
+      "are you open to full time roles",
+      "are you open to full-time roles",
+      "open ka ba sa new role",
+      "open ka ba sa new opportunities",
+      "open ka ba sa opportunities",
+      "open ka ba sa full time roles",
+      "open ka ba sa full-time roles",
     ],
     preferredKnowledgeCategories: ["persona", "persona-faq", "profile"],
   },
   {
     category: "freelance_availability",
     patterns: [
+      ...getIntentExamples("freelance_availability"),
       "open to freelance",
+      "open to freelance work",
       "open to project based work",
+      "open to project-based work",
       "freelance availability",
       "are you available for freelance",
+      "are you open to freelance work",
+      "are you open to freelance",
+      "are you open to project based work",
+      "are you open to project-based work",
       "open ka ba sa freelance",
+      "open ka ba sa freelance work",
+      "open ka ba sa project based work",
+      "open ka ba sa project-based work",
     ],
     preferredKnowledgeCategories: ["persona", "persona-faq", "profile"],
   },
   {
     category: "contact_info",
     patterns: [
+      ...getIntentExamples("contact_info"),
       "contact info",
       "contact details",
       "how can i contact you",

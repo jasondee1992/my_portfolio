@@ -1,4 +1,5 @@
 import profile from "@/data/knowledge/profile.json";
+import { getIntentExamples } from "@/lib/chatbot/intentDataset";
 import { getPersonaMemory } from "@/lib/chatbot/memory";
 
 type SafeIntentResult = {
@@ -113,11 +114,19 @@ const SAFE_INTENT_RESPONSES = {
   },
   help: {
     english:
-      "You can ask me about my projects, skills, tech stack, work experience, education, contact details, and career journey.",
+      "You can ask me about my projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, and contact details.",
     filipino:
-      "Pwede mo akong tanungin tungkol sa projects, skills, tech stack, work experience, education, contact details, at career journey ko.",
+      "Pwede mo akong tanungin tungkol sa projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, at contact details ko.",
     taglish:
-      "You can ask me about my projects, skills, tech stack, work experience, education, contact details, and career journey.",
+      "You can ask me about my projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, and contact details.",
+  },
+  continuation: {
+    english:
+      "Sure. You can ask me to continue about my projects, skills, work experience, AI tools, availability, or background.",
+    filipino:
+      "Sige. Pwede mo akong sabihan na ituloy ko tungkol sa projects, skills, work experience, AI tools, availability, o background ko.",
+    taglish:
+      "Sure. You can ask me to continue about my projects, skills, work experience, AI tools, availability, or background.",
   },
   thanks: {
     english:
@@ -222,6 +231,7 @@ const PROFILE_IDENTITY = {
 
 const DISPLAY_NAME = PROFILE_IDENTITY.assistantName;
 const FORMAL_NAME = PROFILE_IDENTITY.ownerName;
+const OPEN_CONVERSATION_PATTERNS = getIntentExamples("open_conversation");
 
 function normalizeForIntentMatching(text: string) {
   return ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim()} `;
@@ -555,13 +565,37 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       "tulong",
       "ano pwede itanong",
       "what can i ask",
+      "what can i ask you about",
+      "what can we talk about",
+      "what do you want to discuss",
+      "what topics can we talk about",
+      "ano ba gusto mong pag usapan",
+      "ano pwede nating pag usapan",
+      "anong pwede kong itanong",
+      "ano pwede kong itanong sayo",
       "pano kita gamitin",
       "how can i use you",
       "anong pwede mong sagutin",
       "what can you answer",
+      ...OPEN_CONVERSATION_PATTERNS,
     ])
   ) {
     return { answer: SAFE_INTENT_RESPONSES.help[languageStyle] };
+  }
+
+  if (
+    includesAny(normalizedText, [
+      "yes please",
+      "sure go ahead",
+      "tell me more",
+      "continue",
+      "please do",
+      "go ahead",
+      "sige please",
+      "kwento mo",
+    ])
+  ) {
+    return { answer: SAFE_INTENT_RESPONSES.continuation[languageStyle] };
   }
 
   if (
