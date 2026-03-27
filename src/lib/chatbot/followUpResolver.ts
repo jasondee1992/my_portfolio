@@ -135,6 +135,17 @@ function stripLeadingAckOrGratitude(text: string) {
   return current;
 }
 
+function hasExplicitNewScopedTopic(message: string) {
+  const candidate = stripLeadingAckOrGratitude(message);
+  const scoped = analyzeQuestionScope(candidate);
+
+  return (
+    candidate.length > 0 &&
+    scoped.scope !== "outside" &&
+    (isExplicitAcceptanceMessage(candidate) || candidate.includes("?"))
+  );
+}
+
 function isOfferMessage(message: string) {
   if (includesAny(message, OFFER_PATTERNS)) {
     return true;
@@ -221,6 +232,13 @@ export function resolveShortFollowUp(
   const previousUserMessage = getLastAnsweredUserMessage(history);
 
   if (!previousAssistantMessage) {
+    return null;
+  }
+
+  if (
+    (isExplicitAcceptanceMessage(lowered) || isExplicitAcceptanceMessage(continuationCandidate)) &&
+    hasExplicitNewScopedTopic(message)
+  ) {
     return null;
   }
 

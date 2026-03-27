@@ -259,7 +259,9 @@ $followUpContinuityChecks = @(
   "!previoususermessage",
   "leading_ack_or_gratitude_prefixes",
   "stripleadingackorgratitude",
-  "isexplicitacceptancemessage(continuationcandidate)"
+  "isexplicitacceptancemessage(continuationcandidate)",
+  "hasexplicitnewscopedtopic",
+  "analyzequestionscope(candidate)"
 )
 
 foreach ($phrase in $followUpContinuityChecks) {
@@ -309,13 +311,42 @@ $followUpScenarioCoverage = @(
     Scenario = "AWS topic continuation"
     PriorUserQuestion = "do you have aws experience"
     FollowUp = "can you tell me more"
+    FollowUpPhraseCoverage = "can you tell me more"
     ExpectedRoute = "continue same aws topic"
     Avoids = "out of scope fallback"
+  },
+  @{
+    Scenario = "New topic overrides previous AWS topic"
+    PriorUserQuestion = "do you have aws experience"
+    FollowUp = "can you tell me more about your projects"
+    FollowUpPhraseCoverage = "can you tell me more"
+    ExpectedRoute = "switch to the newly requested topic"
+    Avoids = "blind aws continuation"
+    RequiresScopeCoverage = "your projects"
+  },
+  @{
+    Scenario = "New topic overrides previous frontend topic"
+    PriorUserQuestion = "react frontend experience"
+    FollowUp = "tell me more about your skills"
+    FollowUpPhraseCoverage = "tell me more"
+    ExpectedRoute = "switch to the newly requested skills topic"
+    Avoids = "blind frontend continuation"
+    RequiresScopeCoverage = "your skills"
+  },
+  @{
+    Scenario = "New topic overrides previous current role topic"
+    PriorUserQuestion = "what is your current role"
+    FollowUp = "what about your ai experience"
+    SkipFollowUpPhraseCoverage = $true
+    ExpectedRoute = "switch to the newly requested ai experience topic"
+    Avoids = "blind current role continuation"
+    RequiresScopeCoverage = "ai experience"
   },
   @{
     Scenario = "Skills topic continuation"
     PriorUserQuestion = "what is your tech stack"
     FollowUp = "elaborate"
+    FollowUpPhraseCoverage = "elaborate"
     ExpectedRoute = "continue same skills topic"
     Avoids = "generic fallback"
   },
@@ -323,8 +354,25 @@ $followUpScenarioCoverage = @(
     Scenario = "Project topic continuation"
     PriorUserQuestion = "tell me about your portfolio project"
     FollowUp = "go on"
+    FollowUpPhraseCoverage = "go on"
     ExpectedRoute = "continue same project topic"
     Avoids = "outside scope"
+  },
+  @{
+    Scenario = "Same-topic continuation"
+    PriorUserQuestion = "what is your tech stack"
+    FollowUp = "tell me more"
+    FollowUpPhraseCoverage = "tell me more"
+    ExpectedRoute = "continue prior topic"
+    Avoids = "topic switch"
+  },
+  @{
+    Scenario = "Same-topic expansion"
+    PriorUserQuestion = "tell me about your portfolio project"
+    FollowUp = "can you expand on that"
+    FollowUpPhraseCoverage = "can you expand on that"
+    ExpectedRoute = "continue prior topic"
+    Avoids = "topic switch"
   },
   @{
     Scenario = "No valid prior topic"
@@ -343,10 +391,24 @@ foreach ($scenario in $followUpScenarioCoverage) {
     }
   }
 
-  if ($followUpResolverSource.ToLowerInvariant() -notlike "*$($scenario.FollowUp.ToLowerInvariant())*") {
-    throw "Missing follow-up phrase coverage for scenario '$($scenario.Scenario)': $($scenario.FollowUp)"
+  if (-not $scenario.SkipFollowUpPhraseCoverage) {
+    $followUpPhraseCoverage = if ($scenario.FollowUpPhraseCoverage) {
+      $scenario.FollowUpPhraseCoverage
+    } else {
+      $scenario.FollowUp
+    }
+
+    if ($followUpResolverSource.ToLowerInvariant() -notlike "*$($followUpPhraseCoverage.ToLowerInvariant())*") {
+      throw "Missing follow-up phrase coverage for scenario '$($scenario.Scenario)': $followUpPhraseCoverage"
     }
   }
+
+  if ($scenario.RequiresScopeCoverage) {
+    if ($questionScopeSource.ToLowerInvariant() -notlike "*$($scenario.RequiresScopeCoverage.ToLowerInvariant())*") {
+      throw "Missing override scope coverage for scenario '$($scenario.Scenario)': $($scenario.RequiresScopeCoverage)"
+    }
+  }
+}
 
 $standaloneConversationalCoverage = @(
   @{
