@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type SetStateAction,
 } from "react";
+import { getBrowserGeoDebugHeaders, getBrowserVisitMetadata } from "@/lib/browserVisitMetadata";
 
 export type Msg = { role: "user" | "assistant"; text: string };
 type PanelSize = { width: number; height: number };
@@ -19,6 +20,24 @@ type ResizeState = {
   startY: number;
   startWidth: number;
   startHeight: number;
+};
+type ChatRequestHistoryItem = {
+  role: Msg["role"];
+  content: string;
+};
+type ChatRequestPayload = {
+  message: string;
+  history: ChatRequestHistoryItem[];
+  sessionId?: string | null;
+  visitorId?: string | null;
+  pageUrl?: string | null;
+  userAgent?: string | null;
+  timeZone?: string | null;
+  session_id?: string | null;
+  visitor_id?: string | null;
+  page_url?: string | null;
+  user_agent?: string | null;
+  time_zone?: string | null;
 };
 
 const MAX_HISTORY_MESSAGES = 12;
@@ -168,10 +187,27 @@ export default function ChatbotPanel({
     const q = (rawMessage ?? input).trim();
     if (!q || loading) return;
 
-    const requestHistory = messages.slice(-MAX_HISTORY_MESSAGES).map((message) => ({
-      role: message.role,
-      content: message.text,
-    }));
+    const requestHistory: ChatRequestHistoryItem[] = messages
+      .slice(-MAX_HISTORY_MESSAGES)
+      .map((message) => ({
+        role: message.role,
+        content: message.text,
+      }));
+    const metadata = getBrowserVisitMetadata();
+    const requestPayload: ChatRequestPayload = {
+      message: q,
+      history: requestHistory,
+      sessionId: metadata.sessionId,
+      visitorId: metadata.visitorId,
+      pageUrl: metadata.pageUrl,
+      userAgent: metadata.userAgent,
+      timeZone: metadata.timeZone,
+      session_id: metadata.sessionId,
+      visitor_id: metadata.visitorId,
+      page_url: metadata.pageUrl,
+      user_agent: metadata.userAgent,
+      time_zone: metadata.timeZone,
+    };
 
     setInput("");
     setMessages((current) => [...current, { role: "user", text: q }]);
@@ -182,11 +218,9 @@ export default function ChatbotPanel({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...getBrowserGeoDebugHeaders(),
         },
-        body: JSON.stringify({
-          message: q,
-          history: requestHistory,
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
       if (!response.ok) {

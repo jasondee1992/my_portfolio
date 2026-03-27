@@ -880,6 +880,166 @@ textarea {
   filter: brightness(1.12) contrast(1.05);
 }
 
+.admin-grid-page {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: #232323;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+.admin-grid-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #2b2b2b;
+}
+
+.admin-grid-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.46);
+}
+
+.admin-grid-section {
+  padding: 1.25rem;
+}
+
+.admin-grid-toolbar {
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: #2a2a2a;
+}
+
+.admin-grid-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.admin-grid-filter-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-grid-input {
+  min-height: 42px;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: #1f1f1f;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.admin-grid-input:focus {
+  border-color: rgba(33, 150, 243, 0.7);
+  box-shadow: 0 0 0 1px rgba(33, 150, 243, 0.45);
+  background: #1c1c1c;
+}
+
+.admin-grid-input::placeholder {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.admin-grid-select {
+  appearance: none;
+}
+
+.admin-grid-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.65rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid rgba(33, 150, 243, 0.5);
+  background: rgba(33, 150, 243, 0.18);
+  color: rgba(245, 247, 250, 0.95);
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.admin-grid-button:hover {
+  transform: translateY(-1px);
+  background: rgba(33, 150, 243, 0.24);
+}
+
+.admin-grid-button-secondary {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #313131;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.admin-grid-button-secondary:hover {
+  background: #383838;
+}
+
+.admin-grid-empty {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #2a2a2a;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.9rem;
+}
+
+.admin-grid-table-wrap {
+  margin-top: 1rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: #252526;
+}
+
+.admin-grid-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-grid-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.admin-grid-table th {
+  background: #2d2d2d;
+  color: rgba(255, 255, 255, 0.7);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.admin-grid-table td {
+  background: #252526;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  vertical-align: top;
+}
+
+.admin-grid-table tr:hover td {
+  background: #2a2a2b;
+}
+
+.admin-grid-table th:last-child,
+.admin-grid-table td:last-child {
+  border-right: none;
+}
+
 @media (min-width: 768px) {
   .container-page {
     padding-inline: 32px;
@@ -929,6 +1089,15 @@ textarea {
 
   .about-stack-title {
     font-size: 1.04rem;
+  }
+
+  .admin-grid-header,
+  .admin-grid-section {
+    padding: 1.5rem;
+  }
+
+  .admin-grid-toolbar {
+    padding: 1.1rem;
   }
 }
 

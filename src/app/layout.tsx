@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import ChatbotWidget from "@/components/ChatbotWidget";
+import SiteVisitTracker from "@/components/SiteVisitTracker";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -56,6 +57,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${ubuntu.variable} min-h-screen antialiased`}>
         {children}
+        <SiteVisitTracker />
         <ChatbotWidget />
       </body>
     </html>

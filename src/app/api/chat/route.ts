@@ -10,6 +10,8 @@ import { buildContextualMessage } from "@/lib/chatbot/conversationContext";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
 import { getTenureResponse } from "@/lib/chatbot/tenure";
 import { getAgeResponse } from "@/lib/chatbot/age";
+import { logChatEvent } from "@/lib/chatbot/chatLogging";
+import { getRequestGeoMetadata } from "@/lib/requestGeo";
 import {
   analyzeQuestionScope,
   buildMissingInformationFallback,
@@ -24,6 +26,94 @@ const MIN_TOP_SCORE = 3;
 const MAX_HISTORY_MESSAGES = 12;
 const SOFT_FALLBACK_LIMIT = 3;
 const KNOWLEDGE_BASE = loadKnowledgeBase();
+
+export const runtime = "nodejs";
+
+type ChatRequestBody = {
+  message?: string;
+  history?: ChatHistoryMessage[];
+  sessionId?: string;
+  session_id?: string;
+  visitorId?: string;
+  visitor_id?: string;
+  pageUrl?: string;
+  page_url?: string;
+  userAgent?: string;
+  user_agent?: string;
+  timeZone?: string;
+  time_zone?: string;
+  ipAddress?: string;
+  ip_address?: string;
+};
+
+type ChatResponseSource = {
+  id: string;
+  category: string;
+  title: string;
+};
+
+type ChatRequestMetadata = {
+  sessionId: string | null;
+  visitorId: string | null;
+  pageUrl: string | null;
+  userAgent: string | null;
+  ipAddress: string | null;
+  countryCode: string | null;
+  countryName: string | null;
+  region: string | null;
+  city: string | null;
+  timeZone: string | null;
+};
+
+function toNullableText(value: unknown) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function getNormalizedBodyField(
+  body: Partial<ChatRequestBody> | undefined,
+  camelCaseKey: keyof ChatRequestBody,
+  snakeCaseKey: keyof ChatRequestBody
+) {
+  return toNullableText(body?.[camelCaseKey]) ?? toNullableText(body?.[snakeCaseKey]);
+}
+
+function getIpAddress(headers: Headers) {
+  const forwardedFor = toNullableText(headers.get("x-forwarded-for"));
+
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim() || null;
+  }
+
+  return toNullableText(headers.get("x-real-ip"));
+}
+
+function getRequestMetadata(request: Request, body?: Partial<ChatRequestBody>): ChatRequestMetadata {
+  const normalizedSessionId = getNormalizedBodyField(body, "sessionId", "session_id");
+  const normalizedVisitorId = getNormalizedBodyField(body, "visitorId", "visitor_id");
+  const normalizedPageUrl = getNormalizedBodyField(body, "pageUrl", "page_url");
+  const normalizedUserAgent = getNormalizedBodyField(body, "userAgent", "user_agent");
+  const normalizedIpAddress = getNormalizedBodyField(body, "ipAddress", "ip_address");
+  const normalizedTimeZone = getNormalizedBodyField(body, "timeZone", "time_zone");
+  const geoMetadata = getRequestGeoMetadata(request.headers, normalizedTimeZone);
+
+  return {
+    sessionId: normalizedSessionId,
+    visitorId: normalizedVisitorId,
+    pageUrl: normalizedPageUrl ?? toNullableText(request.headers.get("referer")),
+    userAgent: normalizedUserAgent ?? toNullableText(request.headers.get("user-agent")),
+    ipAddress: getIpAddress(request.headers) ?? normalizedIpAddress,
+    countryCode: geoMetadata.countryCode,
+    countryName: geoMetadata.countryName,
+    region: geoMetadata.region,
+    city: geoMetadata.city,
+    timeZone: geoMetadata.timeZone,
+  };
+}
 
 function getCurrentPhilippineDateTimeResponse(message: string) {
   const normalized = message.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -229,6 +319,10 @@ function buildScopedPortfolioFallbackMatches(
 }
 
 export async function POST(request: Request) {
+  let requestMetadata = getRequestMetadata(request);
+  let rawMessage: string | null = null;
+  let effectiveMessageForLog: string | null = null;
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -241,11 +335,12 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const body = (await request.json()) as {
-      message?: string;
-      history?: ChatHistoryMessage[];
-    };
+    const body = (await request.json()) as ChatRequestBody;
+    requestMetadata = getRequestMetadata(request, body);
+
     const message = body.message?.trim();
+    rawMessage = message ?? null;
+    effectiveMessageForLog = message ?? null;
     const history = Array.isArray(body.history)
       ? body.history
           .filter(
@@ -258,6 +353,33 @@ export async function POST(request: Request) {
           .slice(-MAX_HISTORY_MESSAGES)
       : [];
 
+    function respondWithLoggedAnswer({
+      answer,
+      responseBranch,
+      sources = [],
+      modelUsed = null,
+      status = 200,
+    }: {
+      answer: string;
+      responseBranch: string;
+      sources?: ChatResponseSource[];
+      modelUsed?: string | null;
+      status?: number;
+    }) {
+      if (rawMessage) {
+        logChatEvent({
+          ...requestMetadata,
+          userMessage: rawMessage,
+          effectiveMessage: effectiveMessageForLog,
+          aiResponse: answer,
+          responseBranch,
+          modelUsed,
+        });
+      }
+
+      return NextResponse.json({ answer, sources }, { status });
+    }
+
     if (!message) {
       return NextResponse.json(
         { error: "Message is required." },
@@ -268,9 +390,9 @@ export async function POST(request: Request) {
     const followUpResolution = resolveShortFollowUp(message, history);
 
     if (followUpResolution?.type === "reject_previous_offer") {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: followUpResolution.answer,
-        sources: [],
+        responseBranch: "follow_up_reject",
       });
     }
 
@@ -278,13 +400,14 @@ export async function POST(request: Request) {
       followUpResolution?.type === "accept_previous_offer"
         ? followUpResolution.resolvedMessage
         : message;
+    effectiveMessageForLog = effectiveMessage;
 
     const restrictedResponse = checkRestrictedInput(effectiveMessage);
 
     if (restrictedResponse) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: restrictedResponse,
-        sources: [],
+        responseBranch: "restricted_input",
       });
     }
 
@@ -303,43 +426,43 @@ export async function POST(request: Request) {
         : getSafeIntentResponse(message);
 
     if (safeIntentResponse) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: safeIntentResponse.answer,
-        sources: [],
+        responseBranch: "safe_intent",
       });
     }
 
     const currentDateTimeResponse = getCurrentPhilippineDateTimeResponse(effectiveMessage);
 
     if (currentDateTimeResponse) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: currentDateTimeResponse,
-        sources: [],
+        responseBranch: "direct_datetime",
       });
     }
 
     const ageResponse = getAgeResponse(effectiveMessage);
 
     if (ageResponse) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: ageResponse.answer,
-        sources: [],
+        responseBranch: "direct_age",
       });
     }
 
     const tenureResponse = getTenureResponse(contextualMessage);
 
     if (tenureResponse) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: tenureResponse.answer,
-        sources: [],
+        responseBranch: "direct_tenure",
       });
     }
 
     if (questionScope.scope === "outside" && !isAcceptedFollowUp) {
-      return NextResponse.json({
+      return respondWithLoggedAnswer({
         answer: buildOutOfScopeFallback(message),
-        sources: [],
+        responseBranch: "out_of_scope",
       });
     }
 
@@ -355,7 +478,10 @@ export async function POST(request: Request) {
     }
 
     if (matches.length === 0) {
-      return NextResponse.json({ answer: buildMissingInformationFallback(effectiveMessage) });
+      return respondWithLoggedAnswer({
+        answer: buildMissingInformationFallback(effectiveMessage),
+        responseBranch: "missing_information",
+      });
     }
 
     const context = matches
@@ -394,13 +520,16 @@ export async function POST(request: Request) {
     });
 
     const sanitizedAnswer = sanitizeChatbotAnswer(response.output_text);
+    const usedSanitizedFallback = !sanitizedAnswer || sanitizedAnswer === CHATBOT_FALLBACK;
     const answer =
-      !sanitizedAnswer || sanitizedAnswer === CHATBOT_FALLBACK
+      usedSanitizedFallback
         ? buildMissingInformationFallback(effectiveMessage)
         : sanitizedAnswer;
 
-    return NextResponse.json({
+    return respondWithLoggedAnswer({
       answer,
+      responseBranch: usedSanitizedFallback ? "openai_sanitized_fallback" : "openai_generated",
+      modelUsed: DEFAULT_MODEL,
       sources: matches.map((item) => ({
         id: item.entry.id,
         category: item.entry.category,
@@ -409,6 +538,16 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Chat API error:", error);
+
+    if (rawMessage) {
+      logChatEvent({
+        ...requestMetadata,
+        userMessage: rawMessage,
+        effectiveMessage: effectiveMessageForLog,
+        aiResponse: "Failed to generate chat response.",
+        responseBranch: "route_error",
+      });
+    }
 
     return NextResponse.json(
       { error: "Failed to generate chat response." },
