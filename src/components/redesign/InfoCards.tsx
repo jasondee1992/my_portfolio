@@ -81,7 +81,7 @@ function ExpandableHighlightDescription({
 
   return (
     <details className="group mt-3">
-      <summary className="list-none [&::-webkit-details-marker]:hidden">
+      <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden">
         <div className="flex items-center justify-between gap-3">
           {platform ? (
             <span className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-white/48 md:text-[10px]">

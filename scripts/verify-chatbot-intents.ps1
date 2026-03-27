@@ -709,7 +709,7 @@ if (-not $jpmcEntry) {
 }
 
 $jpmcDetails = @($jpmcEntry.details) -join " "
-foreach ($phrase in @("AWS-based deployment pipelines", "CI/CD-based deployment workflows", "DevOps teams", "rather than acting as the primary infrastructure owner")) {
+foreach ($phrase in @("production updates in coordination with DevOps teams", "CI/CD-based deployment workflows", "DevOps teams", "rather than acting as the primary infrastructure owner")) {
   if ($jpmcDetails -notlike "*$phrase*") {
     throw "experience.json JPMorgan entry is missing expected AWS/cloud detail: $phrase"
   }

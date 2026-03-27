@@ -79,7 +79,7 @@ function ExpandableDescription({ text, maxLength = 120 }: { text: string; maxLen
 
   return (
     <details className="group">
-      <summary className="list-none [&::-webkit-details-marker]:hidden">
+      <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden">
         <p className="type-card-body leading-8 text-white/68">{getCollapsedText(text, maxLength)}</p>
         <span className="mt-3 inline-flex text-sm font-medium text-white/70 transition hover:text-white group-open:hidden">
           See more

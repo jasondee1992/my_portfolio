@@ -1,20 +1,20 @@
 [
   {
-    "title": "Automated Reporting System for Ticket Monitoring",
+    "title": "Internal Reporting and Monitoring Platform",
     "year": "2024",
-    "platform": "Internal platform",
-    "summary": "End-to-end Python-based reporting system for internal workflow monitoring. Included backend data processing, scheduled report generation, and dashboard visibility, reducing manual monitoring and improving reporting transparency for managers."
+    "platform": "Enterprise platform",
+    "summary": "End-to-end Python-based reporting platform for enterprise workflow monitoring. It included backend data processing, scheduled report generation, and dashboard visibility to improve reporting transparency and reduce manual monitoring effort."
   },
   {
-    "title": "Dynamic Dashboard with Automated Ticket Assignment",
+    "title": "Workflow Automation Dashboard",
     "year": "2025",
-    "platform": "Internal platform",
-    "summary": "Developed a full-stack internal web application using Python and Dash (Bootstrap) to support access management and automated ticket routing for internal workflows. Also explored the use of Amazon Bedrock and OpenAI models for AI-assisted recommendations and workflow support use cases. The solution improved workload distribution, reduced manual assignment effort, and provided real-time visibility for team leads and managers."
+    "platform": "Enterprise platform",
+    "summary": "Developed a full-stack enterprise web application using Python and Dash (Bootstrap) to support workflow visibility, operational coordination, and internal decision support. Also explored Amazon Bedrock and OpenAI models for AI-assisted workflow support concepts. The solution improved workload visibility, reduced manual effort, and provided more timely insight for internal stakeholders."
   },
   {
-    "title": "Location Mapping Application",
+    "title": "Location Data Management Application",
     "year": "2023",
-    "platform": "Internal platform",
-    "summary": "Web-based application developed using Python (Django), React, and PostgreSQL to manage and visualize location-related operational data. Built in collaboration with international teams, improving accuracy and internal data management."
+    "platform": "Enterprise platform",
+    "summary": "Web-based application developed using Python (Django), React, and PostgreSQL to manage and visualize location-related enterprise data. Built in collaboration with international teams, improving data accuracy and usability."
   }
 ]

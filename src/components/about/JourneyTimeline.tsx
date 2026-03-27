@@ -98,7 +98,7 @@ const timeline: TimelineItem[] = [
     year: "2021",
     title: "Application System Engineer at Fujitsu Philippines",
     description:
-      "Moved into a more software-focused role as Application System Engineer at Weserv System International Inc. (Fujitsu Philippines). Worked on a Location Mapping Application using React, Python (Django), and PostgreSQL in collaboration with US- and Japan-based teams.",
+      "Moved into a more software-focused role as Application System Engineer at Weserv System International Inc. (Fujitsu Philippines). Worked on an enterprise web application using React, Python (Django), and PostgreSQL in collaboration with international teams.",
     side: "right",
   },
   {
@@ -117,16 +117,16 @@ const timeline: TimelineItem[] = [
   },
   {
     year: "2024",
-    title: "Automation, Dashboards, and Snowflake Workflows",
+    title: "Automation, Reporting, and Enterprise Workflow Tools",
     description:
-      "Built and maintained end-to-end Python applications for internal automation, created dashboards for user access and ticket monitoring, automated Snowflake data extraction, replaced legacy Alteryx and ClickView workflows, and supported production deployments with DevOps and AWS pipelines.",
+      "Built and maintained end-to-end Python applications for enterprise automation, reporting, and workflow support. Developed dashboards, improved legacy processes, and supported production deployments in collaboration with DevOps teams.",
     side: "left",
   },
   {
     year: "2025",
     title: "Advanced Python Automation and AI Exposure",
     description:
-      "Continued advancing as a Python developer focused on automation, reporting pipelines, SAP data extraction, scheduler-based report delivery, Snowflake integration, and management dashboards with near real-time operational visibility. Resume also shows growing exposure to OpenAI APIs, RAG, Hugging Face-hosted models, and Amazon Bedrock-related concepts.",
+      "Continued advancing as a Python developer focused on automation, reporting pipelines, enterprise data workflows, and dashboard development, while also expanding practical exposure to OpenAI APIs, RAG, Hugging Face-hosted models, and Amazon Bedrock-related concepts.",
     side: "right",
   },
 ];

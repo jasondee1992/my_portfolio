@@ -589,6 +589,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  cursor: pointer;
   min-height: 42px;
   padding: 0.68rem 1rem;
   border-radius: 999px;

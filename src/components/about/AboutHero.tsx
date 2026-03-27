@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { aboutParagraphs } from "@/data/aboutContent";
 
@@ -6,6 +9,7 @@ export default function AboutHero() {
   const previewParagraphs = aboutParagraphs.slice(0, previewCount);
   const remainingParagraphs = aboutParagraphs.slice(previewCount);
   const hasMoreContent = aboutParagraphs.length > previewCount;
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <section className="container-page relative pt-10 md:pt-14">
@@ -20,36 +24,53 @@ export default function AboutHero() {
             Building systems that simplify work and turn ideas into usable tools.
           </p>
 
-          <div
-            className={`type-page-body mx-auto mt-10 max-w-4xl text-left leading-9 text-white/65 ${
-              hasMoreContent ? "about-copy-collapsed" : ""
-            }`}
-          >
-            {previewParagraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          <div className="about-copy-shell">
+            <div
+              className={`type-page-body mx-auto mt-10 max-w-4xl text-left leading-9 text-white/65 ${
+                hasMoreContent && !isExpanded ? "about-copy-collapsed" : ""
+              }`}
+            >
+              {previewParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
 
-          {hasMoreContent ? (
-            <details className="group mt-6">
-              <summary className="about-toggle-button inline-flex list-none [&::-webkit-details-marker]:hidden">
-                <span className="group-open:hidden">Read more</span>
-                <span className="hidden group-open:inline">Show less</span>
-                <span aria-hidden="true" className="group-open:hidden">
-                  ↓
-                </span>
-                <span aria-hidden="true" className="hidden group-open:inline">
-                  ↑
-                </span>
-              </summary>
+            {hasMoreContent ? (
+              <div className="mt-6">
+                {!isExpanded ? (
+                  <button
+                    type="button"
+                    className="about-toggle-button inline-flex"
+                    onClick={() => setIsExpanded(true)}
+                    aria-expanded={false}
+                  >
+                    <span>Read more</span>
+                    <span aria-hidden="true">↓</span>
+                  </button>
+                ) : null}
 
-              <div className="type-page-body mx-auto mt-6 grid max-w-4xl gap-6 text-left leading-9 text-white/65">
-                {remainingParagraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+                {isExpanded ? (
+                  <>
+                    <div className="type-page-body mx-auto mt-6 grid max-w-4xl gap-6 text-left leading-9 text-white/65">
+                      {remainingParagraphs.map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="about-toggle-button mt-6 inline-flex"
+                      onClick={() => setIsExpanded(false)}
+                      aria-expanded={true}
+                    >
+                      <span>Show less</span>
+                      <span aria-hidden="true">↑</span>
+                    </button>
+                  </>
+                ) : null}
               </div>
-            </details>
-          ) : null}
+            ) : null}
+          </div>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a

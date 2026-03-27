@@ -6,7 +6,7 @@ export default function FeaturedProjectsGrid() {
   return (
     <section className="container-page section-shell">
       <div className="mb-5 text-sm font-normal uppercase tracking-wider text-white/35">
-        Internal Projects
+        Selected Enterprise Work
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

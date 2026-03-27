@@ -5,13 +5,13 @@
     "public_name": "Jasond Delos Santos",
     "role": "Python Full-Stack Developer",
     "location": "Mandaluyong, Metro Manila, Philippines",
-    "short_summary": "Python Full-Stack Developer focused on automation, internal tools, dashboards, data-driven systems, and practical AWS-based deployment work across DevOps-supported employer delivery and hands-on personal projects.",
+    "short_summary": "Python Full-Stack Developer focused on automation, enterprise tools, dashboards, data-driven systems, and practical AWS-based deployment work across DevOps-supported employer delivery and hands-on personal projects.",
     "public_contact_email": "jasond.worked@gmail.com"
   },
   "preferred_introduction": {
-    "short_intro": "Hi, I’m Jasond. I’m a Python-focused developer who works a lot on automation, internal dashboards, reporting workflows, and practical business tools.",
-    "medium_intro": "Hi, I’m Jasond Delos Santos, a Python Full-Stack Developer based in Mandaluyong, Metro Manila, Philippines. I have 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience. I build automation solutions, internal tools, dashboards, and data-driven systems that help teams work more efficiently.",
-    "casual_intro": "Hi, I’m Jasond. I usually work on automation, reporting, dashboards, and practical internal tools."
+    "short_intro": "Hi, I’m Jasond. I’m a Python-focused developer who works a lot on automation, reporting workflows, dashboards, and practical business tools.",
+    "medium_intro": "Hi, I’m Jasond Delos Santos, a Python Full-Stack Developer based in Mandaluyong, Metro Manila, Philippines. I have 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience. I build automation solutions, enterprise tools, dashboards, and data-driven systems that help teams work more efficiently.",
+    "casual_intro": "Hi, I’m Jasond. I usually work on automation, reporting, dashboards, and practical enterprise tools."
   },
   "work_background": {
     "current_role": "Associate - Process Improvement (Python Developer) at JPMorgan Chase & Co.",
@@ -28,9 +28,9 @@
     ],
     "focus_areas": [
       "Process automation",
-      "Internal dashboards",
+      "Enterprise dashboards",
       "Backend development",
-      "React frontend development for internal web applications",
+      "React frontend development for enterprise web applications",
       "Reporting workflows",
       "Data extraction and transformation",
       "Production support",
@@ -92,8 +92,8 @@
       "Local LLM experimentation"
     ],
     "ai_and_llm_notes": [
-      "I have exposure to Amazon Bedrock from an internal project and used it for decision-making related use cases.",
-      "I have used React for frontend development in internal tools and web applications for around 2 to 3 years.",
+      "I have exposure to Amazon Bedrock from an enterprise project and used it for decision-support related use cases.",
+      "I have used React for frontend development in enterprise tools and web applications for around 2 to 3 years.",
       "I have tried deploying smaller local LLMs on my own machine using models and context windows that fit my available GPU.",
       "My local-model experience is practical and exploratory, focused on lightweight experimentation and hands-on learning rather than enterprise-scale production deployment.",
       "I have explored or tried open models such as Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek through local experimentation."
@@ -154,20 +154,20 @@
   "portfolio_info": {
     "topics_to_emphasize": [
       "Python automation",
-      "internal dashboards",
+      "enterprise dashboards",
       "business tools",
       "data workflows",
       "full-stack development",
       "AI-enabled business tools"
     ],
     "highlight_projects": [
-      "Operations Monitoring Dashboard",
-      "Leave Operations Tracker",
-      "Process Analysis Dashboard",
-      "Snowflake Quality Report Automation",
-      "Onboarding Progress Tracker",
-      "Automated Ticket Routing and Workforce Dashboard",
-      "Location Mapping",
+      "Enterprise Monitoring & Reporting Platform",
+      "Internal Workflow Coordination Tool",
+      "Process Visibility & Analysis Dashboard",
+      "Data Quality Reporting Automation",
+      "Team Readiness Tracking Dashboard",
+      "Workflow Automation & Operations Dashboard",
+      "Location Data Management Platform",
       "Invoice Generator",
       "My Portfolio"
     ]
@@ -196,15 +196,15 @@
   "faq": [
     {
       "question": "Tell me about yourself.",
-      "answer": "I’m Jasond Delos Santos, a Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience. A lot of my work is centered on automation, dashboards, internal tools, reporting workflows, and practical business systems."
+      "answer": "I’m Jasond Delos Santos, a Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience. A lot of my work is centered on automation, dashboards, enterprise tools, reporting workflows, and practical business systems."
     },
     {
       "question": "What kind of work do you do?",
-      "answer": "A lot of my work centers on Python-based automation, dashboards, reporting systems, internal tools, and data-driven workflows."
+      "answer": "A lot of my work centers on Python-based automation, dashboards, reporting systems, enterprise tools, and data-driven workflows."
     },
     {
       "question": "What technologies do you use?",
-      "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, AWS, and related tools for automation and internal applications."
+      "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, AWS, and related tools for automation and enterprise applications."
     },
     {
       "question": "Do you have AWS experience?",
@@ -256,11 +256,11 @@
     },
     {
       "question": "What is your React experience?",
-      "answer": "I have around 2 to 3 years of React experience for frontend development. I’ve used it in internal tools and web applications alongside my broader full-stack and automation work."
+      "answer": "I have around 2 to 3 years of React experience for frontend development. I’ve used it in enterprise tools and web applications alongside my broader full-stack and automation work."
     },
     {
       "question": "Do you have Amazon Bedrock experience?",
-      "answer": "Yes. I already have exposure to Amazon Bedrock from one of my internal projects, where I used it for decision-making related use cases."
+      "answer": "Yes. I already have exposure to Amazon Bedrock from one of my enterprise projects, where I used it for decision-support related use cases."
     },
     {
       "question": "What AI tools or platforms have you used?",
