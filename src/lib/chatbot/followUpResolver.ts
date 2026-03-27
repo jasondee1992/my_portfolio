@@ -45,6 +45,24 @@ const REJECT_PATTERNS = [
   ...getIntentExamples("reject_previous_offer"),
 ].map((item) => item.toLowerCase());
 
+const CLOSING_PATTERNS = [
+  "that s all",
+  "thats all",
+  "that will be all",
+  "nothing else",
+  "no i m good",
+  "no im good",
+  "i m good",
+  "im good",
+  "all good",
+  "we re good",
+  "were good",
+  "no more questions",
+  "thank you that s all",
+  "thanks that s all",
+  "nothing that s all thank you",
+].map((item) => item.toLowerCase());
+
 const OFFER_PATTERNS = [
   "if you want",
   "i can",
@@ -111,6 +129,10 @@ function includesAny(text: string, patterns: string[]) {
 
 function isExplicitAcceptanceMessage(message: string) {
   return includesAny(message, ACCEPT_PATTERNS);
+}
+
+function isConversationClosingMessage(message: string) {
+  return includesAny(message, CLOSING_PATTERNS);
 }
 
 function stripLeadingAckOrGratitude(text: string) {
@@ -230,6 +252,16 @@ export function resolveShortFollowUp(
   const continuationCandidate = stripLeadingAckOrGratitude(message);
   const previousAssistantMessage = getLastAssistantMessage(history);
   const previousUserMessage = getLastAnsweredUserMessage(history);
+
+  if (
+    isConversationClosingMessage(lowered) ||
+    (continuationCandidate && isConversationClosingMessage(continuationCandidate))
+  ) {
+    return {
+      type: "reject_previous_offer",
+      answer: "You're welcome.",
+    };
+  }
 
   if (!previousAssistantMessage) {
     return null;

@@ -64,6 +64,26 @@ const SAFE_INTENT_RESPONSES = {
     taglish:
       "You’re welcome. If you want, I can also share more about my projects, experience, or skills.",
   },
+  closing: {
+    english: [
+      "You're welcome.",
+      "Glad to help.",
+      "No problem.",
+      "Happy to help.",
+    ],
+    filipino: [
+      "Walang anuman.",
+      "Glad to help.",
+      "No problem.",
+      "Happy to help.",
+    ],
+    taglish: [
+      "You're welcome.",
+      "Glad to help.",
+      "No problem.",
+      "Happy to help.",
+    ],
+  },
   laughter: {
     english: [
       "Haha, appreciate that.",
@@ -143,6 +163,24 @@ const LEADING_CONVERSATIONAL_PREFIXES = [
   "thank u",
   "salamat",
   "appreciate it",
+].map((item) => item.toLowerCase());
+
+const CLOSING_PATTERNS = [
+  "that s all",
+  "thats all",
+  "that will be all",
+  "nothing else",
+  "no i m good",
+  "no im good",
+  "i m good",
+  "im good",
+  "all good",
+  "we re good",
+  "were good",
+  "no more questions",
+  "thank you that s all",
+  "thanks that s all",
+  "nothing that s all thank you",
 ].map((item) => item.toLowerCase());
 
 function normalizeForIntentMatching(text: string) {
@@ -263,6 +301,12 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
 
   if (hasMixedPortfolioIntent) {
     return null;
+  }
+
+  if (includesAny(normalizedText, CLOSING_PATTERNS)) {
+    return {
+      answer: pickVariant(SAFE_INTENT_RESPONSES.closing[languageStyle], text),
+    };
   }
 
   if (

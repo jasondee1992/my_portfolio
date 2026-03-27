@@ -253,6 +253,9 @@ $safeIntentChecks = @(
   "trimleadingconversationalprefix",
   "leading_conversational_prefixes",
   "analyzequestionscope(trimmedmixedintentremainder)",
+  "that s all",
+  "no i m good",
+  "no more questions",
   "understood",
   "got it",
   "noted",
@@ -338,6 +341,11 @@ $followUpChecks = @(
   "expand on that",
   "elaborate",
   "please do",
+  "that s all",
+  "no i m good",
+  "i m good",
+  "nothing else",
+  "no more questions",
   "not now",
   "no thanks"
 )
@@ -518,12 +526,79 @@ $standaloneConversationalCoverage = @(
     Scenario = "Standalone thanks"
     Message = "thank you"
     ExpectedRoute = "polite closing or acknowledgment reply"
+  },
+  @{
+    Scenario = "Clear conversation closing"
+    Message = "that s all"
+    ExpectedRoute = "short polite closing"
+  },
+  @{
+    Scenario = "Clear conversation closing with reassurance"
+    Message = "no i m good"
+    ExpectedRoute = "short polite closing"
   }
 )
 
 foreach ($scenario in $standaloneConversationalCoverage) {
   if ($safeIntentsSource.ToLowerInvariant() -notlike "*$($scenario.Message.ToLowerInvariant())*") {
     throw "Missing standalone conversational coverage for scenario '$($scenario.Scenario)': $($scenario.Message)"
+  }
+}
+
+$closingIntentScenarioCoverage = @(
+  @{
+    Scenario = "Clear closing with gratitude"
+    Message = "nothing. that's all. thank you."
+    SafeIntentPhraseCoverage = @("nothing that s all thank you", "that s all")
+    FollowUpPhraseCoverage = @("nothing else", "that s all")
+    ExpectedRoute = "short polite closing with no further offer"
+    Avoids = "follow-up offer"
+  },
+  @{
+    Scenario = "Direct closing"
+    Message = "no i'm good"
+    SafeIntentPhraseCoverage = @("no i m good")
+    FollowUpPhraseCoverage = @("no i m good")
+    ExpectedRoute = "closing reply, not out-of-scope or question handling"
+    Avoids = "out-of-scope fallback"
+  },
+  @{
+    Scenario = "Simple closing"
+    Message = "that's all"
+    SafeIntentPhraseCoverage = @("that s all")
+    FollowUpPhraseCoverage = @("that s all")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
+    Scenario = "Gratitude only"
+    Message = "thank you"
+    SafeIntentPhraseCoverage = @("thank you")
+    FollowUpPhraseCoverage = @()
+    ExpectedRoute = "polite reply without forcing full conversation close"
+    Avoids = "forced closing intent"
+  },
+  @{
+    Scenario = "Actual continuation"
+    Message = "tell me more"
+    SafeIntentPhraseCoverage = @()
+    FollowUpPhraseCoverage = @("tell me more")
+    ExpectedRoute = "continuation behavior remains intact"
+    Avoids = "closing intent"
+  }
+)
+
+foreach ($scenario in $closingIntentScenarioCoverage) {
+  foreach ($phrase in $scenario.SafeIntentPhraseCoverage) {
+    if ($safeIntentsSource.ToLowerInvariant() -notlike "*$($phrase.ToLowerInvariant())*") {
+      throw "Missing safe-intent closing coverage for scenario '$($scenario.Scenario)': $phrase"
+    }
+  }
+
+  foreach ($phrase in $scenario.FollowUpPhraseCoverage) {
+    if ($followUpResolverSource.ToLowerInvariant() -notlike "*$($phrase.ToLowerInvariant())*") {
+      throw "Missing follow-up closing coverage for scenario '$($scenario.Scenario)': $phrase"
+    }
   }
 }
 
