@@ -70,7 +70,7 @@ export default function AlbumGalleryClient({
               key={album.slug}
               type="button"
               onClick={() => openAlbum(album)}
-              className="group section-panel overflow-hidden text-left"
+              className="group section-panel soft-hover overflow-hidden text-left"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 {album.cover ? (

@@ -13,7 +13,7 @@ export default function AboutHero() {
 
   return (
     <section className="container-page relative pt-10 md:pt-14">
-      <div className="section-panel mx-auto max-w-5xl px-8 py-10 md:px-12 md:py-14">
+      <div className="section-panel soft-hover mx-auto max-w-5xl px-8 py-10 md:px-12 md:py-14">
         <div className="mx-auto max-w-4xl text-center">
           <div className="section-eyebrow mx-auto">About</div>
           <h1 className="type-page-title section-title gradient-text mt-6 font-normal">

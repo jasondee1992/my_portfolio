@@ -11,7 +11,7 @@ export default function OtherWorksList() {
 
       <div className="space-y-5">
         {otherWorks.map((work) => (
-          <div key={work.no} className="section-panel p-6 md:p-7">
+          <div key={work.no} className="section-panel soft-hover p-6 md:p-7">
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
               <div className="flex-1">
                 <div className="mb-3 text-xs text-white/30">{work.no}</div>

@@ -30,7 +30,7 @@ export default function ConnectSection() {
 
   return (
     <section className="container-page section-shell">
-      <div className="section-panel mx-auto max-w-5xl p-8 md:p-10">
+      <div className="section-panel soft-hover mx-auto max-w-5xl p-8 md:p-10">
         <div className="section-header">
           <div className="section-eyebrow">Connect</div>
           <h2 className="text-3xl font-normal text-white/95">Let’s connect</h2>

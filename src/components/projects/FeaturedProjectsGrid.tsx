@@ -11,7 +11,7 @@ export default function FeaturedProjectsGrid() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {internalProjects.map((project) => (
-          <div key={project.title} className="section-panel p-5">
+          <div key={project.title} className="section-panel soft-hover p-5">
             <div className="mb-3 text-xs font-medium tracking-[0.18em] text-white/35">{project.no}</div>
 
             <h3 className="text-xl font-normal leading-8 text-white/95">{project.title}</h3>
