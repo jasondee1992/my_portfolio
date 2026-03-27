@@ -1,5 +1,4 @@
 import "server-only";
-import { notFound } from "next/navigation";
 import { requireAdminPageAuth } from "@/lib/adminAuth";
 import { getChatLogs, getChatLogsCount } from "@/lib/chatbot/chatLogging";
 import { getSiteVisits } from "@/lib/siteVisitLogging";
@@ -42,7 +41,17 @@ function parsePage(value: string) {
 }
 
 function parseStoredUtcDateTime(value: string) {
-  return new Date(`${value.replace(" ", "T")}Z`);
+  const normalizedValue = value.trim();
+
+  if (!normalizedValue) {
+    return new Date(Number.NaN);
+  }
+
+  if (/[zZ]$/.test(normalizedValue) || /[+-]\d{2}:\d{2}$/.test(normalizedValue)) {
+    return new Date(normalizedValue);
+  }
+
+  return new Date(`${normalizedValue.replace(" ", "T")}Z`);
 }
 
 function formatDateTime(value: string, timeZone?: string | null) {
@@ -99,10 +108,6 @@ function renderHiddenParams(params: Record<string, string>) {
 }
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
-  }
-
   await requireAdminPageAuth("/admin/dashboard");
 
   const resolvedSearchParams = (await searchParams) ?? {};
@@ -151,18 +156,29 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
     dateTo: siteDateTo,
   };
 
-  const totalMatchedChatRows = getChatLogsCount(chatFilters);
-  const totalChatPages = Math.max(1, Math.ceil(totalMatchedChatRows / chatLimit));
-  const chatPage = Math.min(requestedChatPage, totalChatPages);
-  const chatLogs = getChatLogs({
-    ...chatFilters,
-    limit: chatLimit,
-    offset: (chatPage - 1) * chatLimit,
-  });
-  const siteVisits = getSiteVisits({
-    ...siteFilters,
-    limit: siteLimit,
-  });
+  let readError: string | null = null;
+  let totalMatchedChatRows = 0;
+  let chatLogs = await Promise.resolve([] as Awaited<ReturnType<typeof getChatLogs>>);
+  let siteVisits = await Promise.resolve([] as Awaited<ReturnType<typeof getSiteVisits>>);
+  let chatPage = 1;
+  let totalChatPages = 1;
+
+  try {
+    totalMatchedChatRows = await getChatLogsCount(chatFilters);
+    totalChatPages = Math.max(1, Math.ceil(totalMatchedChatRows / chatLimit));
+    chatPage = Math.min(requestedChatPage, totalChatPages);
+    chatLogs = await getChatLogs({
+      ...chatFilters,
+      limit: chatLimit,
+      offset: (chatPage - 1) * chatLimit,
+    });
+    siteVisits = await getSiteVisits({
+      ...siteFilters,
+      limit: siteLimit,
+    });
+  } catch (error) {
+    readError = error instanceof Error ? error.message : "Unable to read log data.";
+  }
 
   const siteQueryParams = {
     visit_visitor_id: siteVisitorId,
@@ -197,6 +213,12 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
             </button>
           </form>
         </div>
+
+        {readError ? (
+          <div className="admin-grid-section pb-0">
+            <div className="admin-grid-empty">{readError}</div>
+          </div>
+        ) : null}
 
         <section id="chat-logs" className="admin-grid-section">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

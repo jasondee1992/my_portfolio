@@ -1,5 +1,6 @@
 import { getChatLogs } from "@/lib/chatbot/chatLogging";
 import { createAdminLoginRedirect, isAdminAuthenticated } from "@/lib/adminAuth";
+import type { ChatLogRecord } from "@/lib/chatbot/chatLogging";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ function escapeCsvCell(value: string | null | undefined) {
   return `"${normalized.replace(/"/g, '""')}"`;
 }
 
-function toCsv(rows: ReturnType<typeof getChatLogs>) {
+function toCsv(rows: ChatLogRecord[]) {
   const headers = [
     "created_at",
     "session_id",
@@ -83,10 +84,6 @@ function toCsv(rows: ReturnType<typeof getChatLogs>) {
 }
 
 export async function GET(request: Request) {
-  if (process.env.NODE_ENV !== "development") {
-    return new Response("Not Found", { status: 404 });
-  }
-
   if (!(await isAdminAuthenticated())) {
     return createAdminLoginRedirect(request);
   }
@@ -101,33 +98,44 @@ export async function GET(request: Request) {
   const limit = parseLimit(searchParams.get("limit"));
   const page = parsePage(searchParams.get("page"));
   const format = toNullableSearchParam(searchParams.get("format"))?.toLowerCase() ?? "csv";
-  const logs = getChatLogs({
-    visitorId,
-    sessionId,
-    responseBranch,
-    dateFrom,
-    dateTo,
-    searchText,
-    limit,
-    offset: (page - 1) * limit,
-  });
+  try {
+    const logs = await getChatLogs({
+      visitorId,
+      sessionId,
+      responseBranch,
+      dateFrom,
+      dateTo,
+      searchText,
+      limit,
+      offset: (page - 1) * limit,
+    });
 
-  if (format === "json") {
-    return new Response(JSON.stringify(logs, null, 2), {
+    if (format === "json") {
+      return new Response(JSON.stringify(logs, null, 2), {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Disposition": 'attachment; filename="chat-logs.json"',
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+
+    const csv = toCsv(logs);
+    return new Response(csv, {
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="chat-logs.json"',
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": 'attachment; filename="chat-logs.csv"',
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to export chat logs.";
+    return new Response(message, {
+      status: 500,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-store",
       },
     });
   }
-
-  const csv = toCsv(logs);
-  return new Response(csv, {
-    headers: {
-      "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="chat-logs.csv"',
-      "Cache-Control": "no-store",
-    },
-  });
 }

@@ -1,5 +1,5 @@
 import "server-only";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import {
   getAdminRedirectTarget,
   isAdminAuthConfigured,
@@ -31,10 +31,6 @@ function getErrorMessage(errorCode: string) {
 }
 
 export default async function AdminLoginPage({ searchParams }: PageProps) {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
-  }
-
   const resolvedSearchParams = (await searchParams) ?? {};
   const nextPath = getAdminRedirectTarget(getSingleValue(resolvedSearchParams.next));
   const errorCode = getSingleValue(resolvedSearchParams.error);
@@ -54,8 +50,8 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
           <div>
             <h1 className="section-title text-3xl font-normal md:text-4xl">Admin Login</h1>
             <p className="section-copy mt-3 text-sm md:text-base">
-              Local admin access for portfolio logs. Passcode validation happens server-side and
-              authenticated state is stored in an `httpOnly` admin cookie.
+              Protected admin access for portfolio logs. Passcode validation happens server-side
+              and authenticated state is stored in an `httpOnly` admin cookie.
             </p>
           </div>
         </div>

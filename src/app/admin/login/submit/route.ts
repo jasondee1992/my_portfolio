@@ -7,10 +7,6 @@ import {
 } from "@/lib/adminAuth";
 
 export async function POST(request: Request) {
-  if (process.env.NODE_ENV !== "development") {
-    return new Response("Not Found", { status: 404 });
-  }
-
   const formData = await request.formData();
   const passcode = String(formData.get("passcode") ?? "");
   const nextPath = getAdminRedirectTarget(String(formData.get("next") ?? ""));

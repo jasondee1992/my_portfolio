@@ -7,7 +7,9 @@ frontend:
         - pnpm install --frozen-lockfile
     build:
       commands:
-        - env | grep -e OPENAI_API_KEY -e OPENAI_MODEL > .env.production
+        - rm -f .env.production
+        - touch .env.production
+        - env | grep -e OPENAI_API_KEY -e OPENAI_MODEL -e DYNAMODB_REGION -e DYNAMODB_SITE_VISITS_TABLE -e DYNAMODB_CHAT_LOGS_TABLE -e ADMIN_PASSCODE -e ADMIN_SESSION_SECRET >> .env.production || true
         - env | grep -e NEXT_PUBLIC_ >> .env.production || true
         - pnpm build
   artifacts:

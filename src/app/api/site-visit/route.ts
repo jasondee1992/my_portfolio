@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, skipped: true });
     }
 
-    logSiteVisit({
+    await logSiteVisit({
       sessionId: getNormalizedBodyField(body, "sessionId", "session_id"),
       visitorId: getNormalizedBodyField(body, "visitorId", "visitor_id"),
       pageUrl,

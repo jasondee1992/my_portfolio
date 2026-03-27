@@ -367,7 +367,7 @@ export async function POST(request: Request) {
       status?: number;
     }) {
       if (rawMessage) {
-        logChatEvent({
+        void logChatEvent({
           ...requestMetadata,
           userMessage: rawMessage,
           effectiveMessage: effectiveMessageForLog,
@@ -540,7 +540,7 @@ export async function POST(request: Request) {
     console.error("Chat API error:", error);
 
     if (rawMessage) {
-      logChatEvent({
+      void logChatEvent({
         ...requestMetadata,
         userMessage: rawMessage,
         effectiveMessage: effectiveMessageForLog,

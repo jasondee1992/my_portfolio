@@ -1,5 +1,5 @@
 import "server-only";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 type SearchParamsValue = string | string[] | undefined;
 type PageProps = {
@@ -15,10 +15,6 @@ function getSingleValue(value: SearchParamsValue) {
 }
 
 export default async function AdminChatLogsRedirectPage({ searchParams }: PageProps) {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
-  }
-
   const resolvedSearchParams = (await searchParams) ?? {};
   const search = new URLSearchParams();
 
