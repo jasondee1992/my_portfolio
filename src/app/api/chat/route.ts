@@ -9,6 +9,7 @@ import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
 import { buildContextualMessage } from "@/lib/chatbot/conversationContext";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
 import { getTenureResponse } from "@/lib/chatbot/tenure";
+import { getAgeResponse } from "@/lib/chatbot/age";
 import {
   analyzeQuestionScope,
   buildMissingInformationFallback,
@@ -313,6 +314,15 @@ export async function POST(request: Request) {
     if (currentDateTimeResponse) {
       return NextResponse.json({
         answer: currentDateTimeResponse,
+        sources: [],
+      });
+    }
+
+    const ageResponse = getAgeResponse(effectiveMessage);
+
+    if (ageResponse) {
+      return NextResponse.json({
+        answer: ageResponse.answer,
         sources: [],
       });
     }

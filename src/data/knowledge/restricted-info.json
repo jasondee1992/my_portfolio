@@ -73,6 +73,7 @@
   "private_fields": [
     "passwords",
     "api_keys",
+    "full_birthdate",
     "financial_details",
     "private_family_information",
     "exact_addresses",

@@ -5,6 +5,7 @@ $datasetPath = Join-Path $repoRoot "src\data\knowledge\chatbot-intent-dataset.js
 $questionScopePath = Join-Path $repoRoot "src\lib\chatbot\questionScope.ts"
 $safeIntentsPath = Join-Path $repoRoot "src\lib\chatbot\safeIntents.ts"
 $followUpResolverPath = Join-Path $repoRoot "src\lib\chatbot\followUpResolver.ts"
+$ageHelperPath = Join-Path $repoRoot "src\lib\chatbot\age.ts"
 $personaMemoryPath = Join-Path $repoRoot "src\data\knowledge\persona-memory.json"
 $profilePath = Join-Path $repoRoot "src\data\knowledge\profile.json"
 $experiencePath = Join-Path $repoRoot "src\data\knowledge\experience.json"
@@ -79,7 +80,7 @@ foreach ($category in $requiredCategories) {
 
 $datasetChecks = @{
   open_conversation = @("what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong")
-  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities")
+  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for")
   react_experience = @("do you have experience in React frontend", "how many years of React experience do you have")
   bedrock_experience = @("do you have Amazon Bedrock experience", "how did you use Amazon Bedrock")
   ai_tools_experience = @("what AI tools have you used")
@@ -108,11 +109,23 @@ foreach ($category in $datasetChecks.Keys) {
 $questionScopeSource = Get-Content $questionScopePath -Raw
 $safeIntentsSource = Get-Content $safeIntentsPath -Raw
 $followUpResolverSource = Get-Content $followUpResolverPath -Raw
+$ageHelperSource = Get-Content $ageHelperPath -Raw
+$routeSource = Get-Content (Join-Path $repoRoot "src\app\api\chat\route.ts") -Raw
 
 $questionScopeChecks = @(
+  "how old",
+  "ilang taon",
+  "edad",
   "how about work experience",
   "are you open for a new role",
   "are you open to full-time roles",
+  "are you open to relocation",
+  "are you willing to work abroad",
+  "would you relocate for a job",
+  "are you open to overseas opportunities",
+  "are you open to opportunities outside your country",
+  "are you open to moving overseas",
+  "what kind of roles would you relocate for",
   "do you have amazon bedrock experience",
   "have you tried local llms",
   "what local models have you used",
@@ -142,6 +155,91 @@ foreach ($phrase in $questionScopeChecks) {
   if ($questionScopeSource.ToLowerInvariant() -notlike "*$($phrase.ToLowerInvariant())*") {
     throw "questionScope.ts is missing expected phrase: $phrase"
   }
+}
+
+$ageRuntimeChecks = @(
+  "1992",
+  "how old are you",
+  "what is your age",
+  "ilang taon ka na",
+  "how old is jasond",
+  "birthdate",
+  "full birthdate private"
+)
+
+foreach ($phrase in $ageRuntimeChecks) {
+  if ($ageHelperSource.ToLowerInvariant() -notlike "*$($phrase.ToLowerInvariant())*") {
+    throw "age.ts is missing expected age-support phrase or marker: $phrase"
+  }
+}
+
+if ($routeSource.ToLowerInvariant() -notlike "*getageresponse*") {
+  throw "route.ts is missing runtime age-response handling."
+}
+
+if (@($personaMemory.response_rules.restricted_info_behavior) -join " " -notlike "*private information*") {
+  throw "persona-memory.json restricted info behavior should still protect private information."
+}
+
+$ageScenarioCoverage = @(
+  @{
+    Scenario = "Direct age question"
+    Message = "How old are you?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
+    Scenario = "Alternate age phrasing"
+    Message = "What is your age?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "fixed hardcoded age string"
+  },
+  @{
+    Scenario = "Tagalog age phrasing"
+    Message = "Ilang taon ka na?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
+    Scenario = "Third-person age phrasing"
+    Message = "How old is JasonD?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
+    Scenario = "Birthday privacy protection"
+    Message = "What is your birthday?"
+    ExpectedRoute = "privacy-safe age response"
+    ExpectedAnswerPattern = "age plus privacy note"
+    Avoids = "july 3 1992"
+  }
+)
+
+foreach ($scenario in $ageScenarioCoverage) {
+  if ($ageHelperSource.ToLowerInvariant() -notlike "*$($scenario.Message.ToLowerInvariant().Replace('?', ''))*") {
+    throw "age.ts is missing expected age scenario coverage for '$($scenario.Scenario)': $($scenario.Message)"
+  }
+}
+
+$forbiddenFixedAgePatterns = @(
+  '"33 years old"',
+  '"34 years old"',
+  "'33 years old'",
+  "'34 years old'"
+)
+
+foreach ($pattern in $forbiddenFixedAgePatterns) {
+  if ($ageHelperSource -like "*$pattern*") {
+    throw "age.ts should not store a fixed hardcoded age response: $pattern"
+  }
+}
+
+if ($ageHelperSource.ToLowerInvariant() -notlike "*calculatecurrentageyears*") {
+  throw "age.ts is missing the dynamic age calculation helper."
 }
 
 $safeIntentChecks = @(
@@ -514,6 +612,45 @@ foreach ($check in $awsFaqChecks) {
   }
 }
 
+$relocationFaqChecks = @(
+  @{
+    Question = "Are you open to relocation?"
+    ExpectedAnswerIncludes = @("open to relocation", "right opportunity", "software development", "data engineering", "ai-related")
+  },
+  @{
+    Question = "Are you willing to work abroad?"
+    ExpectedAnswerIncludes = @("opportunities abroad", "career direction", "developer", "data engineering", "ai-related")
+  },
+  @{
+    Question = "Would you relocate for a job?"
+    ExpectedAnswerIncludes = @("right opportunity", "career direction", "developer", "data engineering", "ai-related")
+  },
+  @{
+    Question = "Are you open to overseas opportunities?"
+    ExpectedAnswerIncludes = @("open to relocation", "right opportunity", "developer", "data engineering", "ai-related")
+  },
+  @{
+    Question = "What kind of roles would you relocate for?"
+    ExpectedAnswerIncludes = @("technical roles", "developer roles", "data engineering roles", "ai engineer roles", "ai-related technical")
+  }
+)
+
+foreach ($check in $relocationFaqChecks) {
+  $faqEntry = $personaMemory.faq | Where-Object { $_.question -eq $check.Question }
+
+  if (-not $faqEntry) {
+    throw "persona-memory.json is missing relocation FAQ entry: $($check.Question)"
+  }
+
+  $answerText = $faqEntry.answer.ToLowerInvariant()
+
+  foreach ($phrase in $check.ExpectedAnswerIncludes) {
+    if ($answerText -notlike "*$($phrase.ToLowerInvariant())*") {
+      throw "Relocation FAQ '$($check.Question)' is missing expected answer content: $phrase"
+    }
+  }
+}
+
 $profileSummary = $profile.professional_summary.ToLowerInvariant()
 if (
   $profileSummary -notlike "*aws*" -or
@@ -522,6 +659,10 @@ if (
   $profileSummary -notlike "*portfolio*"
 ) {
   throw "profile.json professional_summary is missing expected top-level AWS/cloud summary coverage."
+}
+
+if ($profileSummary -notlike "*open to relocation*" -or $profileSummary -notlike "*data engineering*" -or $profileSummary -notlike "*ai-related*") {
+  throw "profile.json professional_summary is missing relocation preference coverage."
 }
 
 $cloudSkills = @($profile.core_skills.cloud_and_deployment)

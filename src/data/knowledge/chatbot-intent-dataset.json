@@ -115,8 +115,8 @@
     "category": "work_availability",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you available for a new position", "open ka ba sa new opportunities", "are you open to full-time roles"],
-    "answerDirection": "Answer yes to new opportunities and emphasize focus on full-time roles."
+    "exampleQuestions": ["are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you available for a new position", "open ka ba sa new opportunities", "are you open to full-time roles", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "are you open to opportunities outside your country", "are you open to moving overseas", "what kind of roles would you relocate for"],
+    "answerDirection": "Answer yes to new opportunities and emphasize focus on full-time roles. For relocation questions, answer that relocation is open for the right opportunity when the role aligns with software development, data engineering, or AI-related technical work."
   },
   {
     "category": "freelance_availability",
