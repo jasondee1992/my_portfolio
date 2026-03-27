@@ -129,6 +129,13 @@ const timeline: TimelineItem[] = [
       "Continued advancing as a Python developer focused on automation, reporting pipelines, enterprise data workflows, and dashboard development, while also expanding practical exposure to OpenAI APIs, RAG, Hugging Face-hosted models, and Amazon Bedrock-related concepts.",
     side: "right",
   },
+  {
+    year: "2026",
+    title: "Deepening Focus on AI, Machine Learning, and Agentic Systems",
+    description:
+      "Currently exploring AI more deeply through hands-on learning in machine learning, agentic AI patterns, LLM workflows, prompt design, RAG improvements, and practical experimentation with AI-assisted applications. This phase reflects a stronger shift toward building more intelligent systems while continuing to strengthen Python-based engineering, automation, and real-world product thinking.",
+    side: "left",
+  },
 ];
 
 const CONNECTOR_WIDTH = 6;
