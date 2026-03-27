@@ -2,13 +2,23 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import type { Msg } from "@/components/ChatbotPanel";
 
 const ChatbotPanel = dynamic(() => import("@/components/ChatbotPanel"), {
   ssr: false,
 });
 
+const INITIAL_CHAT_MESSAGES: Msg[] = [
+  {
+    role: "assistant",
+    text:
+      "Hi. I’m Jasond. You can ask me about my work, projects, skills, experience, or anything you’d like to know from my portfolio.",
+  },
+];
+
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<Msg[]>(INITIAL_CHAT_MESSAGES);
 
   useEffect(() => {
     function handleOpenChatbot() {
@@ -65,7 +75,7 @@ export default function ChatbotWidget() {
         Chat
       </button>
 
-      {open && <ChatbotPanel onClose={() => setOpen(false)} />}
+      {open ? <ChatbotPanel onClose={() => setOpen(false)} messages={messages} setMessages={setMessages} /> : null}
     </>
   );
 }

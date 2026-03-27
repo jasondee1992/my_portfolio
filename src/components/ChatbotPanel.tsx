@@ -1,9 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type PointerEvent as ReactPointerEvent,
+  type SetStateAction,
+} from "react";
 
-type Msg = { role: "user" | "assistant"; text: string };
+export type Msg = { role: "user" | "assistant"; text: string };
 type PanelSize = { width: number; height: number };
 type ResizeDirection = "left" | "top" | "top-left";
 type ResizeState = {
@@ -33,7 +40,15 @@ const FALLBACK_MESSAGE =
 
 const PROFILE_IMAGE_SRC = "/images/profile/profile.jpeg";
 
-export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
+export default function ChatbotPanel({
+  onClose,
+  messages,
+  setMessages,
+}: {
+  onClose: () => void;
+  messages: Msg[];
+  setMessages: Dispatch<SetStateAction<Msg[]>>;
+}) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [panelSize, setPanelSize] = useState<PanelSize>({
@@ -41,13 +56,6 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
     height: DEFAULT_PANEL_HEIGHT,
   });
   const [isResizing, setIsResizing] = useState(false);
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      text:
-        "Hi. I’m Jasond. You can ask me about my work, projects, skills, experience, or anything you’d like to know from my portfolio.",
-    },
-  ]);
 
   const endRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -160,6 +168,11 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
     const q = (rawMessage ?? input).trim();
     if (!q || loading) return;
 
+    const requestHistory = messages.slice(-MAX_HISTORY_MESSAGES).map((message) => ({
+      role: message.role,
+      content: message.text,
+    }));
+
     setInput("");
     setMessages((current) => [...current, { role: "user", text: q }]);
     setLoading(true);
@@ -172,10 +185,7 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
         },
         body: JSON.stringify({
           message: q,
-          history: messages.slice(-MAX_HISTORY_MESSAGES).map((message) => ({
-            role: message.role,
-            content: message.text,
-          })),
+          history: requestHistory,
         }),
       });
 
