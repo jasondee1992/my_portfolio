@@ -3,17 +3,23 @@ import { getMissingInformationFallback, getRestrictedInfo } from "@/lib/chatbot/
 const META_REPLY_PATTERNS = [
   "approved persona memory",
   "approved portfolio context",
-  "provided context",
   "knowledge base",
   "raw json",
   "internal prompt",
   "system prompt",
   "hidden instructions",
-  "as an ai",
-  "as a language model",
-  "i can only answer based on",
-  "based on the provided context",
 ] as const;
+
+function looksLikeMetaAnswerOnly(text: string) {
+  const normalized = text.toLowerCase();
+  const metaPatternHits = META_REPLY_PATTERNS.filter((pattern) => normalized.includes(pattern)).length;
+  const sentenceCount = normalized
+    .split(/[.!?]+/)
+    .map((part) => part.trim())
+    .filter(Boolean).length;
+
+  return metaPatternHits >= 2 || (metaPatternHits >= 1 && sentenceCount <= 2);
+}
 
 export function sanitizeChatbotAnswer(answer: string | null | undefined) {
   const fallback = getMissingInformationFallback();
@@ -27,7 +33,7 @@ export function sanitizeChatbotAnswer(answer: string | null | undefined) {
   const normalized = text.replace(/\n{3,}/g, "\n\n").trim();
   const lowered = normalized.toLowerCase();
 
-  if (META_REPLY_PATTERNS.some((pattern) => lowered.includes(pattern))) {
+  if (looksLikeMetaAnswerOnly(normalized)) {
     return fallback;
   }
 

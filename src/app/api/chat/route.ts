@@ -6,10 +6,14 @@ import { checkRestrictedInput, getMissingInformationFallback } from "@/lib/chatb
 import { buildSystemPrompt, buildUserPrompt, type ChatHistoryMessage } from "@/lib/chatbot/prompting";
 import { sanitizeChatbotAnswer } from "@/lib/chatbot/response";
 import { getSafeIntentResponse } from "@/lib/chatbot/safeIntents";
-import { buildContextualMessage, buildConversationFocus } from "@/lib/chatbot/conversationContext";
+import { buildContextualMessage } from "@/lib/chatbot/conversationContext";
 import { CHATBOT_CONVERSATION_EXAMPLES } from "@/lib/chatbot/conversationExamples";
 import { getTenureResponse } from "@/lib/chatbot/tenure";
-import { analyzeQuestionScope, buildOutOfScopeFallback } from "@/lib/chatbot/questionScope";
+import {
+  analyzeQuestionScope,
+  buildMissingInformationFallback,
+  buildOutOfScopeFallback,
+} from "@/lib/chatbot/questionScope";
 import { resolveShortFollowUp } from "@/lib/chatbot/followUpResolver";
 import type { ResponseInput } from "openai/resources/responses/responses";
 
@@ -17,6 +21,7 @@ const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const CHATBOT_FALLBACK = getMissingInformationFallback();
 const MIN_TOP_SCORE = 3;
 const MAX_HISTORY_MESSAGES = 12;
+const SOFT_FALLBACK_LIMIT = 3;
 const KNOWLEDGE_BASE = loadKnowledgeBase();
 
 function getCurrentPhilippineDateTimeResponse(message: string) {
@@ -106,34 +111,120 @@ function filterHighConfidenceMatches(matches: RetrievalMatch[]) {
   return matches.filter((match) => match.score >= 2);
 }
 
-function buildPortfolioFallbackContext(
-  knowledgeBase: ReturnType<typeof loadKnowledgeBase>,
-  preferredCategories: string[] = []
+function inferFallbackCategories(
+  message: string,
+  questionScope: ReturnType<typeof analyzeQuestionScope>
 ) {
-  const defaultCategories = [
+  if (questionScope.preferredKnowledgeCategories?.length) {
+    return [...new Set(questionScope.preferredKnowledgeCategories)].slice(0, 4);
+  }
+
+  const normalized = message.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const categoryRules: Array<{ signals: string[]; categories: string[] }> = [
+    {
+      signals: ["project", "projects", "built", "build", "portfolio", "case study"],
+      categories: ["projects-overview", "project-highlight", "internal-project", "other-work"],
+    },
+    {
+      signals: ["experience", "background", "career", "role", "company", "work history"],
+      categories: ["experience", "about", "profile", "persona-faq"],
+    },
+    {
+      signals: [
+        "skills",
+        "skill",
+        "tech stack",
+        "stack",
+        "aws",
+        "cloud",
+        "amplify",
+        "s3",
+        "route 53",
+        "acm",
+        "certificate manager",
+        "cloudwatch",
+        "iam",
+        "cloudfront",
+        "rds",
+        "aurora",
+        "dynamodb",
+        "ci cd",
+        "ci/cd",
+        "deployment",
+        "react",
+        "python",
+        "ai",
+        "bedrock",
+        "llm",
+        "tools",
+      ],
+      categories: ["profile", "about", "homepage", "persona-faq"],
+    },
+    {
+      signals: ["contact", "email", "linkedin", "reach", "availability", "freelance"],
+      categories: ["profile", "persona", "persona-faq"],
+    },
+  ];
+
+  for (const rule of categoryRules) {
+    if (rule.signals.some((signal) => normalized.includes(signal))) {
+      return rule.categories;
+    }
+  }
+
+  return ["homepage", "about", "profile"];
+}
+
+function toLowConfidenceMatches(entries: ReturnType<typeof loadKnowledgeBase>) {
+  return entries.map((entry) => ({
+    entry,
+    score: 1,
+    keywordHits: 0,
+    fuzzyKeywordHits: 0,
+    titleHits: 0,
+    contentHits: 0,
+  }));
+}
+
+function buildScopedPortfolioFallbackMatches(
+  knowledgeBase: ReturnType<typeof loadKnowledgeBase>,
+  message: string,
+  questionScope: ReturnType<typeof analyzeQuestionScope>
+) {
+  const categories = inferFallbackCategories(message, questionScope);
+  const categorySet = new Set(categories);
+  const candidates = knowledgeBase.filter((entry) => categorySet.has(entry.category));
+
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  const softMatches = retrieveKnowledge(candidates, message, SOFT_FALLBACK_LIMIT);
+
+  if (softMatches.length > 0) {
+    return softMatches;
+  }
+
+  const summaryFriendlyCategories = new Set([
     "homepage",
     "about",
-    "projects-overview",
     "profile",
+    "projects-overview",
+    "project-highlight",
     "persona",
     "persona-faq",
     "experience",
-    "education",
-    "project-highlight",
-    "internal-project",
-    "other-work",
-  ];
-  const orderedCategories = [...preferredCategories, ...defaultCategories];
-  const seen = new Set<string>();
+  ]);
 
-  return orderedCategories.flatMap((category) => {
-    if (seen.has(category)) {
-      return [];
-    }
+  const seededEntries = categories
+    .flatMap((category) =>
+      candidates
+        .filter((entry) => entry.category === category && summaryFriendlyCategories.has(entry.category))
+        .slice(0, 1)
+    )
+    .slice(0, 2);
 
-    seen.add(category);
-    return knowledgeBase.filter((entry) => entry.category === category);
-  });
+  return seededEntries.length > 0 ? toLowConfidenceMatches(seededEntries) : [];
 }
 
 export async function POST(request: Request) {
@@ -197,7 +288,6 @@ export async function POST(request: Request) {
     }
 
     const contextualMessage = buildContextualMessage(effectiveMessage, history);
-    const conversationFocus = buildConversationFocus(history);
     const rawQuestionScope = analyzeQuestionScope(effectiveMessage);
     const contextualQuestionScope = analyzeQuestionScope(contextualMessage);
     const questionScope =
@@ -247,21 +337,15 @@ export async function POST(request: Request) {
     let matches = filterHighConfidenceMatches(retrievalMatches);
 
     if (matches.length === 0 && questionScope.scope === "portfolio") {
-      matches = buildPortfolioFallbackContext(
+      matches = buildScopedPortfolioFallbackMatches(
         KNOWLEDGE_BASE,
-        questionScope.preferredKnowledgeCategories ?? []
-      ).map((entry) => ({
-        entry,
-        score: 1,
-        keywordHits: 0,
-        fuzzyKeywordHits: 0,
-        titleHits: 0,
-        contentHits: 0,
-      }));
+        contextualMessage,
+        questionScope
+      );
     }
 
     if (matches.length === 0) {
-      return NextResponse.json({ answer: CHATBOT_FALLBACK });
+      return NextResponse.json({ answer: buildMissingInformationFallback(effectiveMessage) });
     }
 
     const context = matches
@@ -275,7 +359,6 @@ export async function POST(request: Request) {
     const userPrompt = buildUserPrompt({
       message: effectiveMessage,
       portfolioContext: context,
-      conversationFocus,
       conversationExamples: CHATBOT_CONVERSATION_EXAMPLES,
     });
 
@@ -300,7 +383,11 @@ export async function POST(request: Request) {
       temperature: 0.7,
     });
 
-    const answer = sanitizeChatbotAnswer(response.output_text) || CHATBOT_FALLBACK;
+    const sanitizedAnswer = sanitizeChatbotAnswer(response.output_text);
+    const answer =
+      !sanitizedAnswer || sanitizedAnswer === CHATBOT_FALLBACK
+        ? buildMissingInformationFallback(effectiveMessage)
+        : sanitizedAnswer;
 
     return NextResponse.json({
       answer,

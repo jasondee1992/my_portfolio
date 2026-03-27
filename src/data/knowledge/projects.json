@@ -135,9 +135,11 @@
         "Next.js",
         "TypeScript",
         "Tailwind CSS",
-        "OpenAI API"
+        "OpenAI API",
+        "AWS Amplify",
+        "GitHub CI/CD"
       ],
-      "description": "Built a personal portfolio website with a premium dark UI to showcase projects, skills, career background, and development work in a polished modern interface. The site was developed using Next.js and TypeScript, with content structured for maintainability and presentation quality. It also includes an OpenAI-powered chatbot that answers portfolio-related questions in a more interactive and personalized way, reflecting a practical blend of frontend development and AI-assisted user experience design."
+      "description": "Built a personal portfolio website with a premium dark UI to showcase projects, skills, career background, and development work in a polished modern interface. The site was developed using Next.js and TypeScript, with content structured for maintainability and presentation quality. I handled the AWS setup and deployment for this project myself using AWS Amplify, and I connected it to a GitHub-based CI/CD workflow for automated updates. It also includes an OpenAI-powered chatbot that answers portfolio-related questions in a more interactive and personalized way, reflecting a practical blend of frontend development, hands-on cloud deployment, and AI-assisted user experience design."
     }
   ]
 }

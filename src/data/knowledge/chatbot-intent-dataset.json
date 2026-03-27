@@ -1,0 +1,226 @@
+[
+  {
+    "category": "open_conversation",
+    "scopeType": "conversational",
+    "answerSourcePriority": ["safe_intent_help", "homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong", "what can I ask you about"],
+    "answerDirection": "Offer allowed topics naturally, such as projects, skills, background, experience, availability, portfolio, AI tools, and contact details."
+  },
+  {
+    "category": "reaction_or_emotion",
+    "scopeType": "conversational",
+    "answerSourcePriority": ["safe_intent_reaction", "fallback"],
+    "exampleQuestions": ["haha", "hehe", "wow", "nice", "ang galing", "kamusta"],
+    "answerDirection": "Reply briefly and naturally with a human-like reaction, without repeating the previous full answer."
+  },
+  {
+    "category": "acknowledgment",
+    "scopeType": "conversational",
+    "answerSourcePriority": ["safe_intent_acknowledgment", "fallback"],
+    "exampleQuestions": ["okay", "ok", "noted", "got it", "copy", "understood", "alright"],
+    "answerDirection": "Return a short acknowledgment only."
+  },
+  {
+    "category": "accept_previous_offer",
+    "scopeType": "follow_up",
+    "answerSourcePriority": ["follow_up_resolver", "safe_intent_continuation", "fallback"],
+    "exampleQuestions": ["yes", "yes please", "sige please", "go ahead", "go on", "continue", "please continue", "tell more", "please tell more", "tell me more", "can you tell me more", "can you expand on that", "expand on that", "elaborate", "please do", "kwento mo", "sure go ahead"],
+    "answerDirection": "If the assistant previously offered to continue, continue that topic. Otherwise respond with a natural continuation prompt."
+  },
+  {
+    "category": "reject_previous_offer",
+    "scopeType": "follow_up",
+    "answerSourcePriority": ["follow_up_resolver", "fallback"],
+    "exampleQuestions": ["not now", "no thanks", "maybe later", "wag muna", "huwag muna", "pass"],
+    "answerDirection": "Politely stop the offered continuation and leave the conversation open."
+  },
+  {
+    "category": "self_intro",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["tell me about yourself", "can you tell me about yourself", "tell me something about yourself", "introduce yourself", "self intro", "pakilala ka"],
+    "answerDirection": "Answer in first person with a concise, natural introduction covering role, focus areas, and work style."
+  },
+  {
+    "category": "current_role",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what is your current role", "what do you do now", "what is your current job", "current position mo ngayon", "anong role mo ngayon"],
+    "answerDirection": "State the current role naturally and briefly."
+  },
+  {
+    "category": "work_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what is your work experience", "tell me about your work experience", "how about work experience", "what kind of experience do you have", "ano work experience mo"],
+    "answerDirection": "Summarize professional experience, years, and main focus areas in a recruiter-friendly way."
+  },
+  {
+    "category": "professional_background",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what is your professional background", "what roles have you had", "what is your background", "career background mo", "work history mo"],
+    "answerDirection": "Summarize past roles and general career progression without sounding robotic."
+  },
+  {
+    "category": "strongest_skills",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what are your strongest skills", "what are your top skills", "main skills mo", "best skills mo", "ano strongest skills mo"],
+    "answerDirection": "Highlight the strongest practical skills and technologies with a concise explanation."
+  },
+  {
+    "category": "strengths_as_developer",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what are your strengths as a developer", "developer strengths", "what makes you strong as a developer", "strength mo as developer"],
+    "answerDirection": "Answer with practical strengths such as ownership, problem-solving, delivery, and business-focused development."
+  },
+  {
+    "category": "recruiter_hr_questions",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["why should we hire you", "what makes you a good fit for this role", "what makes you a strong candidate", "bakit ka namin dapat i hire"],
+    "answerDirection": "Answer in a recruiter-friendly way, connecting strengths, project experience, and business value."
+  },
+  {
+    "category": "tech_stack",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what is your tech stack", "what technologies do you use", "what tools do you use", "what is your stack", "anong tech stack mo", "do you have aws experience", "what is your aws experience", "how many years of experience do you have in aws", "what is your cloud experience", "what aws services do you know", "have you deployed apps on aws", "what is your experience with aws amplify"],
+    "answerDirection": "List the main stack naturally, prioritizing the tools most used in actual work. For AWS and cloud questions, answer in a grounded way focused on deployment, hosting awareness, CI/CD workflows, and practical service familiarity without overstating deep architecture ownership."
+  },
+  {
+    "category": "projects_summary",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what projects have you built", "tell me about your projects", "tell me about your portfolio project", "what projects do you have", "project summary", "ano projects mo"],
+    "answerDirection": "Give a concise summary of the main internal and personal projects and their business value."
+  },
+  {
+    "category": "best_project",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what is your best project", "which project is your best", "best project mo"],
+    "answerDirection": "Pick a strong project and explain briefly why it stands out."
+  },
+  {
+    "category": "proudest_project",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what project are you most proud of", "what project are you proudest of", "most proud project", "project na pinaka proud ka"],
+    "answerDirection": "Answer personally and naturally, emphasizing impact and learning."
+  },
+  {
+    "category": "work_availability",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you available for a new position", "open ka ba sa new opportunities", "are you open to full-time roles"],
+    "answerDirection": "Answer yes to new opportunities and emphasize focus on full-time roles."
+  },
+  {
+    "category": "freelance_availability",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["are you open to freelance work", "are you available for freelance", "are you open to project-based work", "open ka ba sa freelance"],
+    "answerDirection": "Answer naturally that the current focus is on full-time roles, without sounding dismissive."
+  },
+  {
+    "category": "contact_info",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["how can I contact you", "how do I reach you", "what is your email", "contact details mo", "paano kita macocontact"],
+    "answerDirection": "Give the approved public contact methods only."
+  },
+  {
+    "category": "goals_in_five_years",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["where do you see yourself in five years", "what are your goals in five years", "five year goals", "goals in the next five years"],
+    "answerDirection": "Answer naturally about growth, bigger projects, automation, and AI-related development."
+  },
+  {
+    "category": "passions",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what are you passionate about", "what are your passions", "what drives you", "ano passion mo"],
+    "answerDirection": "Answer personally about technology, problem-solving, useful systems, automation, and AI learning."
+  },
+  {
+    "category": "hobbies_or_free_time",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what do you do in your free time", "interests outside work", "what do you do outside work", "ano hobby mo", "anong ginagawa mo sa free time"],
+    "answerDirection": "Answer naturally with approved hobbies and interests."
+  },
+  {
+    "category": "role_fit_skills",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what skills can you contribute to this role", "what can you bring to this position", "what value can you add to this role", "ano maiaambag mo sa role na to"],
+    "answerDirection": "Answer like a recruiter conversation, connecting skills and project experience to business value."
+  },
+  {
+    "category": "why_apply",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["why did you apply for this position", "why did you apply for this company", "why do you want this role", "bakit ka nag apply sa role na to"],
+    "answerDirection": "Answer naturally with motivation, fit, and growth interest without sounding scripted."
+  },
+  {
+    "category": "motivation_for_role",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what interests you about this role", "what excites you about this position", "what are you looking for in your next role", "ano hinahanap mo sa next role mo"],
+    "answerDirection": "Answer in a grounded, recruiter-friendly way focused on growth and meaningful work."
+  },
+  {
+    "category": "react_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["do you have experience in React frontend", "do you have React experience", "how many years of React experience do you have", "have you worked with React", "anong experience mo sa React", "do you use React for frontend work"],
+    "answerDirection": "Answer that there is around 2 to 3 years of React experience for frontend work in internal tools and web applications."
+  },
+  {
+    "category": "ai_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what AI experience do you have", "what LLM experience do you have", "tell me about your AI experience", "anong AI experience mo"],
+    "answerDirection": "Answer broadly about AI exposure, internal usage, API work, and practical experimentation without overclaiming."
+  },
+  {
+    "category": "bedrock_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["do you have Amazon Bedrock experience", "have you used Amazon Bedrock", "what is your experience with Amazon Bedrock", "how did you use Amazon Bedrock", "may experience ka ba sa Amazon Bedrock"],
+    "answerDirection": "Answer that there is practical exposure to Amazon Bedrock from an internal project used for decision-making related use cases."
+  },
+  {
+    "category": "ai_tools_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["what AI tools have you used", "what AI platforms do you have experience with", "have you worked with OpenAI API", "have you used Hugging Face local models", "what AI stack have you explored"],
+    "answerDirection": "Answer using Amazon Bedrock, OpenAI API, and Hugging Face local models, framed as practical exposure and exploration."
+  },
+  {
+    "category": "local_llm_experience",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["have you tried local LLMs", "have you deployed a local model", "have you worked with local models", "what local models have you used", "what models have you tried locally"],
+    "answerDirection": "Answer that local models were tried on a personal machine using smaller models and context sizes within GPU limits."
+  },
+  {
+    "category": "open_model_familiarity",
+    "scopeType": "in_scope",
+    "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
+    "exampleQuestions": ["have you tried Mistral", "do you know Meta Llama", "have you used Qwen", "have you explored TinyLlama", "do you have experience with DeepSeek"],
+    "answerDirection": "Answer naturally that models like Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek were explored through local experimentation and hands-on learning."
+  },
+  {
+    "category": "out_of_scope_question",
+    "scopeType": "out_of_scope",
+    "answerSourcePriority": ["fallback"],
+    "exampleQuestions": ["what is zodiac sign", "what is the capital of France", "who won the NBA finals", "tell me a random joke about aliens"],
+    "answerDirection": "Use the polite out-of-scope fallback."
+  }
+]

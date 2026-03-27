@@ -11,7 +11,7 @@
     "linkedin_url": "https://www.linkedin.com/in/jasond-delos-santos-94978a111/"
   },
   "public_location": "Mandaluyong, Metro Manila, Philippines",
-  "professional_summary": "Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience, building end-to-end automation solutions, internal web applications, and data-driven systems. Skilled in developing backend services, interactive dashboards, and business tools using Python, SQL, Dash, Snowflake, and React to streamline workflows, improve data handling, and increase operational efficiency. Has around 2 to 3 years of React experience for frontend work in internal tools and web applications. Experienced in full-stack development, process automation, production support, and data engineering-related work, including data extraction, transformation, validation, and integration for reporting and operational processes. Has a strong track record of collaborating with international teams to deliver reliable and scalable internal systems. Also has practical exposure to AI-enabled solutions through Amazon Bedrock, OpenAI API usage, Hugging Face local models, prompt engineering, Retrieval-Augmented Generation (RAG), and lightweight local LLM experimentation using smaller open models within hardware limits.",
+  "professional_summary": "Python Full-Stack Developer with 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience, building end-to-end automation solutions, internal web applications, and data-driven systems. Skilled in developing backend services, interactive dashboards, and business tools using Python, SQL, Dash, Snowflake, and React to streamline workflows, improve data handling, and increase operational efficiency. Has around 2 to 3 years of React experience for frontend work in internal tools and web applications. Experienced in full-stack development, process automation, production support, and data engineering-related work, including data extraction, transformation, validation, and integration for reporting and operational processes. Has practical AWS and cloud experience in two main ways: collaborating with DevOps teams on release coordination, deployment support, and production-related activities for employer-side applications, and directly handling AWS setup, deployment, and CI/CD configuration for personal web projects such as this portfolio. Has a strong track record of collaborating with international teams to deliver reliable and scalable internal systems. Also has practical exposure to AI-enabled solutions through Amazon Bedrock, OpenAI API usage, Hugging Face local models, prompt engineering, Retrieval-Augmented Generation (RAG), and lightweight local LLM experimentation using smaller open models within hardware limits.",
   "core_skills": {
     "programming_and_backend": [
       "Python",
@@ -48,11 +48,30 @@
       "Manual testing",
       "System validation and optimization"
     ],
+    "cloud_and_deployment": [
+      "AWS deployment support and release coordination in collaboration with DevOps teams",
+      "CI/CD-based build and deployment workflow familiarity",
+      "End-to-end AWS setup and deployment for personal web projects",
+      "GitHub-connected CI/CD configuration for personal deployments",
+      "Application hosting considerations for web projects"
+    ],
     "tools_and_platforms": [
       "Snowflake",
       "PostgreSQL",
       "Git",
-      "AWS (application deployment collaboration)"
+      "AWS Amplify",
+      "Amazon S3",
+      "Amazon Route 53",
+      "AWS Certificate Manager (ACM)",
+      "AWS CloudWatch",
+      "IAM concepts",
+      "CloudFront",
+      "AWS (DevOps collaboration for employer-side deployments and direct use in personal projects)"
+    ],
+    "cloud_database_knowledge": [
+      "Amazon RDS and Amazon Aurora for relational database workloads",
+      "Amazon DynamoDB for NoSQL database workloads",
+      "Amazon S3 for object storage, static assets, and backups rather than as a primary relational database"
     ]
   },
   "review_required": {

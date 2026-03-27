@@ -84,7 +84,7 @@
   ],
   "safe_answer": {
     "restricted_topic": "I’d rather keep private or sensitive details private, but I can still share a safer public summary if that helps.",
-    "missing_information": "I don’t have enough approved information to answer that clearly yet, but I’d be happy to talk about my projects, skills, experience, and background.",
+    "missing_information": "I don’t have enough confirmed portfolio information to answer that precisely yet, but I can still share a high-level summary from the available details if that helps.",
     "prompt_or_memory_request": "I can’t share my internal instructions or raw memory files, but I can still answer using approved public information."
   },
   "refusal_rules": {

@@ -1,32 +1,10 @@
-import profile from "@/data/knowledge/profile.json";
-import { getIntentExamples } from "@/lib/chatbot/intentDataset";
-import { getPersonaMemory } from "@/lib/chatbot/memory";
+import { analyzeQuestionScope } from "@/lib/chatbot/questionScope";
 
 type SafeIntentResult = {
   answer: string;
 };
 
 type LanguageStyle = "english" | "filipino" | "taglish";
-
-const PERSONA_MEMORY = getPersonaMemory();
-const SHORT_INTRO =
-  PERSONA_MEMORY.preferred_introduction.short_intro ??
-  "Hi, I’m Jasond. I’m a Python-focused developer who works a lot on automation, dashboards, and practical business tools.";
-const MEDIUM_INTRO =
-  PERSONA_MEMORY.preferred_introduction.medium_intro ?? SHORT_INTRO;
-const CASUAL_INTRO =
-  PERSONA_MEMORY.preferred_introduction.casual_intro ?? SHORT_INTRO;
-const PUBLIC_SUMMARY =
-  PERSONA_MEMORY.basic_identity.short_summary ??
-  "Python Full-Stack Developer focused on automation, internal tools, dashboards, and data-driven systems.";
-const PUBLIC_EMAIL = PERSONA_MEMORY.basic_identity.public_contact_email;
-const CURRENT_ROLE =
-  typeof PERSONA_MEMORY.work_background?.current_role === "string"
-    ? PERSONA_MEMORY.work_background.current_role
-    : "";
-const LINKEDIN_URL =
-  typeof profile.contact.linkedin_url === "string" ? profile.contact.linkedin_url : "";
-
 const SAFE_INTENT_RESPONSES = {
   greeting: {
     english: [
@@ -70,48 +48,6 @@ const SAFE_INTENT_RESPONSES = {
     taglish:
       "Yes, kaya kong umintindi ng English, Filipino, Tagalog, at Taglish, and kaya ko ring mag-match sa language style mo.",
   },
-  name: {
-    english: [
-      "I’m Jasond.",
-      "I’m Jasond. Nice to meet you.",
-      "Jasond Delos Santos.",
-    ],
-    filipino: [
-      "Ako si Jasond.",
-      "Ako si Jasond. Nice to meet you.",
-      "Jasond Delos Santos.",
-    ],
-    taglish: [
-      "I’m Jasond.",
-      "Ako si Jasond.",
-      "I’m Jasond. Nice to meet you.",
-    ],
-  },
-  identity: {
-    english: [
-      "I’m a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
-      PUBLIC_SUMMARY,
-      "I mainly build practical solutions around automation, reporting, internal tools, and data-driven workflows.",
-    ],
-    filipino: [
-      "Isa akong Python-focused developer na madalas gumagawa ng automation, dashboards, internal tools, at business-focused solutions.",
-      "Madalas umiikot ang work ko sa automation, reporting workflows, dashboards, at practical internal tools.",
-      "Kadalasan ang work ko ay tungkol sa automation, reporting, internal tools, at data-driven workflows.",
-    ],
-    taglish: [
-      "I’m a Python-focused developer working on automation, dashboards, internal tools, and business-focused solutions.",
-      "A lot of my work is centered on automation, reporting, dashboards, and practical internal tools.",
-      "Most of my work is around automation, dashboards, internal tools, and business-focused solutions.",
-    ],
-  },
-  introduction: {
-    english: [SHORT_INTRO, MEDIUM_INTRO],
-    filipino: [
-      "Sure — Python-focused developer ako, at madalas akong gumagawa ng automation, dashboards, reporting workflows, at internal tools.",
-      "Ang work ko ay naka-focus sa practical solutions tulad ng automation, dashboards, internal tools, at data-driven systems.",
-    ],
-    taglish: [SHORT_INTRO, CASUAL_INTRO],
-  },
   help: {
     english:
       "You can ask me about my projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, and contact details.",
@@ -119,14 +55,6 @@ const SAFE_INTENT_RESPONSES = {
       "Pwede mo akong tanungin tungkol sa projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, at contact details ko.",
     taglish:
       "You can ask me about my projects, skills, tech stack, work experience, background, availability, portfolio, AI tools, React experience, local LLM exploration, and contact details.",
-  },
-  continuation: {
-    english:
-      "Sure. You can ask me to continue about my projects, skills, work experience, AI tools, availability, or background.",
-    filipino:
-      "Sige. Pwede mo akong sabihan na ituloy ko tungkol sa projects, skills, work experience, AI tools, availability, o background ko.",
-    taglish:
-      "Sure. You can ask me to continue about my projects, skills, work experience, AI tools, availability, or background.",
   },
   thanks: {
     english:
@@ -196,45 +124,33 @@ const SAFE_INTENT_RESPONSES = {
       "Good to hear that, salamat.",
     ],
   },
-  contact: {
-    english: PUBLIC_EMAIL
-      ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
-      : "You can connect with me through the public contact details shared on this portfolio.",
-    filipino: PUBLIC_EMAIL
-      ? `Pwede mo akong i-contact sa email na ${PUBLIC_EMAIL}. If you want, pwede rin tayong mag-connect sa LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
-      : "Pwede mo akong i-contact gamit ang public contact details na nasa portfolio na ito.",
-    taglish: PUBLIC_EMAIL
-      ? `You can reach out to me by email at ${PUBLIC_EMAIL}. If you want, you can also connect with me on LinkedIn${LINKEDIN_URL ? `: ${LINKEDIN_URL}` : "."}`
-      : "You can connect with me through the public contact details shared on this portfolio.",
-  },
-  currentEmployer: {
-    english: CURRENT_ROLE
-      ? `I’m currently working as ${CURRENT_ROLE}.`
-      : "I’m currently working in a Python development role focused on process improvement and automation.",
-    filipino: CURRENT_ROLE
-      ? `Sa ngayon, ${CURRENT_ROLE} ako.`
-      : "Sa ngayon, nasa Python development role ako na focused sa process improvement at automation.",
-    taglish: CURRENT_ROLE
-      ? `I’m currently working as ${CURRENT_ROLE}.`
-      : "Sa ngayon, nasa Python development role ako focused on process improvement and automation.",
-  },
 } as const;
 
-const PROFILE_IDENTITY = {
-  assistantName: profile.assistant_name ?? "Jasond Delos Santos",
-  ownerName: profile.owner_name ?? profile.name ?? "Jasond V. Delos Santos",
-  assistantRole: profile.assistant_role ?? "Portfolio voice",
-  assistantIntro:
-    profile.assistant_short_intro ??
-    "A digital version of Jasond Delos Santos that answers questions about his background, projects, skills, experience, education, and tech stack in a natural first-person voice.",
-};
-
-const DISPLAY_NAME = PROFILE_IDENTITY.assistantName;
-const FORMAL_NAME = PROFILE_IDENTITY.ownerName;
-const OPEN_CONVERSATION_PATTERNS = getIntentExamples("open_conversation");
+const LEADING_CONVERSATIONAL_PREFIXES = [
+  "nice",
+  "awesome",
+  "cool",
+  "wow",
+  "great",
+  "okay",
+  "ok",
+  "got it",
+  "sounds good",
+  "alright",
+  "noted",
+  "thanks",
+  "thank you",
+  "thank u",
+  "salamat",
+  "appreciate it",
+].map((item) => item.toLowerCase());
 
 function normalizeForIntentMatching(text: string) {
   return ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim()} `;
+}
+
+function escapeRegExp(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function includesPattern(normalizedText: string, pattern: string) {
@@ -305,6 +221,28 @@ function pickVariant(options: readonly string[], seed: string) {
   return options[value % options.length];
 }
 
+function trimLeadingConversationalPrefix(text: string) {
+  let current = text.trim();
+  let changed = true;
+
+  while (changed && current) {
+    changed = false;
+
+    for (const prefix of LEADING_CONVERSATIONAL_PREFIXES) {
+      const pattern = new RegExp(`^${escapeRegExp(prefix)}(?:[\\s,!.:;-]+|$)`, "i");
+
+      if (!pattern.test(current)) {
+        continue;
+      }
+
+      current = current.replace(pattern, "").trim();
+      changed = true;
+    }
+  }
+
+  return current;
+}
+
 export function getSafeIntentResponse(message: string): SafeIntentResult | null {
   const text = message.toLowerCase().trim();
   const normalizedText = normalizeForIntentMatching(text);
@@ -314,6 +252,16 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   );
 
   if (!text) {
+    return null;
+  }
+
+  const trimmedMixedIntentRemainder = trimLeadingConversationalPrefix(message.trim());
+  const hasMixedPortfolioIntent =
+    trimmedMixedIntentRemainder.length > 0 &&
+    trimmedMixedIntentRemainder.toLowerCase() !== message.trim().toLowerCase() &&
+    analyzeQuestionScope(trimmedMixedIntentRemainder).scope !== "outside";
+
+  if (hasMixedPortfolioIntent) {
     return null;
   }
 
@@ -344,6 +292,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       "sige",
       "copy",
       "got it",
+      "understood",
       "alright",
       "ayos",
     ])
@@ -356,6 +305,7 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   if (
     includesAny(normalizedText, [
       "nice",
+      "awesome",
       "wow",
       "grabe",
       "omg",
@@ -368,97 +318,6 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
     return {
       answer: pickVariant(SAFE_INTENT_RESPONSES.positiveReaction[languageStyle], text),
     };
-  }
-
-  if (
-    includesAny(normalizedText, [
-      "what's your name",
-      "what is your name",
-      "whats your name",
-      "ano name mo",
-      "ano pangalan mo",
-      "pangalan mo",
-      "your name",
-      "name mo",
-      "who are you",
-      "sino ka",
-      "what are you",
-      "ano ka",
-      "introduce yourself",
-      "tell me about yourself",
-      "pakilala ka nga",
-      "pakilala",
-      "ikaw ba si jasond",
-      "ikaw ba si jasond ai",
-      "are you jasond ai",
-      "jasond ai ka ba",
-    ])
-  ) {
-    if (
-      includesAny(normalizedText, [
-        "what's your name",
-        "what is your name",
-        "whats your name",
-        "ano name mo",
-        "ano pangalan mo",
-        "pangalan mo",
-        "your name",
-        "name mo",
-      ])
-    ) {
-      return {
-        answer: pickVariant(
-          SAFE_INTENT_RESPONSES.name[languageStyle].map((item) =>
-            item
-              .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
-              .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
-          ),
-          text
-        ),
-      };
-    }
-
-    if (
-      includesAny(normalizedText, [
-        "introduce yourself",
-        "tell me about yourself",
-        "pakilala ka nga",
-        "pakilala",
-      ])
-    ) {
-      return {
-        answer: pickVariant(
-          SAFE_INTENT_RESPONSES.introduction[languageStyle].map((item) =>
-            item
-              .replaceAll("JasonD AI", DISPLAY_NAME)
-              .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
-              .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
-          ),
-          text
-        ),
-      };
-    }
-
-    return {
-      answer: pickVariant(
-        SAFE_INTENT_RESPONSES.identity[languageStyle].map((item) =>
-          item
-            .replaceAll("JasonD AI", DISPLAY_NAME)
-            .replaceAll("Jasond Delos Santos", DISPLAY_NAME)
-            .replaceAll("Jasond V. Delos Santos", FORMAL_NAME)
-        ),
-        text
-      ),
-    };
-  }
-
-  if (
-    includesAny(normalizedText, [
-      "who are you",
-      "sino ka",
-    ])
-  ) {
-    return null;
   }
 
   if (
@@ -522,44 +381,6 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
   }
 
   if (
-    includesAny(text, [
-      "how to connect with you",
-      "how can i connect with you",
-      "how can i contact you",
-      "how do i contact you",
-      "how can i reach you",
-      "how do i reach you",
-      "contact you",
-      "reach you",
-      "connect with you",
-      "email you",
-      "your email",
-      "linkedin",
-      "contact details",
-    ])
-  ) {
-    return { answer: SAFE_INTENT_RESPONSES.contact[languageStyle] };
-  }
-
-  if (
-    includesAny(normalizedText, [
-      " current employer ",
-      " current company ",
-      " current role ",
-      " who is your current employer ",
-      " who's your current employer ",
-      " what is your current company ",
-      " where do you work now ",
-      " where are you working now ",
-      " saan ka nagwowork ngayon ",
-      " saan ka nagtatrabaho ngayon ",
-      " current work mo ",
-    ])
-  ) {
-    return { answer: SAFE_INTENT_RESPONSES.currentEmployer[languageStyle] };
-  }
-
-  if (
     includesAny(normalizedText, [
       "help",
       "tulong",
@@ -577,26 +398,13 @@ export function getSafeIntentResponse(message: string): SafeIntentResult | null 
       "how can i use you",
       "anong pwede mong sagutin",
       "what can you answer",
-      ...OPEN_CONVERSATION_PATTERNS,
     ])
   ) {
     return { answer: SAFE_INTENT_RESPONSES.help[languageStyle] };
   }
 
-  if (
-    includesAny(normalizedText, [
-      "yes please",
-      "sure go ahead",
-      "tell me more",
-      "continue",
-      "please do",
-      "go ahead",
-      "sige please",
-      "kwento mo",
-    ])
-  ) {
-    return { answer: SAFE_INTENT_RESPONSES.continuation[languageStyle] };
-  }
+  // Continuation phrases such as "yes please" and "tell me more" are handled
+  // by followUpResolver when the previous assistant message actually offered more.
 
   if (
     includesAny(normalizedText, [

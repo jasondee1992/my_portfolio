@@ -37,6 +37,20 @@ type ProfileQuestionRoute = {
   preferredKnowledgeCategories: string[];
 };
 
+const KNOWLEDGE_CATEGORY_PRIORITY: Record<string, number> = {
+  homepage: 1,
+  about: 2,
+  "projects-overview": 3,
+  "project-highlight": 3,
+  "internal-project": 3,
+  "other-work": 3,
+  experience: 4,
+  education: 4,
+  profile: 5,
+  persona: 6,
+  "persona-faq": 7,
+};
+
 const PORTFOLIO_SIGNALS = [
   "portfolio",
   "about you",
@@ -60,11 +74,21 @@ const PORTFOLIO_SIGNALS = [
   "github",
   "where do you work",
   "current company",
+  "current employer",
   "current role",
+  "what do you do now",
   "profile",
   "work profile",
   "contact details",
+  "contact email",
+  "email address",
+  "reach out",
+  "reach you",
+  "certification",
+  "certifications",
   "availability",
+  "available for work",
+  "open to work",
   "new opportunities",
   "opportunities",
   "new role",
@@ -76,6 +100,35 @@ const PORTFOLIO_SIGNALS = [
   "project-based work",
   "ai experience",
   "llm experience",
+  "aws",
+  "aws experience",
+  "cloud",
+  "cloud experience",
+  "cloud deployment",
+  "cloud hosting",
+  "ci cd",
+  "ci/cd",
+  "deployment pipeline",
+  "aws amplify",
+  "amazon s3",
+  "s3",
+  "route 53",
+  "acm",
+  "certificate manager",
+  "cloudwatch",
+  "iam",
+  "cloudfront",
+  "rds",
+  "aurora",
+  "dynamodb",
+  "aws architect",
+  "cloud architect",
+  "cloud architecture",
+  "internal tools",
+  "dashboard",
+  "dashboards",
+  "automation work",
+  "workflow automation",
   "career",
   "education",
   "open to new opportunities",
@@ -117,9 +170,23 @@ const PROFILE_TOPIC_SIGNALS = [
   "career history",
   "projects",
   "project",
+  "internal tools",
+  "internal tool",
+  "dashboard",
+  "dashboards",
+  "automation work",
+  "workflow automation",
   "skills",
   "skill",
   "tech stack",
+  "current company",
+  "current employer",
+  "email",
+  "email address",
+  "reach out",
+  "reach you",
+  "certification",
+  "certifications",
   "availability",
   "contact info",
   "contact details",
@@ -132,6 +199,30 @@ const PROFILE_TOPIC_SIGNALS = [
   "full-time",
   "ai experience",
   "llm experience",
+  "aws",
+  "aws experience",
+  "cloud",
+  "cloud experience",
+  "cloud deployment",
+  "cloud hosting",
+  "ci cd",
+  "ci/cd",
+  "deployment pipeline",
+  "aws amplify",
+  "amazon s3",
+  "s3",
+  "route 53",
+  "acm",
+  "certificate manager",
+  "cloudwatch",
+  "iam",
+  "cloudfront",
+  "rds",
+  "aurora",
+  "dynamodb",
+  "aws architect",
+  "cloud architect",
+  "cloud architecture",
   "react",
   "frontend",
   "amazon bedrock",
@@ -186,6 +277,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "self_intro",
     patterns: [
+      ...getIntentExamples("self_intro"),
       "tell me about yourself",
       "can you tell me about yourself",
       "tell me something about yourself",
@@ -199,19 +291,29 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "current_role",
     patterns: [
+      ...getIntentExamples("current_role"),
       "current role",
       "current position",
+      "current company",
+      "current employer",
       "what do you do now",
       "what is your current role",
       "what is your current job",
+      "where do you work now",
+      "where are you currently working",
+      "who do you work for now",
+      "what company are you with now",
+      "what is your current company",
       "ano current role mo",
       "anong role mo ngayon",
+      "saan ka nagwowork ngayon",
     ],
     preferredKnowledgeCategories: ["profile", "experience", "about", "persona", "persona-faq"],
   },
   {
     category: "work_experience",
     patterns: [
+      ...getIntentExamples("work_experience"),
       "work experience",
       "professional experience",
       "what is your work experience",
@@ -223,6 +325,8 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "what about your work experience",
       "what kind of experience do you have",
       "what is your professional experience",
+      "can you share your background and experience",
+      "career so far",
       "ano work experience mo",
       "ano experience mo",
       "experience mo",
@@ -232,6 +336,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "professional_background",
     patterns: [
+      ...getIntentExamples("professional_background"),
       "professional background",
       "career background",
       "work history",
@@ -248,6 +353,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "strongest_skills",
     patterns: [
+      ...getIntentExamples("strongest_skills"),
       "strongest skills",
       "what are your strongest skills",
       "top skills",
@@ -263,6 +369,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "strengths_as_developer",
     patterns: [
+      ...getIntentExamples("strengths_as_developer"),
       "strengths as a developer",
       "what are your strengths as a developer",
       "developer strengths",
@@ -298,6 +405,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "role_fit_skills",
     patterns: [
+      ...getIntentExamples("role_fit_skills"),
       "what skills do you think you can contribute to this role",
       "what skills can you contribute to this role",
       "what can you contribute to this role",
@@ -337,31 +445,61 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "tech_stack",
     patterns: [
+      ...getIntentExamples("tech_stack"),
       "tech stack",
       "what is your tech stack",
       "what technologies do you use",
       "what tools do you use",
+      "what stack do you use most",
+      "main technologies",
+      "core stack",
       "what is your stack",
+      "do you have aws experience",
+      "what is your aws experience",
+      "how many years of experience do you have in aws",
+      "how many years of aws experience do you have",
+      "what is your cloud experience",
+      "have you deployed apps on aws",
+      "do you have ci cd deployment experience on aws",
+      "what aws services do you know",
+      "what is your experience with aws amplify",
+      "what do you know about s3",
+      "do you know route 53",
+      "do you know acm",
+      "do you know cloudwatch",
+      "do you know iam",
+      "do you know cloudfront",
+      "what do you know about rds",
+      "what do you know about aurora",
+      "what do you know about dynamodb",
+      "what do you know about rds aurora dynamodb and s3",
+      "are you an aws architect",
+      "do you have deep cloud architecture experience",
       "anong tech stack mo",
       "ano stack mo",
     ],
     preferredKnowledgeCategories: [
-      "homepage",
-      "about",
-      "projects-overview",
       "profile",
-      "internal-project",
+      "experience",
+      "about",
       "other-work",
       "persona-faq",
+      "homepage",
+      "projects-overview",
+      "internal-project",
     ],
   },
   {
     category: "ai_experience",
     patterns: [
       ...getIntentExamples("ai_experience"),
+      "ai experience",
+      "llm experience",
       "what ai background do you have",
       "tell me about your llm background",
       "how much ai exposure do you have",
+      "have you built ai tools",
+      "have you worked on ai enabled tools",
       "anong ai background mo",
     ],
     preferredKnowledgeCategories: [
@@ -438,6 +576,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "ai_tools_experience",
     patterns: [
+      ...getIntentExamples("ai_tools_experience"),
       "what ai tools have you used",
       "what ai platforms do you have experience with",
       "what ai platforms have you explored",
@@ -521,9 +660,16 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "projects_summary",
     patterns: [
+      ...getIntentExamples("projects_summary"),
       "what projects have you built",
       "tell me about your projects",
+      "tell me about your portfolio project",
       "what projects do you have",
+      "what kind of systems have you built",
+      "what internal tools have you built",
+      "what dashboards have you built",
+      "tell me about your internal tools",
+      "tell me about your automation work",
       "project summary",
       "ano projects mo",
       "how about your projects",
@@ -540,6 +686,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "best_project",
     patterns: [
+      ...getIntentExamples("best_project"),
       "best project",
       "what is your best project",
       "which project is your best",
@@ -555,6 +702,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "proudest_project",
     patterns: [
+      ...getIntentExamples("proudest_project"),
       "proudest project",
       "what project are you most proud of",
       "what project are you proudest of",
@@ -571,6 +719,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "passions",
     patterns: [
+      ...getIntentExamples("passions"),
       "what are you passionate about",
       "what are your passions",
       "passions",
@@ -582,6 +731,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "hobbies_or_free_time",
     patterns: [
+      ...getIntentExamples("hobbies_or_free_time"),
       "free time",
       "hobbies",
       "what do you do in your free time",
@@ -595,6 +745,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "goals_in_five_years",
     patterns: [
+      ...getIntentExamples("goals_in_five_years"),
       "goals in five years",
       "five year goals",
       "where do you see yourself in five years",
@@ -618,6 +769,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "why_apply",
     patterns: [
+      ...getIntentExamples("why_apply"),
       "why did you apply for this position",
       "why did you apply for this company",
       "why do you want this role",
@@ -639,6 +791,7 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
   {
     category: "motivation_for_role",
     patterns: [
+      ...getIntentExamples("motivation_for_role"),
       "what interests you about this role",
       "why are you interested in this role",
       "what excites you about this position",
@@ -673,8 +826,14 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "looking for opportunities",
       "are you open to new opportunities",
       "are you open to work",
+      "available for full time",
+      "available for full-time",
+      "open for full time",
+      "open for full-time",
       "are you open to full time roles",
       "are you open to full-time roles",
+      "are you looking for work",
+      "are you currently looking for work",
       "open ka ba sa new role",
       "open ka ba sa new opportunities",
       "open ka ba sa opportunities",
@@ -712,7 +871,11 @@ const PROFILE_QUESTION_MAP: ProfileQuestionRoute[] = [
       "contact details",
       "how can i contact you",
       "what is your email",
+      "what is your email address",
       "how do i reach you",
+      "how can i reach out",
+      "best way to contact you",
+      "how can recruiters contact you",
       "paano kita macocontact",
       "ano email mo",
     ],
@@ -872,6 +1035,19 @@ function matchProfileQuestionRoute(message: string) {
   return PROFILE_QUESTION_MAP.find((route) => includesAny(lowered, route.patterns)) ?? null;
 }
 
+function sortKnowledgeCategories(categories: string[] = []) {
+  return [...new Set(categories)].sort((left, right) => {
+    const leftPriority = KNOWLEDGE_CATEGORY_PRIORITY[left] ?? 99;
+    const rightPriority = KNOWLEDGE_CATEGORY_PRIORITY[right] ?? 99;
+
+    if (leftPriority !== rightPriority) {
+      return leftPriority - rightPriority;
+    }
+
+    return left.localeCompare(right);
+  });
+}
+
 function pickVariant(options: string[], seed: string) {
   const sum = Array.from(seed).reduce((total, char) => total + char.charCodeAt(0), 0);
   return options[sum % options.length];
@@ -937,7 +1113,9 @@ export function analyzeQuestionScope(message: string): {
       coreTopic,
       languageStyle,
       profileCategory: matchedProfileRoute.category,
-      preferredKnowledgeCategories: matchedProfileRoute.preferredKnowledgeCategories,
+      preferredKnowledgeCategories: sortKnowledgeCategories(
+        matchedProfileRoute.preferredKnowledgeCategories
+      ),
     };
   }
 
@@ -950,7 +1128,14 @@ export function analyzeQuestionScope(message: string): {
       scope: "portfolio",
       coreTopic,
       languageStyle,
-      preferredKnowledgeCategories: ["homepage", "about", "projects-overview", "profile", "persona", "persona-faq"],
+      preferredKnowledgeCategories: sortKnowledgeCategories([
+        "homepage",
+        "about",
+        "projects-overview",
+        "profile",
+        "persona",
+        "persona-faq",
+      ]),
     };
   }
 
@@ -963,6 +1148,47 @@ export function analyzeQuestionScope(message: string): {
   }
 
   return { scope: "outside", coreTopic, languageStyle };
+}
+
+export function buildMissingInformationFallback(message: string) {
+  const { coreTopic, languageStyle } = analyzeQuestionScope(message);
+  const hasClearTopic = Boolean(coreTopic && coreTopic !== "topic na yan");
+
+  const genericVariants = {
+    english: [
+      "I don’t have enough confirmed portfolio information to answer that precisely. If it helps, I can share a high-level summary based on what’s available here.",
+      "I don’t have enough confirmed information to answer that clearly yet. If you want, I can still share a high-level summary from the available portfolio details.",
+    ],
+    filipino: [
+      "Wala pa akong sapat na confirmed portfolio information para sagutin iyan nang eksakto. Kung gusto mo, pwede akong magbigay ng high-level summary mula sa available details dito.",
+      "Hindi pa sapat ang confirmed information ko para sagutin iyan nang malinaw. Kung gusto mo, pwede pa rin akong mag-share ng high-level summary based sa available portfolio details.",
+    ],
+    taglish: [
+      "I don’t have enough confirmed portfolio information to answer that precisely. If you want, I can still share a high-level summary based on the available details here.",
+      "Hindi pa sapat ang confirmed information ko para sagutin iyan nang eksakto, pero I can still share a high-level summary from the available portfolio details.",
+    ],
+  };
+
+  if (!hasClearTopic) {
+    return pickVariant(genericVariants[languageStyle], message);
+  }
+
+  const topicVariants = {
+    english: [
+      `I don’t have enough confirmed portfolio information to answer precisely about ${coreTopic}. If it helps, I can share a high-level summary based on what’s available here.`,
+      `I can’t answer that precisely about ${coreTopic} from the confirmed portfolio details I have. If you want, I can still give a high-level summary from the available information.`,
+    ],
+    filipino: [
+      `Wala pa akong sapat na confirmed portfolio information para sagutin nang eksakto ang tungkol sa ${coreTopic}. Kung gusto mo, pwede akong magbigay ng high-level summary mula sa available details dito.`,
+      `Hindi ko masasagot nang eksakto ang tungkol sa ${coreTopic} gamit lang ang confirmed portfolio details na meron ako. Kung gusto mo, pwede pa rin akong mag-share ng high-level summary.`,
+    ],
+    taglish: [
+      `I don’t have enough confirmed portfolio information to answer precisely about ${coreTopic}. If you want, I can still share a high-level summary based on the available details here.`,
+      `Hindi ko masasagot nang eksakto ang tungkol sa ${coreTopic} gamit lang ang confirmed portfolio details na meron ako, pero I can still share a high-level summary if that helps.`,
+    ],
+  };
+
+  return pickVariant(topicVariants[languageStyle], message);
 }
 
 export function buildOutOfScopeFallback(message: string) {

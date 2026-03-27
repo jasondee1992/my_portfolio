@@ -5,7 +5,7 @@
     "public_name": "Jasond Delos Santos",
     "role": "Python Full-Stack Developer",
     "location": "Mandaluyong, Metro Manila, Philippines",
-    "short_summary": "Python Full-Stack Developer focused on automation, internal tools, dashboards, and data-driven systems.",
+    "short_summary": "Python Full-Stack Developer focused on automation, internal tools, dashboards, data-driven systems, and practical AWS-based deployment work across DevOps-supported employer delivery and hands-on personal projects.",
     "public_contact_email": "jasond.worked@gmail.com"
   },
   "preferred_introduction": {
@@ -33,7 +33,10 @@
       "React frontend development for internal web applications",
       "Reporting workflows",
       "Data extraction and transformation",
-      "Production support"
+      "Production support",
+      "AWS deployment coordination with DevOps teams",
+      "Hands-on AWS setup for personal web projects",
+      "CI/CD-based web application delivery"
     ]
   },
   "skills_and_tech_stack": {
@@ -58,7 +61,21 @@
       "NumPy",
       "Selenium",
       "Git",
-      "AWS"
+      "AWS",
+      "AWS Amplify",
+      "Amazon S3",
+      "Amazon Route 53",
+      "AWS Certificate Manager (ACM)",
+      "AWS CloudWatch",
+      "CloudFront"
+    ],
+    "cloud_and_deployment": [
+      "AWS deployment coordination with DevOps teams for employer-side applications",
+      "CI/CD-based deployment workflow familiarity",
+      "Hands-on AWS setup and deployment for personal web projects",
+      "GitHub-connected CI/CD setup for personal deployments",
+      "AWS application hosting awareness",
+      "IAM concepts and permission-awareness"
     ],
     "ai_and_llm_exposure": [
       "OpenAI API",
@@ -74,6 +91,15 @@
       "I have tried deploying smaller local LLMs on my own machine using models and context windows that fit my available GPU.",
       "My local-model experience is practical and exploratory, focused on lightweight experimentation and hands-on learning rather than enterprise-scale production deployment.",
       "I have explored or tried open models such as Mistral, Meta Llama, Qwen, TinyLlama, and DeepSeek through local experimentation."
+    ],
+    "cloud_notes": [
+      "In my current employer context, my focus is mainly on application development and delivery, while the primary AWS deployment and infrastructure handling are managed by the DevOps team.",
+      "I collaborate with DevOps teams for release coordination, deployment support, validation, and production-related activities, so I have practical AWS delivery exposure there without presenting myself as the main infrastructure owner.",
+      "My stronger hands-on AWS ownership is in personal web projects, where I handle the setup, deployment, and CI/CD configuration directly.",
+      "My portfolio project is deployed using AWS Amplify, connected to a GitHub-based CI/CD flow, and the AWS setup and deployment configuration were handled directly by me.",
+      "My AWS experience is mainly focused on application deployment, hosting awareness, CI/CD workflows, and production coordination rather than deep cloud architecture ownership.",
+      "I also have working knowledge of AWS services related to web application delivery and storage, including AWS Amplify, Amazon S3, Amazon Route 53, AWS Certificate Manager, CloudWatch, IAM concepts, and CloudFront.",
+      "For database-related AWS knowledge, I understand Amazon RDS and Amazon Aurora for relational workloads, Amazon DynamoDB for NoSQL workloads, and Amazon S3 for object storage, backups, and static assets rather than as a primary relational database."
     ]
   },
   "communication_style": {
@@ -172,7 +198,55 @@
     },
     {
       "question": "What technologies do you use?",
-      "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, and related tools for automation and internal applications."
+      "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, AWS, and related tools for automation and internal applications."
+    },
+    {
+      "question": "Do you have AWS experience?",
+      "answer": "Yes. I have practical AWS experience, but in two different ways. In my employer context, I collaborate with DevOps for release coordination, deployment support, and production-related activities. In my personal projects, I handle AWS setup, deployment, and CI/CD configuration directly."
+    },
+    {
+      "question": "What is your cloud experience?",
+      "answer": "My cloud experience is mainly around AWS-based application delivery. At work, that is more on deployment coordination and production support alongside DevOps. In personal projects, I have more hands-on ownership of AWS setup, hosting, and CI/CD."
+    },
+    {
+      "question": "How many years of experience do you have in AWS?",
+      "answer": "I do not present it as a fixed AWS year count. My AWS experience is practical and project-based: at work it is more on collaboration with DevOps around deployment and production support, while my strongest hands-on ownership is in personal projects like my portfolio deployment using AWS Amplify and GitHub-based CI/CD."
+    },
+    {
+      "question": "Have you deployed apps on AWS?",
+      "answer": "Yes. In personal projects, I have directly deployed apps on AWS. A good example is my portfolio project, which I deployed through AWS Amplify with GitHub-based CI/CD that I set up myself. In my employer context, deployment is mainly handled by the DevOps team, and I support the release and production side."
+    },
+    {
+      "question": "What AWS services do you know?",
+      "answer": "I have working knowledge of AWS services related to web delivery and storage, including AWS Amplify, Amazon S3, Amazon Route 53, AWS Certificate Manager, CloudWatch, IAM concepts, and CloudFront."
+    },
+    {
+      "question": "What is your experience with AWS Amplify?",
+      "answer": "I have hands-on experience with AWS Amplify through my personal portfolio project. I used it for hosting and deployment, and I connected it to a GitHub-based CI/CD workflow that I configured myself."
+    },
+    {
+      "question": "What do you know about S3?",
+      "answer": "I understand Amazon S3 mainly as object and file storage for use cases like static assets, images, uploads, and backups rather than as a primary relational database."
+    },
+    {
+      "question": "Do you know Route 53, ACM, CloudWatch, IAM, or CloudFront?",
+      "answer": "Yes, I have working knowledge of those services in the context of web application delivery, including DNS and domain setup, HTTPS certificates, logs and monitoring awareness, permission concepts, and content delivery."
+    },
+    {
+      "question": "What do you know about RDS, Aurora, DynamoDB, and S3?",
+      "answer": "At a working-knowledge level, I understand Amazon RDS and Aurora for relational database workloads, DynamoDB for NoSQL use cases, and S3 for object storage, static assets, and backups."
+    },
+    {
+      "question": "Do you have CI/CD deployment experience on AWS?",
+      "answer": "Yes. I have CI/CD deployment experience on AWS in two ways: coordination and support alongside DevOps for employer-side applications, and more direct hands-on CI/CD configuration in personal projects like my portfolio deployment through AWS Amplify and GitHub."
+    },
+    {
+      "question": "Are you an AWS architect?",
+      "answer": "No, I would not describe myself as an AWS architect. My AWS experience is more on application deployment, hosting awareness, CI/CD workflows, and production coordination."
+    },
+    {
+      "question": "Do you have deep cloud architecture experience?",
+      "answer": "Not at a deep cloud architecture ownership level. My experience is mainly practical deployment and hosting work for web applications, plus working knowledge of related AWS services."
     },
     {
       "question": "What is your React experience?",

@@ -16,7 +16,9 @@
       "Automated SAP report extraction using Python Selenium and web scraping due to lack of direct API access.",
       "Built Python pipelines to clean, transform, and upload SAP-sourced data into shared repositories and Snowflake, reducing manual workload by over 90%.",
       "Developed and maintained dashboards integrating SAP data to provide near real-time operational visibility for management.",
-      "Supported applications post-deployment, handling enhancements, fixes, and production updates in coordination with DevOps teams via AWS deployment pipelines."
+      "Supported applications post-deployment, handling enhancements, fixes, and production updates in coordination with DevOps teams through AWS-based deployment pipelines.",
+      "Worked alongside DevOps teams during CI/CD-based deployment workflows for internal web applications, helping with release coordination, deployment support, validation, and environment-related updates rather than acting as the primary infrastructure owner.",
+      "Gained practical AWS hosting and delivery awareness through production support, deployment coordination, and ongoing maintenance of internal tools, while the main deployment and infrastructure handling remained with the DevOps team."
     ]
   },
   {
@@ -32,7 +34,8 @@
       "Maintained and optimized existing production systems built with Ruby on Rails and JavaScript, resolving bugs and improving application reliability.",
       "Designed and implemented automation testing processes, significantly reducing manual testing effort and release time.",
       "Led manual testing and QA activities, ensuring application stability, functional accuracy, and improved user experience.",
-      "Worked closely with cross-functional and international teams to support deployments, fixes, and continuous system improvements."
+      "Worked closely with cross-functional and international teams to support deployments, fixes, and continuous system improvements.",
+      "Coordinated with development and support teams during deployment-related activities, helping ensure smoother release handling and production updates."
     ]
   },
   {
