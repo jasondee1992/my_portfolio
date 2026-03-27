@@ -11,14 +11,51 @@ const ubuntu = Ubuntu({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const DEFAULT_LOCAL_SITE_URL = "http://localhost:3000";
 const socialImagePath = "/images/profile/profile.jpeg";
 const socialTitle = "JasonD";
 const socialDescription =
   "Jasond Delos Santos | Python Developer • Data Engineer • Automation Builder";
 
+function normalizeSiteUrl(value: string | undefined) {
+  const trimmedValue = value?.trim();
+
+  if (!trimmedValue) {
+    return null;
+  }
+
+  try {
+    return new URL(trimmedValue).toString();
+  } catch {
+    return null;
+  }
+}
+
+function getSiteUrl() {
+  if (process.env.NODE_ENV !== "production") {
+    return DEFAULT_LOCAL_SITE_URL;
+  }
+
+  const configuredSiteUrl = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
+
+  if (configuredSiteUrl) {
+    return configuredSiteUrl;
+  }
+
+  const amplifyAppId = process.env.AWS_APP_ID?.trim();
+  const amplifyBranch = process.env.AWS_BRANCH?.trim();
+
+  if (process.env.NODE_ENV === "production" && amplifyAppId && amplifyBranch) {
+    return `https://${amplifyBranch}.${amplifyAppId}.amplifyapp.com`;
+  }
+
+  return DEFAULT_LOCAL_SITE_URL;
+}
+
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  metadataBase: new URL(siteUrl),
   title: socialTitle,
   description: socialDescription,
   icons: {
@@ -30,7 +67,7 @@ export const metadata: Metadata = {
     title: socialTitle,
     description: socialDescription,
     type: "website",
-    url: siteUrl || "/",
+    url: siteUrl,
     images: [
       {
         url: socialImagePath,

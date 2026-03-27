@@ -127,10 +127,19 @@ export function getAdminLoginUrl(nextPath?: string | null) {
   return queryString ? `/admin/login?${queryString}` : "/admin/login";
 }
 
+export function createRelativeRedirectResponse(path: string, status = 307) {
+  return new NextResponse(null, {
+    status,
+    headers: {
+      Location: path,
+    },
+  });
+}
+
 export function createAdminLoginRedirect(request: Request) {
   const requestUrl = new URL(request.url);
   const nextPath = `${requestUrl.pathname}${requestUrl.search}`;
-  return NextResponse.redirect(new URL(getAdminLoginUrl(nextPath), request.url));
+  return createRelativeRedirectResponse(getAdminLoginUrl(nextPath));
 }
 
 export async function isAdminAuthenticated() {

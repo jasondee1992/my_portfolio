@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import {
   applyAdminSessionCookie,
+  createRelativeRedirectResponse,
   getAdminRedirectTarget,
   isAdminAuthConfigured,
   validateAdminPasscode,
@@ -12,22 +12,22 @@ export async function POST(request: Request) {
   const nextPath = getAdminRedirectTarget(String(formData.get("next") ?? ""));
 
   if (!isAdminAuthConfigured()) {
-    return NextResponse.redirect(
-      new URL(`/admin/login?error=config&next=${encodeURIComponent(nextPath)}`, request.url),
-      { status: 303 }
+    return createRelativeRedirectResponse(
+      `/admin/login?error=config&next=${encodeURIComponent(nextPath)}`,
+      303
     );
   }
 
   const isValid = await validateAdminPasscode(passcode);
 
   if (!isValid) {
-    return NextResponse.redirect(
-      new URL(`/admin/login?error=invalid&next=${encodeURIComponent(nextPath)}`, request.url),
-      { status: 303 }
+    return createRelativeRedirectResponse(
+      `/admin/login?error=invalid&next=${encodeURIComponent(nextPath)}`,
+      303
     );
   }
 
-  const response = NextResponse.redirect(new URL(nextPath, request.url), { status: 303 });
+  const response = createRelativeRedirectResponse(nextPath, 303);
   applyAdminSessionCookie(response);
   return response;
 }
