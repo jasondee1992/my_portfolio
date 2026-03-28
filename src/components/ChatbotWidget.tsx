@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { Msg } from "@/components/ChatbotPanel";
 
 const ChatbotPanel = dynamic(() => import("@/components/ChatbotPanel"), {
@@ -17,8 +18,11 @@ const INITIAL_CHAT_MESSAGES: Msg[] = [
 ];
 
 export default function ChatbotWidget() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>(INITIAL_CHAT_MESSAGES);
+
+  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
 
   useEffect(() => {
     function handleOpenChatbot() {
@@ -30,6 +34,10 @@ export default function ChatbotWidget() {
       window.removeEventListener("open-chatbot", handleOpenChatbot);
     };
   }, []);
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <>

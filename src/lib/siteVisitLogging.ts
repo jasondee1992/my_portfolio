@@ -26,6 +26,11 @@ export type SiteVisitEvent = {
   region?: string | null;
   city?: string | null;
   timeZone?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  locationAccuracyMeters?: number | null;
+  locationConsentStatus?: string | null;
+  locationSource?: string | null;
 };
 
 export type SiteVisitFilters = {
@@ -35,6 +40,7 @@ export type SiteVisitFilters = {
   dateFrom?: string | null;
   dateTo?: string | null;
   limit?: number;
+  offset?: number;
 };
 
 export type SiteVisitRecord = {
@@ -51,6 +57,11 @@ export type SiteVisitRecord = {
   region: string | null;
   city: string | null;
   time_zone: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  location_accuracy_meters: number | null;
+  location_consent_status: string | null;
+  location_source: string | null;
 };
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -63,6 +74,10 @@ let sqliteInsertStatement: import("better-sqlite3").Statement | null = null;
 
 function requireSqliteModule() {
   return loadModule("better-sqlite3") as typeof import("better-sqlite3");
+}
+
+function toNullableNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 function getSqliteDatabase() {
@@ -89,6 +104,11 @@ function getSqliteDatabase() {
       country_name TEXT,
       region TEXT,
       city TEXT,
+      latitude REAL,
+      longitude REAL,
+      location_accuracy_meters REAL,
+      location_consent_status TEXT,
+      location_source TEXT,
       time_zone TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -97,16 +117,21 @@ function getSqliteDatabase() {
   const columns = database.prepare("PRAGMA table_info(site_visits)").all() as Array<{ name: string }>;
   const existingColumnNames = new Set(columns.map((column) => column.name));
 
-  for (const columnName of [
-    "referrer",
-    "country_code",
-    "country_name",
-    "region",
-    "city",
-    "time_zone",
-  ]) {
+  for (const [columnName, columnType] of [
+    ["referrer", "TEXT"],
+    ["country_code", "TEXT"],
+    ["country_name", "TEXT"],
+    ["region", "TEXT"],
+    ["city", "TEXT"],
+    ["latitude", "REAL"],
+    ["longitude", "REAL"],
+    ["location_accuracy_meters", "REAL"],
+    ["location_consent_status", "TEXT"],
+    ["location_source", "TEXT"],
+    ["time_zone", "TEXT"],
+  ] as const) {
     if (!existingColumnNames.has(columnName)) {
-      database.exec(`ALTER TABLE site_visits ADD COLUMN ${columnName} TEXT`);
+      database.exec(`ALTER TABLE site_visits ADD COLUMN ${columnName} ${columnType}`);
     }
   }
 
@@ -131,6 +156,11 @@ function getSqliteInsertStatement() {
       country_name,
       region,
       city,
+      latitude,
+      longitude,
+      location_accuracy_meters,
+      location_consent_status,
+      location_source,
       time_zone
     ) VALUES (
       @sessionId,
@@ -143,6 +173,11 @@ function getSqliteInsertStatement() {
       @countryName,
       @region,
       @city,
+      @latitude,
+      @longitude,
+      @locationAccuracyMeters,
+      @locationConsentStatus,
+      @locationSource,
       @timeZone
     )
   `);
@@ -152,6 +187,14 @@ function getSqliteInsertStatement() {
 
 function normalizeLimit(limit?: number) {
   return Math.min(Math.max(limit ?? 50, 1), 200);
+}
+
+function normalizeOffset(offset?: number) {
+  if (!Number.isFinite(offset)) {
+    return 0;
+  }
+
+  return Math.max(Math.floor(offset ?? 0), 0);
 }
 
 function toSqliteDateTimeStart(value: string | null | undefined) {
@@ -193,6 +236,15 @@ function normalizeSqliteSiteVisitRecord(row: Record<string, unknown>) {
     region: toNullableText(typeof row.region === "string" ? row.region : null),
     city: toNullableText(typeof row.city === "string" ? row.city : null),
     time_zone: toNullableText(typeof row.time_zone === "string" ? row.time_zone : null),
+    latitude: toNullableNumber(row.latitude),
+    longitude: toNullableNumber(row.longitude),
+    location_accuracy_meters: toNullableNumber(row.location_accuracy_meters),
+    location_consent_status: toNullableText(
+      typeof row.location_consent_status === "string" ? row.location_consent_status : null
+    ),
+    location_source: toNullableText(
+      typeof row.location_source === "string" ? row.location_source : null
+    ),
   } satisfies SiteVisitRecord;
 }
 
@@ -217,6 +269,15 @@ function normalizeDynamoDbSiteVisitRecord(item: Record<string, unknown>) {
     region: toNullableText(typeof item.region === "string" ? item.region : null),
     city: toNullableText(typeof item.city === "string" ? item.city : null),
     time_zone: toNullableText(typeof item.time_zone === "string" ? item.time_zone : null),
+    latitude: toNullableNumber(item.latitude),
+    longitude: toNullableNumber(item.longitude),
+    location_accuracy_meters: toNullableNumber(item.location_accuracy_meters),
+    location_consent_status: toNullableText(
+      typeof item.location_consent_status === "string" ? item.location_consent_status : null
+    ),
+    location_source: toNullableText(
+      typeof item.location_source === "string" ? item.location_source : null
+    ),
   } satisfies SiteVisitRecord;
 }
 
@@ -433,16 +494,40 @@ async function getSqliteSiteVisits(filters: SiteVisitFilters = {}) {
           country_name,
           region,
           city,
-          time_zone
+          time_zone,
+          latitude,
+          longitude,
+          location_accuracy_meters,
+          location_consent_status,
+          location_source
         FROM site_visits
         ${whereSql}
         ORDER BY datetime(created_at) DESC, id DESC
         LIMIT @limit
+        OFFSET @offset
       `
     )
-    .all(parameters) as Record<string, unknown>[];
+    .all({
+      ...parameters,
+      offset: normalizeOffset(filters.offset),
+    }) as Record<string, unknown>[];
 
   return rows.map(normalizeSqliteSiteVisitRecord);
+}
+
+async function getSqliteSiteVisitsCount(filters: SiteVisitFilters = {}) {
+  const { whereSql, parameters } = buildSqliteQueryParts(filters);
+  const row = getSqliteDatabase()
+    .prepare(
+      `
+        SELECT COUNT(*) as total
+        FROM site_visits
+        ${whereSql}
+      `
+    )
+    .get(parameters) as { total?: number } | undefined;
+
+  return row?.total ?? 0;
 }
 
 async function getDynamoDbSiteVisits(filters: SiteVisitFilters = {}) {
@@ -451,7 +536,16 @@ async function getDynamoDbSiteVisits(filters: SiteVisitFilters = {}) {
     return records
       .map(normalizeDynamoDbSiteVisitRecord)
       .sort(sortSiteVisitsDescending)
-      .slice(0, normalizeLimit(filters.limit));
+      .slice(normalizeOffset(filters.offset), normalizeOffset(filters.offset) + normalizeLimit(filters.limit));
+  } catch (error) {
+    throw toLoggingStorageError(error, "Unable to read site visits from DynamoDB.");
+  }
+}
+
+async function getDynamoDbSiteVisitsCount(filters: SiteVisitFilters = {}) {
+  try {
+    const records = await scanAllItems<Record<string, unknown>>(buildDynamoDbSiteVisitScanInput(filters));
+    return records.length;
   } catch (error) {
     throw toLoggingStorageError(error, "Unable to read site visits from DynamoDB.");
   }
@@ -478,6 +572,11 @@ export async function logSiteVisit(event: SiteVisitEvent) {
         region: toNullableText(event.region),
         city: toNullableText(event.city),
         timeZone: toNullableText(event.timeZone),
+        latitude: toNullableNumber(event.latitude),
+        longitude: toNullableNumber(event.longitude),
+        locationAccuracyMeters: toNullableNumber(event.locationAccuracyMeters),
+        locationConsentStatus: toNullableText(event.locationConsentStatus),
+        locationSource: toNullableText(event.locationSource),
       });
     } catch (error) {
       console.error("Site visit log write failed:", error);
@@ -507,6 +606,11 @@ export async function logSiteVisit(event: SiteVisitEvent) {
       region: toNullableText(event.region),
       city: toNullableText(event.city),
       time_zone: toNullableText(event.timeZone),
+      latitude: toNullableNumber(event.latitude),
+      longitude: toNullableNumber(event.longitude),
+      location_accuracy_meters: toNullableNumber(event.locationAccuracyMeters),
+      location_consent_status: toNullableText(event.locationConsentStatus),
+      location_source: toNullableText(event.locationSource),
       created_at: createTimestamp(),
     });
   } catch (error) {
@@ -520,4 +624,12 @@ export async function getSiteVisits(filters: SiteVisitFilters = {}) {
   }
 
   return getDynamoDbSiteVisits(filters);
+}
+
+export async function getSiteVisitsCount(filters: SiteVisitFilters = {}) {
+  if (getLoggingBackend() === "sqlite") {
+    return getSqliteSiteVisitsCount(filters);
+  }
+
+  return getDynamoDbSiteVisitsCount(filters);
 }

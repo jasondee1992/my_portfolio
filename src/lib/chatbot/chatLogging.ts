@@ -110,9 +110,15 @@ function getSqliteDatabase() {
   const columns = database.prepare("PRAGMA table_info(chat_logs)").all() as Array<{ name: string }>;
   const existingColumnNames = new Set(columns.map((column) => column.name));
 
-  for (const columnName of ["country_code", "country_name", "region", "city", "time_zone"]) {
+  for (const [columnName, columnType] of [
+    ["country_code", "TEXT"],
+    ["country_name", "TEXT"],
+    ["region", "TEXT"],
+    ["city", "TEXT"],
+    ["time_zone", "TEXT"],
+  ] as const) {
     if (!existingColumnNames.has(columnName)) {
-      database.exec(`ALTER TABLE chat_logs ADD COLUMN ${columnName} TEXT`);
+      database.exec(`ALTER TABLE chat_logs ADD COLUMN ${columnName} ${columnType}`);
     }
   }
 

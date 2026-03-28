@@ -1,10 +1,15 @@
 import "server-only";
 import { requireAdminPageAuth } from "@/lib/adminAuth";
 import { getChatLogs, getChatLogsCount } from "@/lib/chatbot/chatLogging";
-import { getSiteVisits } from "@/lib/siteVisitLogging";
+import { getSiteVisits, getSiteVisitsCount } from "@/lib/siteVisitLogging";
 
 export const dynamic = "force-dynamic";
 const PHILIPPINE_TIME_ZONE = "Asia/Manila";
+const ADMIN_TABLE_PAGE_SIZE = 8;
+const CHAT_LOCATION_HELP_TEXT =
+  "Chat log location remains approximate and IP-based, so mobile data, VPNs, and carrier gateways can resolve to a nearby city.";
+const SITE_LOCATION_HELP_TEXT =
+  "If a user accepts location sharing, the dashboard stores browser geolocation coordinates for site visits. Otherwise it falls back to approximate IP geolocation, which can resolve to a nearby city on mobile data, VPNs, and carrier gateways.";
 
 type SearchParamsValue = string | string[] | undefined;
 type PageProps = {
@@ -17,17 +22,6 @@ function getSingleValue(value: SearchParamsValue) {
   }
 
   return value ?? "";
-}
-
-function parseLimit(value: string) {
-  const parsed = Number(value);
-  const allowedLimits = new Set([25, 50, 100, 200]);
-
-  if (!allowedLimits.has(parsed)) {
-    return 50;
-  }
-
-  return parsed;
 }
 
 function parsePage(value: string) {
@@ -81,6 +75,65 @@ function formatLocation(
   return parts.length > 0 ? parts.join(", ") : "n/a";
 }
 
+function formatLocationShareStatus(value: string | null) {
+  switch (value) {
+    case "accepted":
+      return "Accepted";
+    case "denied":
+      return "Denied";
+    case "skipped":
+      return "Skipped";
+    case "unsupported":
+      return "Unsupported";
+    case "unknown":
+      return "Not asked";
+    default:
+      return "Not asked";
+  }
+}
+
+function formatPreciseCoordinates(
+  latitude: number | null,
+  longitude: number | null,
+  locationAccuracyMeters: number | null
+) {
+  if (latitude === null || longitude === null) {
+    return null;
+  }
+
+  const coordinates = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+
+  if (locationAccuracyMeters === null) {
+    return coordinates;
+  }
+
+  return `${coordinates} (+/- ${Math.round(locationAccuracyMeters)}m)`;
+}
+
+function formatLoggedLocation({
+  countryName,
+  region,
+  city,
+  latitude,
+  longitude,
+  locationAccuracyMeters,
+  locationSource,
+}: {
+  countryName: string | null;
+  region: string | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  locationAccuracyMeters: number | null;
+  locationSource: string | null;
+}) {
+  if (locationSource === "browser_geolocation") {
+    return formatPreciseCoordinates(latitude, longitude, locationAccuracyMeters) ?? "n/a";
+  }
+
+  return formatLocation(countryName, region, city);
+}
+
 function buildHref(basePath: string, params: Record<string, string>) {
   const searchParams = new URLSearchParams();
 
@@ -94,6 +147,10 @@ function buildHref(basePath: string, params: Record<string, string>) {
   return queryString ? `${basePath}?${queryString}` : basePath;
 }
 
+function buildSectionHref(basePath: string, params: Record<string, string>, sectionId: string) {
+  return `${buildHref(basePath, params)}#${sectionId}`;
+}
+
 function buildExportHref(format: "csv" | "json", params: Record<string, string>) {
   return buildHref("/admin/chat-logs/export", {
     ...params,
@@ -101,10 +158,52 @@ function buildExportHref(format: "csv" | "json", params: Record<string, string>)
   });
 }
 
-function renderHiddenParams(params: Record<string, string>) {
-  return Object.entries(params)
-    .filter(([, value]) => value.trim())
-    .map(([key, value]) => <input key={key} type="hidden" name={key} value={value} />);
+function renderPaginationControls({
+  currentPage,
+  totalPages,
+  hrefFactory,
+}: {
+  currentPage: number;
+  totalPages: number;
+  hrefFactory: (page: number) => string;
+}) {
+  const previousPage = Math.max(currentPage - 1, 1);
+  const nextPage = Math.min(currentPage + 1, totalPages);
+  const isPreviousDisabled = currentPage <= 1;
+  const isNextDisabled = currentPage >= totalPages;
+  const navButtonClass =
+    "inline-flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white/85 transition hover:border-white/18 hover:bg-white/[0.07]";
+  const disabledClass = "pointer-events-none opacity-40";
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <a
+        href={hrefFactory(previousPage)}
+        aria-disabled={isPreviousDisabled}
+        className={`${navButtonClass} ${isPreviousDisabled ? disabledClass : ""}`}
+      >
+        <span aria-hidden="true" className="text-base leading-none">
+          ←
+        </span>
+      </a>
+
+      <div className="inline-flex h-11 items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm text-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+        <span className="font-medium text-white/92">{currentPage}</span>
+        <span className="text-white/28">/</span>
+        <span>{totalPages}</span>
+      </div>
+
+      <a
+        href={hrefFactory(nextPage)}
+        aria-disabled={isNextDisabled}
+        className={`${navButtonClass} ${isNextDisabled ? disabledClass : ""}`}
+      >
+        <span aria-hidden="true" className="text-base leading-none">
+          →
+        </span>
+      </a>
+    </div>
+  );
 }
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
@@ -112,49 +211,19 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
 
   const resolvedSearchParams = (await searchParams) ?? {};
 
-  const chatVisitorId = getSingleValue(resolvedSearchParams.visitor_id);
-  const chatSessionId = getSingleValue(resolvedSearchParams.session_id);
-  const chatResponseBranch = getSingleValue(resolvedSearchParams.response_branch);
-  const chatDateFrom = getSingleValue(resolvedSearchParams.date_from);
-  const chatDateTo = getSingleValue(resolvedSearchParams.date_to);
-  const chatSearchText = getSingleValue(resolvedSearchParams.search);
-  const chatLimit = parseLimit(getSingleValue(resolvedSearchParams.limit));
+  const chatLimit = ADMIN_TABLE_PAGE_SIZE;
   const requestedChatPage = parsePage(getSingleValue(resolvedSearchParams.page));
 
-  const siteVisitorId = getSingleValue(resolvedSearchParams.visit_visitor_id);
-  const siteSessionId = getSingleValue(resolvedSearchParams.visit_session_id);
-  const sitePageUrl = getSingleValue(resolvedSearchParams.visit_page_url);
-  const siteDateFrom = getSingleValue(resolvedSearchParams.visit_date_from);
-  const siteDateTo = getSingleValue(resolvedSearchParams.visit_date_to);
-  const siteLimit = parseLimit(getSingleValue(resolvedSearchParams.visit_limit));
+  const siteLimit = ADMIN_TABLE_PAGE_SIZE;
+  const requestedSitePage = parsePage(getSingleValue(resolvedSearchParams.visit_page));
 
   const chatExportFilterParams = {
-    visitor_id: chatVisitorId,
-    session_id: chatSessionId,
-    response_branch: chatResponseBranch,
-    date_from: chatDateFrom,
-    date_to: chatDateTo,
-    search: chatSearchText,
     limit: String(chatLimit),
     page: String(requestedChatPage),
   };
 
-  const chatFilters = {
-    visitorId: chatVisitorId,
-    sessionId: chatSessionId,
-    responseBranch: chatResponseBranch,
-    dateFrom: chatDateFrom,
-    dateTo: chatDateTo,
-    searchText: chatSearchText,
-  };
-
-  const siteFilters = {
-    visitorId: siteVisitorId,
-    sessionId: siteSessionId,
-    pageUrl: sitePageUrl,
-    dateFrom: siteDateFrom,
-    dateTo: siteDateTo,
-  };
+  const chatFilters = {};
+  const siteFilters = {};
 
   let readError: string | null = null;
   let totalMatchedChatRows = 0;
@@ -162,6 +231,9 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
   let siteVisits = await Promise.resolve([] as Awaited<ReturnType<typeof getSiteVisits>>);
   let chatPage = 1;
   let totalChatPages = 1;
+  let totalMatchedSiteRows = 0;
+  let sitePage = 1;
+  let totalSitePages = 1;
 
   try {
     totalMatchedChatRows = await getChatLogsCount(chatFilters);
@@ -172,31 +244,22 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
       limit: chatLimit,
       offset: (chatPage - 1) * chatLimit,
     });
+    totalMatchedSiteRows = await getSiteVisitsCount(siteFilters);
+    totalSitePages = Math.max(1, Math.ceil(totalMatchedSiteRows / siteLimit));
+    sitePage = Math.min(requestedSitePage, totalSitePages);
     siteVisits = await getSiteVisits({
       ...siteFilters,
       limit: siteLimit,
+      offset: (sitePage - 1) * siteLimit,
     });
   } catch (error) {
     readError = error instanceof Error ? error.message : "Unable to read log data.";
   }
 
-  const siteQueryParams = {
-    visit_visitor_id: siteVisitorId,
-    visit_session_id: siteSessionId,
-    visit_page_url: sitePageUrl,
-    visit_date_from: siteDateFrom,
-    visit_date_to: siteDateTo,
-    visit_limit: String(siteLimit),
-  };
+  const siteQueryParams = { visit_page: String(sitePage) };
 
   const chatPageParams = {
-    visitor_id: chatVisitorId,
-    session_id: chatSessionId,
-    response_branch: chatResponseBranch,
-    date_from: chatDateFrom,
-    date_to: chatDateTo,
-    search: chatSearchText,
-    limit: String(chatLimit),
+    page: String(chatPage),
   };
 
   return (
@@ -227,7 +290,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
               <p className="mt-2 text-sm text-white/55">
                 Showing {chatLogs.length} of {totalMatchedChatRows} matched row
                 {totalMatchedChatRows === 1 ? "" : "s"}. Newest first. Displayed in Philippine
-                time.
+                time. {CHAT_LOCATION_HELP_TEXT}
               </p>
             </div>
 
@@ -253,101 +316,6 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
             </div>
           </div>
 
-          <form method="get" className="admin-grid-toolbar grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-            {renderHiddenParams(siteQueryParams)}
-
-            <label className="admin-grid-filter xl:col-span-2">
-              <span className="admin-grid-filter-label">Search</span>
-              <input
-                type="text"
-                name="search"
-                defaultValue={chatSearchText}
-                className="admin-grid-input"
-                placeholder="Search user message, AI response, visitor ID, session ID"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Visitor ID</span>
-              <input
-                type="text"
-                name="visitor_id"
-                defaultValue={chatVisitorId}
-                className="admin-grid-input"
-                placeholder="visitor-..."
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Session ID</span>
-              <input
-                type="text"
-                name="session_id"
-                defaultValue={chatSessionId}
-                className="admin-grid-input"
-                placeholder="session-..."
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Response Branch</span>
-              <input
-                type="text"
-                name="response_branch"
-                defaultValue={chatResponseBranch}
-                className="admin-grid-input"
-                placeholder="openai_generated"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Date From</span>
-              <input
-                type="date"
-                name="date_from"
-                defaultValue={chatDateFrom}
-                className="admin-grid-input"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Date To</span>
-              <input
-                type="date"
-                name="date_to"
-                defaultValue={chatDateTo}
-                className="admin-grid-input"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Result Limit</span>
-              <select
-                name="limit"
-                defaultValue={String(chatLimit)}
-                className="admin-grid-input admin-grid-select"
-              >
-                {[25, 50, 100, 200].map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="md:col-span-2 xl:col-span-5 flex flex-wrap gap-3">
-              <button type="submit" className="admin-grid-button">
-                Apply Chat Filters
-              </button>
-              <a
-                href={buildHref("/admin/dashboard", siteQueryParams)}
-                className="admin-grid-button admin-grid-button-secondary"
-              >
-                Clear Chat Filters
-              </a>
-            </div>
-          </form>
-
           {chatLogs.length === 0 ? (
             <div className="admin-grid-empty">
               No chat logs matched the current filters.
@@ -370,7 +338,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
                       <th className="px-4 py-3 font-medium">Page URL</th>
                       <th className="px-4 py-3 font-medium">User Agent</th>
                       <th className="px-4 py-3 font-medium">IP Address</th>
-                      <th className="px-4 py-3 font-medium">Location</th>
+                      <th className="px-4 py-3 font-medium">Approx. Location (IP)</th>
                       <th className="px-4 py-3 font-medium">Timezone</th>
                     </tr>
                   </thead>
@@ -428,34 +396,20 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
                   Page {chatPage} of {totalChatPages}
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href={buildHref("/admin/dashboard", {
-                      ...siteQueryParams,
-                      ...chatPageParams,
-                      page: String(Math.max(chatPage - 1, 1)),
-                    })}
-                    aria-disabled={chatPage <= 1}
-                    className={`admin-grid-button admin-grid-button-secondary ${
-                      chatPage <= 1 ? "pointer-events-none opacity-50" : ""
-                    }`}
-                  >
-                    Previous
-                  </a>
-                  <a
-                    href={buildHref("/admin/dashboard", {
-                      ...siteQueryParams,
-                      ...chatPageParams,
-                      page: String(Math.min(chatPage + 1, totalChatPages)),
-                    })}
-                    aria-disabled={chatPage >= totalChatPages}
-                    className={`admin-grid-button admin-grid-button-secondary ${
-                      chatPage >= totalChatPages ? "pointer-events-none opacity-50" : ""
-                    }`}
-                  >
-                    Next
-                  </a>
-                </div>
+                {renderPaginationControls({
+                  currentPage: chatPage,
+                  totalPages: totalChatPages,
+                  hrefFactory: (page) =>
+                    buildSectionHref(
+                      "/admin/dashboard",
+                      {
+                        ...siteQueryParams,
+                        ...chatPageParams,
+                        page: String(page),
+                      },
+                      "chat-logs"
+                    ),
+                })}
               </div>
             </>
           )}
@@ -467,149 +421,100 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
           <div className="mb-6">
             <h2 className="text-xl font-medium text-white/95">Site Visits</h2>
             <p className="mt-2 text-sm text-white/55">
-              Displayed in Philippine time.
+              Displayed in Philippine time. {SITE_LOCATION_HELP_TEXT}
             </p>
           </div>
-
-          <form method="get" className="admin-grid-toolbar grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-            {renderHiddenParams(chatExportFilterParams)}
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Visitor ID</span>
-              <input
-                type="text"
-                name="visit_visitor_id"
-                defaultValue={siteVisitorId}
-                className="admin-grid-input"
-                placeholder="visitor-..."
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Session ID</span>
-              <input
-                type="text"
-                name="visit_session_id"
-                defaultValue={siteSessionId}
-                className="admin-grid-input"
-                placeholder="session-..."
-              />
-            </label>
-
-            <label className="admin-grid-filter xl:col-span-2">
-              <span className="admin-grid-filter-label">Page URL</span>
-              <input
-                type="text"
-                name="visit_page_url"
-                defaultValue={sitePageUrl}
-                className="admin-grid-input"
-                placeholder="/projects"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Date From</span>
-              <input
-                type="date"
-                name="visit_date_from"
-                defaultValue={siteDateFrom}
-                className="admin-grid-input"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Date To</span>
-              <input
-                type="date"
-                name="visit_date_to"
-                defaultValue={siteDateTo}
-                className="admin-grid-input"
-              />
-            </label>
-
-            <label className="admin-grid-filter">
-              <span className="admin-grid-filter-label">Result Limit</span>
-              <select
-                name="visit_limit"
-                defaultValue={String(siteLimit)}
-                className="admin-grid-input admin-grid-select"
-              >
-                {[25, 50, 100, 200].map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="md:col-span-2 xl:col-span-6 flex flex-wrap gap-3">
-              <button type="submit" className="admin-grid-button">
-                Apply Visit Filters
-              </button>
-              <a
-                href={buildHref("/admin/dashboard", chatExportFilterParams)}
-                className="admin-grid-button admin-grid-button-secondary"
-              >
-                Clear Visit Filters
-              </a>
-            </div>
-          </form>
 
           {siteVisits.length === 0 ? (
             <div className="admin-grid-empty">
               No site visits matched the current filters.
             </div>
           ) : (
-            <div className="admin-grid-table-wrap">
-              <table className="admin-grid-table min-w-full text-left text-sm text-white/80">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-3 font-medium">ID</th>
-                    <th className="px-4 py-3 font-medium">Visited At (PH)</th>
-                    <th className="px-4 py-3 font-medium">Visitor ID</th>
-                    <th className="px-4 py-3 font-medium">Session ID</th>
-                    <th className="px-4 py-3 font-medium">Page URL</th>
-                    <th className="px-4 py-3 font-medium">User Agent</th>
-                    <th className="px-4 py-3 font-medium">IP Address</th>
-                    <th className="px-4 py-3 font-medium">Referrer</th>
-                    <th className="px-4 py-3 font-medium">Location</th>
-                    <th className="px-4 py-3 font-medium">Timezone</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {siteVisits.map((visit) => (
-                    <tr key={visit.id} className="align-top">
-                      <td className="px-4 py-3 whitespace-nowrap text-white/65">{visit.id}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {formatPhilippineDateTime(visit.visited_at)}
-                      </td>
-                      <td className="px-4 py-3 min-w-44 break-all text-white/65">
-                        {visit.visitor_id ?? "n/a"}
-                      </td>
-                      <td className="px-4 py-3 min-w-44 break-all text-white/65">
-                        {visit.session_id ?? "n/a"}
-                      </td>
-                      <td className="px-4 py-3 min-w-56 break-all">{visit.page_url}</td>
-                      <td className="px-4 py-3 min-w-72 break-all text-white/65">
-                        {visit.user_agent ?? "n/a"}
-                      </td>
-                      <td className="px-4 py-3 min-w-40 break-all text-white/65">
-                        {visit.ip_address ?? "n/a"}
-                      </td>
-                      <td className="px-4 py-3 min-w-56 break-all text-white/65">
-                        {visit.referrer ?? "n/a"}
-                      </td>
-                      <td className="px-4 py-3 min-w-56 break-all text-white/65">
-                        {formatLocation(visit.country_name, visit.region, visit.city)}
-                      </td>
-                      <td className="px-4 py-3 min-w-44 break-all text-white/65">
-                        {visit.time_zone ?? "n/a"}
-                      </td>
+            <>
+              <div className="admin-grid-table-wrap">
+                <table className="admin-grid-table min-w-full text-left text-sm text-white/80">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-3 font-medium">ID</th>
+                      <th className="px-4 py-3 font-medium">Visited At (PH)</th>
+                      <th className="px-4 py-3 font-medium">Visitor ID</th>
+                      <th className="px-4 py-3 font-medium">Session ID</th>
+                      <th className="px-4 py-3 font-medium">Page URL</th>
+                      <th className="px-4 py-3 font-medium">User Agent</th>
+                      <th className="px-4 py-3 font-medium">IP Address</th>
+                      <th className="px-4 py-3 font-medium">Referrer</th>
+                      <th className="px-4 py-3 font-medium">Location Share</th>
+                      <th className="px-4 py-3 font-medium">Location</th>
+                      <th className="px-4 py-3 font-medium">Timezone</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {siteVisits.map((visit) => (
+                      <tr key={visit.id} className="align-top">
+                        <td className="px-4 py-3 whitespace-nowrap text-white/65">{visit.id}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          {formatPhilippineDateTime(visit.visited_at)}
+                        </td>
+                        <td className="px-4 py-3 min-w-44 break-all text-white/65">
+                          {visit.visitor_id ?? "n/a"}
+                        </td>
+                        <td className="px-4 py-3 min-w-44 break-all text-white/65">
+                          {visit.session_id ?? "n/a"}
+                        </td>
+                        <td className="px-4 py-3 min-w-56 break-all">{visit.page_url}</td>
+                        <td className="px-4 py-3 min-w-72 break-all text-white/65">
+                          {visit.user_agent ?? "n/a"}
+                        </td>
+                        <td className="px-4 py-3 min-w-40 break-all text-white/65">
+                          {visit.ip_address ?? "n/a"}
+                        </td>
+                        <td className="px-4 py-3 min-w-56 break-all text-white/65">
+                          {visit.referrer ?? "n/a"}
+                        </td>
+                        <td className="px-4 py-3 min-w-56 break-all text-white/65">
+                          {formatLocationShareStatus(visit.location_consent_status)}
+                        </td>
+                        <td className="px-4 py-3 min-w-56 break-all text-white/65">
+                          {formatLoggedLocation({
+                            countryName: visit.country_name,
+                            region: visit.region,
+                            city: visit.city,
+                            latitude: visit.latitude,
+                            longitude: visit.longitude,
+                            locationAccuracyMeters: visit.location_accuracy_meters,
+                            locationSource: visit.location_source,
+                          })}
+                        </td>
+                        <td className="px-4 py-3 min-w-44 break-all text-white/65">
+                          {visit.time_zone ?? "n/a"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm text-white/55">
+                  Page {sitePage} of {totalSitePages}
+                </div>
+
+                {renderPaginationControls({
+                  currentPage: sitePage,
+                  totalPages: totalSitePages,
+                  hrefFactory: (page) =>
+                    buildSectionHref(
+                      "/admin/dashboard",
+                      {
+                        ...chatPageParams,
+                        ...siteQueryParams,
+                        visit_page: String(page),
+                      },
+                      "site-visits"
+                    ),
+                })}
+              </div>
+            </>
           )}
         </section>
       </section>

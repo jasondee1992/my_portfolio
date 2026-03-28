@@ -6,6 +6,19 @@ export type RequestGeoMetadata = {
   region: string | null;
   city: string | null;
   timeZone: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  locationAccuracyMeters: number | null;
+  locationConsentStatus: string | null;
+  locationSource: "browser_geolocation" | "ip_header" | "unknown";
+};
+
+type RequestGeoOptions = {
+  requestedTimeZone?: unknown;
+  locationConsentStatus?: unknown;
+  latitude?: unknown;
+  longitude?: unknown;
+  locationAccuracyMeters?: unknown;
 };
 
 const COUNTRY_HEADER_NAMES = [
@@ -81,6 +94,56 @@ function normalizeCountryCode(value: string | null) {
   return /^[A-Z]{2}$/.test(normalized) ? normalized : null;
 }
 
+function normalizeFiniteNumber(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return value;
+}
+
+function normalizeLatitude(value: unknown) {
+  const normalized = normalizeFiniteNumber(value);
+
+  if (normalized === null || normalized < -90 || normalized > 90) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function normalizeLongitude(value: unknown) {
+  const normalized = normalizeFiniteNumber(value);
+
+  if (normalized === null || normalized < -180 || normalized > 180) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function normalizeLocationAccuracyMeters(value: unknown) {
+  const normalized = normalizeFiniteNumber(value);
+
+  if (normalized === null || normalized < 0) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function normalizeLocationConsentStatus(value: unknown) {
+  const normalized = toNullableText(value);
+
+  if (!normalized) {
+    return null;
+  }
+
+  return ["unknown", "accepted", "denied", "skipped", "unsupported"].includes(normalized)
+    ? normalized
+    : null;
+}
+
 function normalizeTimeZone(value: unknown) {
   const trimmed = toNullableText(value);
 
@@ -115,10 +178,15 @@ function getCountryName(countryCode: string | null) {
   }
 }
 
-export function getRequestGeoMetadata(
-  headers: Headers,
-  requestedTimeZone?: unknown
-): RequestGeoMetadata {
+export function getRequestGeoMetadata(headers: Headers, options: RequestGeoOptions = {}): RequestGeoMetadata {
+  const normalizedLatitude = normalizeLatitude(options.latitude);
+  const normalizedLongitude = normalizeLongitude(options.longitude);
+  const normalizedLocationAccuracyMeters = normalizeLocationAccuracyMeters(
+    options.locationAccuracyMeters
+  );
+  const normalizedLocationConsentStatus = normalizeLocationConsentStatus(
+    options.locationConsentStatus
+  );
   const countryCode =
     normalizeCountryCode(getFirstHeaderValue(headers, COUNTRY_HEADER_NAMES)) ??
     (process.env.NODE_ENV === "development"
@@ -143,9 +211,17 @@ export function getRequestGeoMetadata(
   const timeZone =
     normalizeTimeZone(getFirstHeaderValue(headers, TIMEZONE_HEADER_NAMES)) ??
     (process.env.NODE_ENV === "development"
-      ? normalizeTimeZone(getFirstHeaderValue(headers, DEV_TIMEZONE_HEADER_NAMES)) ??
-        normalizeTimeZone(requestedTimeZone)
-      : null);
+      ? normalizeTimeZone(getFirstHeaderValue(headers, DEV_TIMEZONE_HEADER_NAMES))
+      : null) ??
+    normalizeTimeZone(options.requestedTimeZone);
+  const locationSource =
+    normalizedLocationConsentStatus === "accepted" &&
+    normalizedLatitude !== null &&
+    normalizedLongitude !== null
+      ? "browser_geolocation"
+      : countryCode || countryName || region || city || timeZone
+        ? "ip_header"
+        : "unknown";
 
   return {
     countryCode,
@@ -153,5 +229,10 @@ export function getRequestGeoMetadata(
     region,
     city,
     timeZone,
+    latitude: normalizedLatitude,
+    longitude: normalizedLongitude,
+    locationAccuracyMeters: normalizedLocationAccuracyMeters,
+    locationConsentStatus: normalizedLocationConsentStatus,
+    locationSource,
   };
 }

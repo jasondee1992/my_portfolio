@@ -24,6 +24,7 @@ export default async function AdminSiteVisitsRedirectPage({ searchParams }: Page
     date_from: "visit_date_from",
     date_to: "visit_date_to",
     limit: "visit_limit",
+    page: "visit_page",
   };
 
   for (const [fromKey, toKey] of Object.entries(mappings)) {

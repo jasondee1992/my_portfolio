@@ -99,7 +99,9 @@ function getRequestMetadata(request: Request, body?: Partial<ChatRequestBody>): 
   const normalizedUserAgent = getNormalizedBodyField(body, "userAgent", "user_agent");
   const normalizedIpAddress = getNormalizedBodyField(body, "ipAddress", "ip_address");
   const normalizedTimeZone = getNormalizedBodyField(body, "timeZone", "time_zone");
-  const geoMetadata = getRequestGeoMetadata(request.headers, normalizedTimeZone);
+  const geoMetadata = getRequestGeoMetadata(request.headers, {
+    requestedTimeZone: normalizedTimeZone,
+  });
 
   return {
     sessionId: normalizedSessionId,
