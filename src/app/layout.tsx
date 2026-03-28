@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import ChatbotWidget from "@/components/ChatbotWidget";
-import LocationConsentPrompt from "@/components/LocationConsentPrompt";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
 
 const ubuntu = Ubuntu({
@@ -96,7 +95,6 @@ export default function RootLayout({
       <body className={`${ubuntu.variable} min-h-screen antialiased`}>
         {children}
         <SiteVisitTracker />
-        <LocationConsentPrompt />
         <ChatbotWidget />
       </body>
     </html>

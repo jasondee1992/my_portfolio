@@ -5,32 +5,13 @@ export type BrowserVisitMetadata = {
   userAgent: string | null;
   referrer: string | null;
   timeZone: string | null;
-  locationConsentStatus: LocationConsentStatus;
-  latitude: number | null;
-  longitude: number | null;
-  locationAccuracyMeters: number | null;
 };
 
 export type BrowserGeoDebugHeaders = Record<string, string>;
-export type LocationConsentStatus =
-  | "unknown"
-  | "accepted"
-  | "denied"
-  | "skipped"
-  | "unsupported";
-
-type StoredPreciseLocation = {
-  latitude: number;
-  longitude: number;
-  locationAccuracyMeters: number | null;
-  capturedAt: string;
-};
 
 const VISITOR_ID_STORAGE_KEY = "portfolio-chat-visitor-id";
 const SESSION_ID_STORAGE_KEY = "portfolio-chat-session-id";
 const VISITED_PAGE_SET_STORAGE_KEY = "portfolio-visited-pages";
-const LOCATION_CONSENT_STORAGE_KEY = "portfolio-location-consent-status";
-const PRECISE_LOCATION_STORAGE_KEY = "portfolio-precise-location";
 const VISIT_DEDUP_WINDOW_MS = 30 * 1000;
 
 function createClientIdentifier(prefix: string) {
@@ -44,176 +25,6 @@ function createClientIdentifier(prefix: string) {
 function toPublicEnvValue(value: string | undefined) {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
-}
-
-function isLocationConsentStatus(value: unknown): value is LocationConsentStatus {
-  return (
-    value === "unknown" ||
-    value === "accepted" ||
-    value === "denied" ||
-    value === "skipped" ||
-    value === "unsupported"
-  );
-}
-
-function toFiniteNumber(value: unknown) {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function getStoredPreciseLocation(): StoredPreciseLocation | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  try {
-    const rawValue = window.localStorage.getItem(PRECISE_LOCATION_STORAGE_KEY);
-
-    if (!rawValue) {
-      return null;
-    }
-
-    const parsedValue = JSON.parse(rawValue) as Partial<StoredPreciseLocation>;
-    const latitude = toFiniteNumber(parsedValue.latitude);
-    const longitude = toFiniteNumber(parsedValue.longitude);
-    const locationAccuracyMeters = toFiniteNumber(parsedValue.locationAccuracyMeters);
-    const capturedAt =
-      typeof parsedValue.capturedAt === "string" && parsedValue.capturedAt.trim()
-        ? parsedValue.capturedAt
-        : null;
-
-    if (latitude === null || longitude === null || !capturedAt) {
-      return null;
-    }
-
-    return {
-      latitude,
-      longitude,
-      locationAccuracyMeters,
-      capturedAt,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function setStoredPreciseLocation(value: StoredPreciseLocation | null) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    if (!value) {
-      window.localStorage.removeItem(PRECISE_LOCATION_STORAGE_KEY);
-      return;
-    }
-
-    window.localStorage.setItem(PRECISE_LOCATION_STORAGE_KEY, JSON.stringify(value));
-  } catch {
-    // Ignore storage failures and keep analytics best-effort only.
-  }
-}
-
-export function isPreciseLocationSupported() {
-  return typeof window !== "undefined" && typeof navigator !== "undefined" && "geolocation" in navigator;
-}
-
-export function getStoredLocationConsentStatus(): LocationConsentStatus {
-  if (!isPreciseLocationSupported()) {
-    return "unsupported";
-  }
-
-  if (typeof window === "undefined") {
-    return "unknown";
-  }
-
-  try {
-    const rawValue = window.localStorage.getItem(LOCATION_CONSENT_STORAGE_KEY);
-    return isLocationConsentStatus(rawValue) ? rawValue : "unknown";
-  } catch {
-    return "unknown";
-  }
-}
-
-function setStoredLocationConsentStatus(value: LocationConsentStatus) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(LOCATION_CONSENT_STORAGE_KEY, value);
-  } catch {
-    // Ignore storage failures and keep analytics best-effort only.
-  }
-}
-
-export function markPreciseLocationSkipped() {
-  if (!isPreciseLocationSupported()) {
-    return "unsupported" as const;
-  }
-
-  setStoredLocationConsentStatus("skipped");
-  return "skipped" as const;
-}
-
-export async function requestPreciseLocationShare() {
-  if (!isPreciseLocationSupported()) {
-    setStoredPreciseLocation(null);
-    return {
-      status: "unsupported" as const,
-      latitude: null,
-      longitude: null,
-      locationAccuracyMeters: null,
-    };
-  }
-
-  return await new Promise<{
-    status: LocationConsentStatus;
-    latitude: number | null;
-    longitude: number | null;
-    locationAccuracyMeters: number | null;
-  }>((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const nextValue: StoredPreciseLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          locationAccuracyMeters: Number.isFinite(position.coords.accuracy)
-            ? position.coords.accuracy
-            : null,
-          capturedAt: new Date().toISOString(),
-        };
-
-        setStoredLocationConsentStatus("accepted");
-        setStoredPreciseLocation(nextValue);
-
-        resolve({
-          status: "accepted",
-          latitude: nextValue.latitude,
-          longitude: nextValue.longitude,
-          locationAccuracyMeters: nextValue.locationAccuracyMeters,
-        });
-      },
-      (error) => {
-        const nextStatus: LocationConsentStatus =
-          error.code === error.PERMISSION_DENIED ? "denied" : "skipped";
-
-        setStoredLocationConsentStatus(nextStatus);
-        setStoredPreciseLocation(null);
-
-        resolve({
-          status: nextStatus,
-          latitude: null,
-          longitude: null,
-          locationAccuracyMeters: null,
-        });
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5 * 60 * 1000,
-      }
-    );
-  });
 }
 
 function getOrCreateStoredIdentifier(storage: Storage, key: string, prefix: string) {
@@ -237,17 +48,11 @@ export function getBrowserVisitMetadata(): BrowserVisitMetadata {
       userAgent: null,
       referrer: null,
       timeZone: null,
-      locationConsentStatus: "unknown",
-      latitude: null,
-      longitude: null,
-      locationAccuracyMeters: null,
     };
   }
 
   let visitorId: string | null = null;
   let sessionId: string | null = null;
-  const preciseLocation = getStoredPreciseLocation();
-  const locationConsentStatus = getStoredLocationConsentStatus();
 
   try {
     visitorId = getOrCreateStoredIdentifier(
@@ -279,10 +84,6 @@ export function getBrowserVisitMetadata(): BrowserVisitMetadata {
       typeof Intl !== "undefined"
         ? Intl.DateTimeFormat().resolvedOptions().timeZone || null
         : null,
-    locationConsentStatus,
-    latitude: preciseLocation?.latitude ?? null,
-    longitude: preciseLocation?.longitude ?? null,
-    locationAccuracyMeters: preciseLocation?.locationAccuracyMeters ?? null,
   };
 }
 

@@ -19,14 +19,6 @@ type SiteVisitRequestBody = {
   ip_address?: string;
   referrer?: string;
   referrer_url?: string;
-  locationConsentStatus?: string;
-  location_consent_status?: string;
-  latitude?: number;
-  geo_latitude?: number;
-  longitude?: number;
-  geo_longitude?: number;
-  locationAccuracyMeters?: number;
-  geo_accuracy_meters?: number;
 };
 
 function toNullableText(value: unknown) {
@@ -36,10 +28,6 @@ function toNullableText(value: unknown) {
 
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
-}
-
-function toNullableNumber(value: unknown) {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 function getNormalizedBodyField(
@@ -64,16 +52,7 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as SiteVisitRequestBody;
     const normalizedTimeZone = getNormalizedBodyField(body, "timeZone", "time_zone");
-    const geoMetadata = getRequestGeoMetadata(request.headers, {
-      requestedTimeZone: normalizedTimeZone,
-      locationConsentStatus:
-        getNormalizedBodyField(body, "locationConsentStatus", "location_consent_status"),
-      latitude: toNullableNumber(body.latitude) ?? toNullableNumber(body.geo_latitude),
-      longitude: toNullableNumber(body.longitude) ?? toNullableNumber(body.geo_longitude),
-      locationAccuracyMeters:
-        toNullableNumber(body.locationAccuracyMeters) ??
-        toNullableNumber(body.geo_accuracy_meters),
-    });
+    const geoMetadata = getRequestGeoMetadata(request.headers, normalizedTimeZone);
     const pageUrl =
       getNormalizedBodyField(body, "pageUrl", "page_url") ??
       toNullableText(request.headers.get("referer"));
@@ -100,11 +79,6 @@ export async function POST(request: Request) {
       region: geoMetadata.region,
       city: geoMetadata.city,
       timeZone: geoMetadata.timeZone,
-      latitude: geoMetadata.latitude,
-      longitude: geoMetadata.longitude,
-      locationAccuracyMeters: geoMetadata.locationAccuracyMeters,
-      locationConsentStatus: geoMetadata.locationConsentStatus,
-      locationSource: geoMetadata.locationSource,
     });
 
     return NextResponse.json({ ok: true });

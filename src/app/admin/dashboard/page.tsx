@@ -9,7 +9,7 @@ const ADMIN_TABLE_PAGE_SIZE = 8;
 const CHAT_LOCATION_HELP_TEXT =
   "Chat log location remains approximate and IP-based, so mobile data, VPNs, and carrier gateways can resolve to a nearby city.";
 const SITE_LOCATION_HELP_TEXT =
-  "If a user accepts location sharing, the dashboard stores browser geolocation coordinates for site visits. Otherwise it falls back to approximate IP geolocation, which can resolve to a nearby city on mobile data, VPNs, and carrier gateways.";
+  "Site visit location is based on the best available stored data and may still be approximate on mobile data, VPNs, and carrier gateways.";
 
 type SearchParamsValue = string | string[] | undefined;
 type PageProps = {
@@ -75,24 +75,7 @@ function formatLocation(
   return parts.length > 0 ? parts.join(", ") : "n/a";
 }
 
-function formatLocationShareStatus(value: string | null) {
-  switch (value) {
-    case "accepted":
-      return "Accepted";
-    case "denied":
-      return "Denied";
-    case "skipped":
-      return "Skipped";
-    case "unsupported":
-      return "Unsupported";
-    case "unknown":
-      return "Not asked";
-    default:
-      return "Not asked";
-  }
-}
-
-function formatPreciseCoordinates(
+function formatLegacyCoordinates(
   latitude: number | null,
   longitude: number | null,
   locationAccuracyMeters: number | null
@@ -110,14 +93,13 @@ function formatPreciseCoordinates(
   return `${coordinates} (+/- ${Math.round(locationAccuracyMeters)}m)`;
 }
 
-function formatLoggedLocation({
+function formatSiteVisitLocation({
   countryName,
   region,
   city,
   latitude,
   longitude,
   locationAccuracyMeters,
-  locationSource,
 }: {
   countryName: string | null;
   region: string | null;
@@ -125,10 +107,9 @@ function formatLoggedLocation({
   latitude: number | null;
   longitude: number | null;
   locationAccuracyMeters: number | null;
-  locationSource: string | null;
 }) {
-  if (locationSource === "browser_geolocation") {
-    return formatPreciseCoordinates(latitude, longitude, locationAccuracyMeters) ?? "n/a";
+  if (latitude !== null && longitude !== null) {
+    return formatLegacyCoordinates(latitude, longitude, locationAccuracyMeters) ?? "n/a";
   }
 
   return formatLocation(countryName, region, city);
@@ -338,7 +319,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
                       <th className="px-4 py-3 font-medium">Page URL</th>
                       <th className="px-4 py-3 font-medium">User Agent</th>
                       <th className="px-4 py-3 font-medium">IP Address</th>
-                      <th className="px-4 py-3 font-medium">Approx. Location (IP)</th>
+                      <th className="px-4 py-3 font-medium">Location</th>
                       <th className="px-4 py-3 font-medium">Timezone</th>
                     </tr>
                   </thead>
@@ -443,8 +424,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
                       <th className="px-4 py-3 font-medium">User Agent</th>
                       <th className="px-4 py-3 font-medium">IP Address</th>
                       <th className="px-4 py-3 font-medium">Referrer</th>
-                      <th className="px-4 py-3 font-medium">Location Share</th>
-                      <th className="px-4 py-3 font-medium">Location</th>
+                      <th className="px-4 py-3 font-medium">Approx. Location (IP)</th>
                       <th className="px-4 py-3 font-medium">Timezone</th>
                     </tr>
                   </thead>
@@ -472,17 +452,13 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
                           {visit.referrer ?? "n/a"}
                         </td>
                         <td className="px-4 py-3 min-w-56 break-all text-white/65">
-                          {formatLocationShareStatus(visit.location_consent_status)}
-                        </td>
-                        <td className="px-4 py-3 min-w-56 break-all text-white/65">
-                          {formatLoggedLocation({
+                          {formatSiteVisitLocation({
                             countryName: visit.country_name,
                             region: visit.region,
                             city: visit.city,
                             latitude: visit.latitude,
                             longitude: visit.longitude,
                             locationAccuracyMeters: visit.location_accuracy_meters,
-                            locationSource: visit.location_source,
                           })}
                         </td>
                         <td className="px-4 py-3 min-w-44 break-all text-white/65">
