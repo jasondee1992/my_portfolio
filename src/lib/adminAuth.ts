@@ -14,6 +14,30 @@ type AdminSessionPayload = {
   exp: number;
 };
 
+function getAdminCookieDomain() {
+  if (process.env.NODE_ENV !== "production") {
+    return undefined;
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (!siteUrl) {
+    return undefined;
+  }
+
+  try {
+    const hostname = new URL(siteUrl).hostname.trim().toLowerCase();
+
+    if (!hostname || hostname === "localhost" || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+      return undefined;
+    }
+
+    return hostname.replace(/^www\./, "");
+  } catch {
+    return undefined;
+  }
+}
+
 function getAdminPasscode() {
   return process.env.ADMIN_PASSCODE?.trim() ?? "";
 }
@@ -35,12 +59,15 @@ function signValue(value: string) {
 }
 
 function getCookieOptions() {
+  const domain = getAdminCookieDomain();
+
   return {
     httpOnly: true,
     sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: ADMIN_SESSION_DURATION_SECONDS,
+    ...(domain ? { domain } : {}),
   };
 }
 
