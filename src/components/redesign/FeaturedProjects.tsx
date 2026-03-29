@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getHomepageProjects } from "@/lib/projects/projectStorage";
+import { getPublicHomepageProjects } from "@/lib/projects/projectStorage";
 
 function getCollapsedText(text: string, maxLength: number) {
   if (text.length <= maxLength) {
@@ -35,7 +35,7 @@ function ExpandableDescription({ text, maxLength = 120 }: { text: string; maxLen
 }
 
 export default async function FeaturedProjects() {
-  const projects = await getHomepageProjects(4);
+  const projects = await getPublicHomepageProjects(4);
 
   return (
     <section className="container-page section-shell">

@@ -9,7 +9,6 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { getLoggingBackend } from "@/lib/logging/backend";
-import { DEFAULT_MANAGED_PROJECTS } from "@/lib/projects/seedProjects";
 import { getLocalSqliteDatabase, importLegacySqliteTable } from "@/lib/storage/localDatabase";
 import type {
   CreateProjectInput,
@@ -178,73 +177,7 @@ function getSqliteDatabase() {
       updated_at TEXT NOT NULL
     )
   `);
-
-  ensureSqliteSeedData(database);
   return database;
-}
-
-function ensureSqliteSeedData(database: import("better-sqlite3").Database) {
-  const row = database
-    .prepare(`SELECT COUNT(*) as total FROM ${SQLITE_TABLE_NAME}`)
-    .get() as { total?: number } | undefined;
-
-  if ((row?.total ?? 0) > 0) {
-    return;
-  }
-
-  const insertStatement = database.prepare(`
-    INSERT INTO ${SQLITE_TABLE_NAME} (
-      id,
-      title,
-      role,
-      project_type,
-      details,
-      summary_description,
-      visibility,
-      section,
-      tech_stack_json,
-      show_on_homepage,
-      display_order,
-      created_at,
-      updated_at
-    ) VALUES (
-      @id,
-      @title,
-      @role,
-      @projectType,
-      @details,
-      @summaryDescription,
-      @visibility,
-      @section,
-      @techStackJson,
-      @showOnHomepage,
-      @displayOrder,
-      @createdAt,
-      @updatedAt
-    )
-  `);
-
-  const insertMany = database.transaction((projects: ManagedProject[]) => {
-    for (const project of projects) {
-      insertStatement.run({
-        id: project.id,
-        title: project.title,
-        role: project.role,
-        projectType: project.projectType,
-        details: project.details,
-        summaryDescription: project.summaryDescription,
-        visibility: project.visibility,
-        section: project.section,
-        techStackJson: JSON.stringify(project.techStack),
-        showOnHomepage: project.showOnHomepage ? 1 : 0,
-        displayOrder: project.displayOrder,
-        createdAt: project.createdAt,
-        updatedAt: project.updatedAt,
-      });
-    }
-  });
-
-  insertMany(DEFAULT_MANAGED_PROJECTS);
 }
 
 function getSqliteInsertStatement() {
@@ -359,44 +292,6 @@ async function scanAllDynamoProjects() {
   return items;
 }
 
-async function ensureDynamoSeedData() {
-  const records = await scanAllDynamoProjects();
-
-  if (records.length > 0) {
-    return records;
-  }
-
-  const client = getDynamoDocumentClient();
-  const tableName = getProjectsTableName();
-
-  for (const project of DEFAULT_MANAGED_PROJECTS) {
-    await client.send(
-      new PutCommand({
-        TableName: tableName,
-        Item: {
-          id: project.id,
-          title: project.title,
-          role: project.role,
-          project_type: project.projectType,
-          details: project.details,
-          summary_description: project.summaryDescription,
-          visibility: project.visibility,
-          section: project.section,
-          techStack: project.techStack,
-          showOnHomepage: project.showOnHomepage,
-          displayOrder: project.displayOrder,
-          createdAt: project.createdAt,
-          updatedAt: project.updatedAt,
-        },
-      })
-    );
-  }
-
-  return DEFAULT_MANAGED_PROJECTS.map((project) => ({
-    ...project,
-  }));
-}
-
 function toCreateProjectRecord(input: CreateProjectInput): ManagedProject {
   const timestamp = createTimestamp();
 
@@ -464,12 +359,29 @@ export async function getProjects() {
     return rows.map((row) => normalizeManagedProject(row)).sort(sortProjects);
   }
 
-  const rows = await ensureDynamoSeedData();
+  const rows = await scanAllDynamoProjects();
   return rows.map((row) => normalizeManagedProject(row)).sort(sortProjects);
 }
 
 export async function getHomepageProjects(limit = 4) {
   const projects = await getProjects();
+  return projects
+    .filter((project) => project.showOnHomepage)
+    .sort((left, right) => left.displayOrder - right.displayOrder || left.title.localeCompare(right.title))
+    .slice(0, limit);
+}
+
+export async function getPublicProjects() {
+  try {
+    return await getProjects();
+  } catch (error) {
+    console.error("Public projects read failed, returning an empty project list:", error);
+    return [];
+  }
+}
+
+export async function getPublicHomepageProjects(limit = 4) {
+  const projects = await getPublicProjects();
   return projects
     .filter((project) => project.showOnHomepage)
     .sort((left, right) => left.displayOrder - right.displayOrder || left.title.localeCompare(right.title))
