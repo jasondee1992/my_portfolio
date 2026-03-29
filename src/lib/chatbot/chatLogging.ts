@@ -1,6 +1,4 @@
 import "server-only";
-import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import type { ScanCommandInput } from "@aws-sdk/lib-dynamodb";
 import { getLoggingBackend, isSqliteLoggingBackend } from "@/lib/logging/backend";
@@ -13,6 +11,10 @@ import {
   toLoggingStorageError,
   toNullableText,
 } from "@/lib/logging/dynamodb";
+import {
+  getLocalSqliteDatabase,
+  importLegacySqliteTable,
+} from "@/lib/storage/localDatabase";
 
 export type ChatLogEvent = {
   sessionId?: string | null;
@@ -63,28 +65,15 @@ export type ChatLogRecord = {
   created_at: string;
 };
 
-const CHAT_LOGS_DIR = path.join(process.cwd(), "data");
-const CHAT_LOGS_DB_PATH = path.join(CHAT_LOGS_DIR, "chat_logs.sqlite");
-const loadModule = createRequire(import.meta.url);
-
-let sqliteDatabase: import("better-sqlite3").Database | null = null;
 let sqliteInsertStatement: import("better-sqlite3").Statement | null = null;
 
-function requireSqliteModule() {
-  return loadModule("better-sqlite3") as typeof import("better-sqlite3");
-}
-
 function getSqliteDatabase() {
-  if (sqliteDatabase) {
-    return sqliteDatabase;
-  }
-
-  fs.mkdirSync(CHAT_LOGS_DIR, { recursive: true });
-
-  const Database = requireSqliteModule();
-  const database = new Database(CHAT_LOGS_DB_PATH);
-  database.pragma("journal_mode = WAL");
-  database.pragma("synchronous = NORMAL");
+  const database = getLocalSqliteDatabase();
+  importLegacySqliteTable({
+    database,
+    tableName: "chat_logs",
+    sourcePath: path.join(process.cwd(), "data", "chat_logs.sqlite"),
+  });
   database.exec(`
     CREATE TABLE IF NOT EXISTS chat_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -122,7 +111,6 @@ function getSqliteDatabase() {
     }
   }
 
-  sqliteDatabase = database;
   return database;
 }
 

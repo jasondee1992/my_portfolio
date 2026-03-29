@@ -3,14 +3,19 @@ import ProjectsHero from "@/components/projects/ProjectsHero";
 import FeaturedProjectsGrid from "@/components/projects/FeaturedProjectsGrid";
 import OtherWorksList from "@/components/projects/OtherWorksList";
 import ProjectsFooter from "@/components/projects/ProjectsFooter";
+import { getProjects } from "@/lib/projects/projectStorage";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
+  const enterpriseProjects = projects.filter((project) => project.section === "enterprise");
+  const otherProjects = projects.filter((project) => project.section === "other");
+
   return (
     <main className="min-h-screen">
       <Navbar />
       <ProjectsHero />
-      <FeaturedProjectsGrid />
-      <OtherWorksList />
+      <FeaturedProjectsGrid projects={enterpriseProjects} />
+      <OtherWorksList projects={otherProjects} />
       <ProjectsFooter />
     </main>
   );

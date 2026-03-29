@@ -1,6 +1,4 @@
 import "server-only";
-import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import type { ScanCommandInput } from "@aws-sdk/lib-dynamodb";
 import { getLoggingBackend, isSqliteLoggingBackend } from "@/lib/logging/backend";
@@ -13,6 +11,7 @@ import {
   toLoggingStorageError,
   toNullableText,
 } from "@/lib/logging/dynamodb";
+import { getLocalSqliteDatabase, importLegacySqliteTable } from "@/lib/storage/localDatabase";
 
 export type SiteVisitEvent = {
   sessionId?: string | null;
@@ -58,33 +57,20 @@ export type SiteVisitRecord = {
   location_source: string | null;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATABASE_PATH = path.join(DATA_DIR, "chat_logs.sqlite");
 const RECENT_DUPLICATE_WINDOW_MS = 30 * 1000;
-const loadModule = createRequire(import.meta.url);
-
-let sqliteDatabase: import("better-sqlite3").Database | null = null;
 let sqliteInsertStatement: import("better-sqlite3").Statement | null = null;
-
-function requireSqliteModule() {
-  return loadModule("better-sqlite3") as typeof import("better-sqlite3");
-}
 
 function toNullableNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 function getSqliteDatabase() {
-  if (sqliteDatabase) {
-    return sqliteDatabase;
-  }
-
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-
-  const Database = requireSqliteModule();
-  const database = new Database(DATABASE_PATH);
-  database.pragma("journal_mode = WAL");
-  database.pragma("synchronous = NORMAL");
+  const database = getLocalSqliteDatabase();
+  importLegacySqliteTable({
+    database,
+    tableName: "site_visits",
+    sourcePath: path.join(process.cwd(), "data", "chat_logs.sqlite"),
+  });
   database.exec(`
     CREATE TABLE IF NOT EXISTS site_visits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -123,7 +109,6 @@ function getSqliteDatabase() {
     }
   }
 
-  sqliteDatabase = database;
   return database;
 }
 

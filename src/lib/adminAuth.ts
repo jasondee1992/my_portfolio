@@ -4,9 +4,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
-const ADMIN_SESSION_COOKIE_NAME = "portfolio_admin_session";
+const ADMIN_SESSION_COOKIE_NAME = "portfolio_admin_session_v2";
+const LEGACY_ADMIN_SESSION_COOKIE_NAME = "portfolio_admin_session";
 const ADMIN_SESSION_DURATION_SECONDS = 60 * 60 * 8;
-const DEFAULT_ADMIN_REDIRECT_PATH = "/admin/dashboard";
+const DEFAULT_ADMIN_REDIRECT_PATH = "/admin/chat-logs";
 
 type AdminSessionPayload = {
   role: "admin";
@@ -38,9 +39,27 @@ function getCookieOptions() {
     httpOnly: true,
     sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
-    path: "/admin",
+    path: "/",
     maxAge: ADMIN_SESSION_DURATION_SECONDS,
   };
+}
+
+function getLegacyAdminCookieOptions() {
+  return {
+    ...getCookieOptions(),
+    path: "/admin",
+  };
+}
+
+function clearCookieByName(
+  response: NextResponse,
+  name: string,
+  options: ReturnType<typeof getCookieOptions>
+) {
+  response.cookies.set(name, "", {
+    ...options,
+    maxAge: 0,
+  });
 }
 
 function getSafeNextPath(value: string | null | undefined) {
@@ -148,8 +167,9 @@ export async function isAdminAuthenticated() {
   }
 
   const cookieStore = await cookies();
-  const token = cookieStore.get(ADMIN_SESSION_COOKIE_NAME)?.value;
-  return parseAdminSessionToken(token) !== null;
+  const tokens = cookieStore.getAll(ADMIN_SESSION_COOKIE_NAME).map((cookie) => cookie.value);
+
+  return tokens.some((token) => parseAdminSessionToken(token) !== null);
 }
 
 export async function requireAdminPageAuth(nextPath: string) {
@@ -170,13 +190,15 @@ export async function validateAdminPasscode(passcode: string) {
 
 export function applyAdminSessionCookie(response: NextResponse) {
   response.cookies.set(ADMIN_SESSION_COOKIE_NAME, createAdminSessionToken(), getCookieOptions());
+  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getCookieOptions());
+  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getLegacyAdminCookieOptions());
 }
 
 export function clearAdminSessionCookie(response: NextResponse) {
-  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, "", {
-    ...getCookieOptions(),
-    maxAge: 0,
-  });
+  clearCookieByName(response, ADMIN_SESSION_COOKIE_NAME, getCookieOptions());
+  clearCookieByName(response, ADMIN_SESSION_COOKIE_NAME, getLegacyAdminCookieOptions());
+  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getCookieOptions());
+  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getLegacyAdminCookieOptions());
 }
 
 export function getAdminRedirectTarget(value: string | null | undefined) {

@@ -1,5 +1,7 @@
 "use client";
 
+import { openChatbot } from "@/lib/chatbot/openChatbot";
+
 const links = [
   {
     title: "Email",
@@ -24,10 +26,6 @@ const links = [
 ];
 
 export default function ConnectSection() {
-  function handleChatbotOpen() {
-    window.dispatchEvent(new Event("open-chatbot"));
-  }
-
   return (
     <section className="container-page section-shell">
       <div className="section-panel soft-hover mx-auto max-w-5xl p-8 md:p-10">
@@ -56,7 +54,7 @@ export default function ConnectSection() {
               <button
                 key={link.title}
                 type="button"
-                onClick={handleChatbotOpen}
+                onClick={() => openChatbot()}
                 className="premium-card p-5 text-left transition hover:-translate-y-0.5"
               >
                 <div className="text-lg font-normal text-white/90">{link.title}</div>

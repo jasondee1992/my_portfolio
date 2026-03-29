@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   useEffect,
+  useEffectEvent,
   useRef,
   useState,
   type Dispatch,
@@ -63,10 +64,14 @@ export default function ChatbotPanel({
   onClose,
   messages,
   setMessages,
+  pendingPrompt,
+  onPendingPromptConsumed,
 }: {
   onClose: () => void;
   messages: Msg[];
   setMessages: Dispatch<SetStateAction<Msg[]>>;
+  pendingPrompt?: string | null;
+  onPendingPromptConsumed?: () => void;
 }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -79,6 +84,10 @@ export default function ChatbotPanel({
   const endRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const resizeStateRef = useRef<ResizeState | null>(null);
+  const lastAutoSentPromptRef = useRef<string | null>(null);
+  const sendPendingPrompt = useEffectEvent((prompt: string) => {
+    void sendMessage(prompt);
+  });
 
   function clampPanelSize(width: number, height: number) {
     if (typeof window === "undefined") {
@@ -165,6 +174,21 @@ export default function ChatbotPanel({
       window.removeEventListener("resize", syncPanelSizeToViewport);
     };
   }, []);
+
+  useEffect(() => {
+    if (!pendingPrompt) {
+      lastAutoSentPromptRef.current = null;
+      return;
+    }
+
+    if (lastAutoSentPromptRef.current === pendingPrompt) {
+      return;
+    }
+
+    lastAutoSentPromptRef.current = pendingPrompt;
+    onPendingPromptConsumed?.();
+    sendPendingPrompt(pendingPrompt);
+  }, [onPendingPromptConsumed, pendingPrompt]);
 
   function handleResizeStart(
     direction: ResizeDirection,

@@ -27,12 +27,13 @@ Agents working in this repo should preserve the existing premium dark visual lan
   - `NEXT_PUBLIC_SITE_URL`
 
 ## Logging Storage Notes
-- Local development uses SQLite for chat logs and site visits.
+- Local development uses a single SQLite database for chat logs, site visits, and admin-managed projects.
 - Production may use DynamoDB for logging.
 - SQLite logging tables auto-add expected columns on startup when new log fields are introduced.
 - DynamoDB is schema-less, so new attributes do not require a table migration.
 - Older DynamoDB items will not automatically contain newly added attributes; admin views and exports should handle missing values safely.
-- When changing logging fields, verify both SQLite and DynamoDB code paths.
+- Projects use SQLite locally and may use DynamoDB in production when `DYNAMODB_PROJECTS_TABLE` is configured.
+- When changing logging or admin-managed content fields, verify both SQLite and DynamoDB code paths.
 
 ## Repo Map
 - `src/app` - App Router pages, layout, global CSS, and API routes

@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:D:\Projects\my_portfolio\data\chat_logs.sqlite</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="portfolio.sqlite" uuid="78615374-05af-4232-a719-67ecac089d42">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:\Projects\my_portfolio\data\portfolio.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
