@@ -5,6 +5,8 @@ import OtherWorksList from "@/components/projects/OtherWorksList";
 import ProjectsFooter from "@/components/projects/ProjectsFooter";
 import { getProjects } from "@/lib/projects/projectStorage";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   const projects = await getProjects();
   const enterpriseProjects = projects.filter((project) => project.section === "enterprise");

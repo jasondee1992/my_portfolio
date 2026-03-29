@@ -6,6 +6,7 @@ import FeaturedProjects from "@/components/redesign/FeaturedProjects";
 import QuoteBlock from "@/components/redesign/QuoteBlock";
 import Footer from "@/components/redesign/Footer";
 
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
