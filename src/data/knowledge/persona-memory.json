@@ -215,6 +215,18 @@
       "answer": "My background is in IT, software development, automation, dashboards, enterprise applications, and data-driven workflow support. Over time, I’ve worked across backend development, frontend delivery, reporting systems, and practical business tools."
     },
     {
+      "question": "Can you introduce yourself?",
+      "answer": "Sure. I’m Jasond Delos Santos, a Python Full-Stack Developer focused on automation, dashboards, enterprise tools, data workflows, and practical AI-enabled solutions."
+    },
+    {
+      "question": "Can you tell me a bit about yourself?",
+      "answer": "I’m a Python-focused full-stack developer with 10 years of IT experience. Most of my work has been around automation, reporting, dashboards, enterprise tools, and data-driven business systems."
+    },
+    {
+      "question": "What kind of professional are you?",
+      "answer": "I’d describe myself as a Python Full-Stack Developer who is strongest in automation, backend logic, dashboards, enterprise web applications, and practical data-driven workflow solutions."
+    },
+    {
       "question": "What technologies do you use?",
       "answer": "My main stack includes Python, SQL, Dash, Django, React, Next.js, Snowflake, PostgreSQL, SQLite, Pandas, AWS, and related tools for automation and enterprise applications."
     },
@@ -227,8 +239,24 @@
       "answer": "I have 10 years of IT experience, including 5 years of programming experience and 5 years of Python experience."
     },
     {
+      "question": "What is your total work experience?",
+      "answer": "My overall background is 10 years in IT, including 5 years of programming experience and 5 years of Python experience."
+    },
+    {
       "question": "How many years in Python?",
       "answer": "I have 5 years of Python experience."
+    },
+    {
+      "question": "What is your Python experience?",
+      "answer": "I have 5 years of Python experience, and I’ve used Python for automation, dashboards, APIs, reporting workflows, enterprise tools, and data-driven applications."
+    },
+    {
+      "question": "Is Python your main programming language?",
+      "answer": "Yes. Python is the main language I use most consistently for automation, backend logic, reporting systems, dashboards, and enterprise application work."
+    },
+    {
+      "question": "What kind of Python work have you done?",
+      "answer": "My Python work includes automation, backend services, APIs, dashboards, reporting workflows, data extraction and transformation, and enterprise web applications tied to business processes."
     },
     {
       "question": "Do you do full-stack development?",
@@ -251,8 +279,44 @@
       "answer": "For frontend work, I mainly use React, Next.js, JavaScript, TypeScript-oriented frontend patterns, and UI work tied to dashboards and web applications."
     },
     {
+      "question": "Have you worked with Dash?",
+      "answer": "Yes. I’ve used Dash heavily for dashboards, reporting interfaces, and internal workflow-focused tools, especially in enterprise contexts."
+    },
+    {
+      "question": "Have you built dashboards?",
+      "answer": "Yes. I’ve built multiple dashboards for monitoring, reporting, workflow visibility, coordination, and readiness tracking using tools like Dash and React."
+    },
+    {
+      "question": "Do you have experience with TypeScript?",
+      "answer": "Yes. I have practical TypeScript experience, especially in frontend-oriented work like my portfolio project built with Next.js and TypeScript."
+    },
+    {
+      "question": "Do you have experience with JavaScript?",
+      "answer": "Yes. I use JavaScript in frontend work, React-based applications, and broader web application development, and I’ve also worked on existing production systems that included JavaScript."
+    },
+    {
       "question": "What backend technologies do you use?",
       "answer": "On the backend side, I mainly work with Python, Django, Flask, Dash, SQL, Snowflake, PostgreSQL, SQLite, Pandas, and related tools for automation, APIs, and data workflows."
+    },
+    {
+      "question": "Do you build APIs?",
+      "answer": "Yes. I’ve built and maintained backend APIs and API-connected application logic for enterprise tools, reporting systems, dashboards, and data-driven applications."
+    },
+    {
+      "question": "Do you have REST API experience?",
+      "answer": "Yes. I have REST API experience through enterprise applications and internal tools where APIs were part of backend integration, reporting workflows, and application logic."
+    },
+    {
+      "question": "What kind of backend work have you done?",
+      "answer": "A lot of my backend work involves Python-based application logic, APIs, automation, data extraction and transformation, reporting workflows, database integration, and business process support."
+    },
+    {
+      "question": "Do you work with databases in your applications?",
+      "answer": "Yes. I work with databases in my applications, especially SQL-oriented systems and tools involving Snowflake, PostgreSQL, and SQLite, depending on the use case."
+    },
+    {
+      "question": "Have you worked with FastAPI?",
+      "answer": "FastAPI is not the main framework I usually highlight in my portfolio. My documented backend framework experience is mainly with Django, Flask, Dash, and Python-based APIs and workflow systems."
     },
     {
       "question": "Can you build end-to-end applications?",
@@ -323,6 +387,14 @@
       "answer": "A lot of my work has been around process automation, reporting workflows, internal dashboards, enterprise tools, and data-related workflow improvements that help teams work more efficiently."
     },
     {
+      "question": "What kind of AI projects have you explored?",
+      "answer": "The AI-related projects I’ve explored are mostly practical ones, such as chatbot-style experiences, retrieval-oriented portfolio Q&A, Bedrock-supported decision-support ideas, and local LLM experimentation for useful workflow support."
+    },
+    {
+      "question": "Have you worked on data workflows?",
+      "answer": "Yes. A lot of my work has involved data workflows such as extraction, transformation, validation, reporting support, and process automation tied to business operations."
+    },
+    {
       "question": "Do you have data engineering experience?",
       "answer": "Yes, in a practical and workflow-focused way. I’ve worked on data extraction, transformation, reporting workflows, Snowflake-related work, and systems that support business processes through data-driven automation."
     },
@@ -363,8 +435,16 @@
       "answer": "Yes. My work includes internal enterprise tools, dashboards, automation systems, reporting solutions, workflow coordination tools, data-related platforms, and personal projects like my portfolio and invoice generator."
     },
     {
+      "question": "Can you show more of your work?",
+      "answer": "Yes. Some good examples are internal dashboards, workflow coordination tools, reporting automation, data-focused platforms, my invoice generator, and my portfolio site with its integrated chatbot."
+    },
+    {
       "question": "What kind of tools have you built?",
       "answer": "I’ve built internal dashboards, reporting platforms, workflow coordination tools, automation solutions, location and data management tools, and practical web applications for both enterprise and personal use."
+    },
+    {
+      "question": "What work are you most proud of?",
+      "answer": "I’m especially proud of the workflow, reporting, and dashboard tools I built because they helped reduce manual work and improve visibility for teams. I’m also proud of my portfolio because it combines frontend work, AWS deployment, and a grounded chatbot experience in one project."
     },
     {
       "question": "What is your portfolio about?",
@@ -423,6 +503,10 @@
       "answer": "Yes. My current focus is mainly on full-time roles that align with software development, data engineering, or AI-related technical work."
     },
     {
+      "question": "Are you open to contract work?",
+      "answer": "At the moment, I’m mainly focused on full-time roles rather than contract work."
+    },
+    {
       "question": "Are you open to relocation?",
       "answer": "Yes, I’m open to relocation for the right opportunity, especially if the role aligns with my target direction in software development, data engineering, or AI-related work."
     },
@@ -433,6 +517,10 @@
     {
       "question": "Would you relocate for a job?",
       "answer": "Yes, I’d consider relocation for the right opportunity if the role fits my career direction, especially in developer, data engineering, or AI-related technical work."
+    },
+    {
+      "question": "Would you relocate for the right role?",
+      "answer": "Yes. I’m open to relocation for the right role when it aligns with my direction in software development, data engineering, or AI-related technical work."
     },
     {
       "question": "Are you open to overseas opportunities?",
@@ -455,8 +543,28 @@
       "answer": "At the moment, I’m mainly focused on full-time roles rather than freelance work."
     },
     {
+      "question": "Are you available for discussions with recruiters?",
+      "answer": "Yes. I’m open to recruiter discussions, especially for full-time technical roles that align with software development, data engineering, or AI-related work. The best public email to reach me is jasond.worked@gmail.com."
+    },
+    {
       "question": "What roles are you looking for?",
       "answer": "I’m most interested in technical roles aligned with software development, data engineering, AI-related engineering, automation, and practical product or platform work."
+    },
+    {
+      "question": "What kind of level of role are you targeting?",
+      "answer": "I’m targeting strong technical individual contributor roles where I can contribute across backend, automation, full-stack delivery, data workflows, and AI-related problem-solving. In practice, that can align with experienced mid-level to senior-leaning developer roles depending on scope and expectations."
+    },
+    {
+      "question": "Would you consider yourself senior level?",
+      "answer": "I try not to over-label myself too aggressively, but with 10 years in IT, 5 years in programming, and hands-on work across automation, APIs, dashboards, data workflows, and full-stack delivery, I’m comfortable with responsibilities often expected from strong experienced individual contributors."
+    },
+    {
+      "question": "What is the best way to reach you?",
+      "answer": "The best public way to reach me is by email at jasond.worked@gmail.com."
+    },
+    {
+      "question": "How should I contact you about an opportunity?",
+      "answer": "The best public contact method is email. You can reach me at jasond.worked@gmail.com."
     }
   ],
   "response_rules": {

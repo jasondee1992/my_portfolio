@@ -80,25 +80,31 @@ foreach ($category in $requiredCategories) {
 
 $datasetChecks = @{
   open_conversation = @("what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong")
-  self_intro = @("who are you", "give me a short intro")
+  self_intro = @("who are you", "give me a short intro", "can you give me a quick intro", "can you tell me a bit about yourself")
   current_role = @("what do you do", "what kind of work do you do")
-  work_experience = @("how many years of experience do you have", "how many years have you been working")
-  professional_background = @("walk me through your background", "what is your work background")
+  work_experience = @("how many years of experience do you have", "how many years have you been working", "what is your total work experience", "how long have you been in the IT industry", "what is your python experience", "is python your main programming language", "what kind of python work have you done")
+  professional_background = @("walk me through your background", "what is your work background", "what kind of professional are you")
   strongest_skills = @("what are your main skills", "what skills are you strongest in")
-  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to work", "what roles are you looking for", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for")
-  freelance_availability = @("available for freelance", "do you take freelance work")
-  react_experience = @("do you have experience in React frontend", "how many years of React experience do you have")
-  ai_experience = @("what automation work have you done", "do you have data engineering experience", "have you built intelligent tools")
+  recruiter_hr_questions = @("would you consider yourself senior level", "what kind of level of role are you targeting")
+  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to work", "what roles are you looking for", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for", "are you currently looking for opportunities", "are you available for discussions with recruiters", "are you open to international opportunities", "are you willing to move for the right role")
+  freelance_availability = @("available for freelance", "do you take freelance work", "are you available for freelance work", "are you open to contract work")
+  contact_info = @("what is the best way to reach you", "what is your preferred contact method", "how should i contact you about an opportunity")
+  react_experience = @("do you have experience in React frontend", "how many years of React experience do you have", "do you have experience with typescript", "have you built dashboards")
+  ai_experience = @("what automation work have you done", "do you have data engineering experience", "have you built intelligent tools", "what kind of ai projects have you explored", "have you worked on data workflows")
   bedrock_experience = @("do you have Amazon Bedrock experience", "how did you use Amazon Bedrock")
   ai_tools_experience = @("what AI tools have you used")
   local_llm_experience = @("have you tried local LLMs", "what local models have you used")
-  accept_previous_offer = @("go on", "please continue", "tell more", "please tell more", "can you tell me more", "can you expand on that", "elaborate", "please share", "share more")
-  projects_summary = @("can you share some of your work", "what kind of tools have you built", "what is your portfolio about")
+  accept_previous_offer = @("go on", "please continue", "tell more", "please tell more", "can you tell me more", "can you expand on that", "elaborate", "please share", "share more", "okay tell me more", "thank you can you expand on that")
+  projects_summary = @("can you share some of your work", "what kind of tools have you built", "what is your portfolio about", "can you show more of your work", "can you walk me through your projects")
   tech_stack = @(
     "do you do full-stack development",
+    "can you handle both frontend and backend",
     "do you have backend experience",
     "are you more backend or frontend",
     "what backend technologies do you use",
+    "do you have rest api experience",
+    "do you work with databases in your applications",
+    "have you worked with fastapi",
     "can you build end-to-end applications",
     "do you have aws experience",
     "what is your aws experience",
@@ -106,7 +112,9 @@ $datasetChecks = @{
     "what is your cloud experience",
     "what aws services do you know",
     "have you deployed apps on aws",
-    "what is your experience with aws amplify"
+    "what is your experience with aws amplify",
+    "what do you know about cloudwatch",
+    "have you set up automated deployments"
   )
 }
 
@@ -132,42 +140,67 @@ $questionScopeChecks = @(
   "who are you",
   "give me a short intro",
   "can you introduce yourself",
+  "can you give me a quick intro",
+  "can you tell me a bit about yourself",
   "what do you do",
   "what kind of work do you do",
   "how about work experience",
   "how many years of experience do you have",
   "how many years have you been working",
   "how long have you worked in tech",
+  "what is your total work experience",
+  "how long have you been in the it industry",
   "how many years in it",
   "how many years in python",
+  "what is your python experience",
+  "is python your main programming language",
+  "what kind of python work have you done",
   "how experienced are you",
   "how much experience do you have",
   "what are your main skills",
+  "what kind of professional are you",
+  "would you consider yourself senior level",
   "do you do full stack development",
+  "can you handle both frontend and backend",
   "do you have backend experience",
   "do you have frontend experience",
   "are you more backend or frontend",
   "what backend technologies do you use",
   "what frontend technologies do you use",
+  "have you built dashboards",
+  "do you have experience with typescript",
+  "do you build apis",
+  "do you have rest api experience",
+  "have you worked with fastapi",
+  "do you work with databases in your applications",
   "can you build end to end applications",
   "are you open for a new role",
   "are you open to work",
   "are you open to full-time roles",
+  "are you currently looking for opportunities",
   "available for freelance",
+  "are you available for discussions with recruiters",
+  "are you open to contract work",
   "what roles are you looking for",
   "are you open to relocation",
   "are you willing to work abroad",
   "would you relocate for a job",
   "are you open to overseas opportunities",
+  "are you open to international opportunities",
+  "are you willing to move for the right role",
   "are you open to opportunities outside your country",
   "are you open to moving overseas",
   "what kind of roles would you relocate for",
+  "what is the best way to reach you",
+  "what is your preferred contact method",
   "do you have amazon bedrock experience",
   "what automation work have you done",
   "do you have data engineering experience",
   "what ai related work have you done",
   "have you built intelligent tools",
   "do you work with workflow automation",
+  "what kind of ai projects have you explored",
+  "have you worked on data workflows",
   "have you tried local llms",
   "what local models have you used",
   "do you have aws experience",
@@ -175,6 +208,7 @@ $questionScopeChecks = @(
   "how many years of experience do you have in aws",
   "what is your cloud experience",
   "have you deployed apps on aws",
+  "have you set up automated deployments",
   "what aws services do you know",
   "what is your experience with aws amplify",
   "do you work with ci/cd",
@@ -185,8 +219,11 @@ $questionScopeChecks = @(
   "do you know iam",
   "do you know cloudfront",
   "can you share some of your work",
+  "can you show more of your work",
+  "can you share more about your work",
   "what kind of tools have you built",
   "what is your portfolio about",
+  "can you walk me through your projects",
   "what do you know about rds",
   "what do you know about aurora",
   "what do you know about dynamodb",
@@ -205,8 +242,12 @@ foreach ($phrase in $questionScopeChecks) {
 $ageRuntimeChecks = @(
   "1992",
   "how old are you",
+  "how old are you now",
   "what age are you",
   "what is your age",
+  "can you tell me your age",
+  "what is your current age",
+  "are you in your 30s",
   "ilang taon ka na",
   "ilang taon na si jasond",
   "how old is jasond",
@@ -246,6 +287,20 @@ $ageScenarioCoverage = @(
   @{
     Scenario = "Direct alternate age wording"
     Message = "What age are you?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
+    Scenario = "Current-age phrasing"
+    Message = "What is your current age?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "fixed hardcoded age string"
+  },
+  @{
+    Scenario = "Age-range phrasing"
+    Message = "Are you in your 30s?"
     ExpectedRoute = "runtime age calculation"
     ExpectedAnswerPattern = "age in years only"
     Avoids = "full birthdate exposure"
@@ -347,11 +402,27 @@ $mixedIntentScenarioCoverage = @(
     Avoids = "reaction-only reply"
   },
   @{
+    Scenario = "Reaction plus Python-experience question"
+    Message = "great, what kind of python work have you done?"
+    RequiresSafeIntentBypass = @("great")
+    RequiresScopeCoverage = "what kind of python work have you done"
+    ExpectedRoute = "answer python experience question"
+    Avoids = "reaction-only reply"
+  },
+  @{
     Scenario = "Reaction plus backend question"
     Message = "great, what backend technologies do you use"
     RequiresSafeIntentBypass = @("great")
     RequiresScopeCoverage = "what backend technologies do you use"
     ExpectedRoute = "answer backend stack question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Reaction plus tech stack question"
+    Message = "nice, what is your tech stack?"
+    RequiresSafeIntentBypass = @("nice")
+    RequiresScopeCoverage = "what is your tech stack"
+    ExpectedRoute = "answer tech stack question"
     Avoids = "reaction-only reply"
   },
   @{
@@ -377,6 +448,14 @@ $mixedIntentScenarioCoverage = @(
     RequiresScopeCoverage = "ai experience"
     ExpectedRoute = "answer AI experience question"
     Avoids = "thanks-only reply"
+  },
+  @{
+    Scenario = "Reaction plus background question"
+    Message = "awesome, can you tell me about your background?"
+    RequiresSafeIntentBypass = @("awesome")
+    RequiresScopeCoverage = "what is your background"
+    ExpectedRoute = "answer background question"
+    Avoids = "reaction-only reply"
   },
   @{
     Scenario = "Reaction plus relocation question"
@@ -409,6 +488,22 @@ $mixedIntentScenarioCoverage = @(
     RequiresScopeCoverage = "what aws services do you know"
     ExpectedRoute = "answer aws services question"
     Avoids = "acknowledgment-only reply"
+  },
+  @{
+    Scenario = "Acknowledgment plus recruiter-targeting question"
+    Message = "sounds good, what kind of roles are you looking for?"
+    RequiresSafeIntentBypass = @("sounds good")
+    RequiresScopeCoverage = "what kind of roles are you looking for"
+    ExpectedRoute = "answer recruiter targeting question"
+    Avoids = "acknowledgment-only reply"
+  },
+  @{
+    Scenario = "Thanks plus contact-method question"
+    Message = "thanks, what is your preferred contact method?"
+    RequiresSafeIntentBypass = @("thanks")
+    RequiresScopeCoverage = "what is your preferred contact method"
+    ExpectedRoute = "answer contact question"
+    Avoids = "thanks-only reply"
   },
   @{
     Scenario = "Thanks plus project question"
@@ -577,9 +672,26 @@ $followUpScenarioCoverage = @(
     Avoids = "thanks-only reply"
   },
   @{
+    Scenario = "Explicit offer plus okay and continuation"
+    PriorUserQuestion = ""
+    FollowUp = "okay, tell me more"
+    FollowUpPhraseCoverage = "tell me more"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "acknowledgment-only reply"
+  },
+  @{
+    Scenario = "Explicit offer plus thanks and continuation phrase"
+    PriorUserQuestion = ""
+    FollowUp = "thanks, tell me more"
+    FollowUpPhraseCoverage = "tell me more"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "gratitude-only reply"
+  },
+  @{
     Scenario = "Explicit offer plus thank you and expand request"
     PriorUserQuestion = ""
-    FollowUp = "can you expand on that"
+    FollowUp = "thank you, can you expand on that"
+    FollowUpPhraseCoverage = "can you expand on that"
     ExpectedRoute = "continue explicit offered topic"
     Avoids = "polite closing only"
   },
@@ -749,10 +861,34 @@ $closingIntentScenarioCoverage = @(
     Avoids = "follow-up offer"
   },
   @{
+    Scenario = "Nothing-else closing"
+    Message = "nothing else"
+    SafeIntentPhraseCoverage = @("nothing else")
+    FollowUpPhraseCoverage = @("nothing else")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
+    Scenario = "We-re-good closing"
+    Message = "we're good"
+    SafeIntentPhraseCoverage = @("we re good")
+    FollowUpPhraseCoverage = @("we re good")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
     Scenario = "That-will-be-all closing"
     Message = "that will be all"
     SafeIntentPhraseCoverage = @("that will be all")
     FollowUpPhraseCoverage = @("that will be all")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
+    Scenario = "No-more-questions closing"
+    Message = "no more questions"
+    SafeIntentPhraseCoverage = @("no more questions")
+    FollowUpPhraseCoverage = @("no more questions")
     ExpectedRoute = "short polite closing"
     Avoids = "follow-up offer"
   },
@@ -922,16 +1058,36 @@ $generalFaqChecks = @(
     ExpectedAnswerIncludes = @("10 years of it", "5 years of programming", "5 years of python")
   },
   @{
+    Question = "What is your Python experience?"
+    ExpectedAnswerIncludes = @("5 years of python", "automation", "apis")
+  },
+  @{
+    Question = "What kind of Python work have you done?"
+    ExpectedAnswerIncludes = @("automation", "backend services", "apis", "dashboards")
+  },
+  @{
     Question = "Do you do full-stack development?"
     ExpectedAnswerIncludes = @("full-stack", "backend", "frontend")
+  },
+  @{
+    Question = "Have you built dashboards?"
+    ExpectedAnswerIncludes = @("dashboards", "dash", "react")
   },
   @{
     Question = "What backend technologies do you use?"
     ExpectedAnswerIncludes = @("python", "django", "flask", "sql")
   },
   @{
+    Question = "Have you worked with FastAPI?"
+    ExpectedAnswerIncludes = @("not the main framework", "django", "flask", "dash")
+  },
+  @{
     Question = "Are you more backend or frontend?"
     ExpectedAnswerIncludes = @("backend", "frontend", "react")
+  },
+  @{
+    Question = "Do you build APIs?"
+    ExpectedAnswerIncludes = @("apis", "backend", "enterprise")
   },
   @{
     Question = "What automation work have you done?"
@@ -946,16 +1102,40 @@ $generalFaqChecks = @(
     ExpectedAnswerIncludes = @("internal enterprise tools", "dashboards", "automation", "portfolio")
   },
   @{
+    Question = "What work are you most proud of?"
+    ExpectedAnswerIncludes = @("workflow", "dashboard", "portfolio")
+  },
+  @{
     Question = "Are you open to work?"
     ExpectedAnswerIncludes = @("open to work", "full-time", "software development")
+  },
+  @{
+    Question = "Are you open to contract work?"
+    ExpectedAnswerIncludes = @("full-time", "contract work")
   },
   @{
     Question = "Are you available for freelance?"
     ExpectedAnswerIncludes = @("focused on full-time", "freelance")
   },
   @{
+    Question = "Are you available for discussions with recruiters?"
+    ExpectedAnswerIncludes = @("recruiter", "full-time", "jasond.worked@gmail.com")
+  },
+  @{
     Question = "What roles are you looking for?"
     ExpectedAnswerIncludes = @("software development", "data engineering", "ai-related")
+  },
+  @{
+    Question = "Would you consider yourself senior level?"
+    ExpectedAnswerIncludes = @("10 years in it", "5 years in programming", "automation")
+  },
+  @{
+    Question = "What is the best way to reach you?"
+    ExpectedAnswerIncludes = @("email", "jasond.worked@gmail.com")
+  },
+  @{
+    Question = "How should I contact you about an opportunity?"
+    ExpectedAnswerIncludes = @("email", "jasond.worked@gmail.com")
   }
 )
 
