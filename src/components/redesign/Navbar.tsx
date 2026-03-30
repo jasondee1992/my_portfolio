@@ -3,17 +3,60 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+
+function NavIcon({ icon }: { icon: "home" | "user" | "folder" | "gallery" | "file" }) {
+  if (icon === "home") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path d="M4.75 10.25 12 4.75l7.25 5.5v8A2 2 0 0 1 17.25 20h-10.5a2 2 0 0 1-2-1.75v-8Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M9.25 20v-5.75h5.5V20" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (icon === "user") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path d="M12 12.25a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Z" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M4.75 20.25c0-3.2 3.24-5.5 7.25-5.5s7.25 2.3 7.25 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (icon === "folder") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path d="M3.75 7.75A2.75 2.75 0 0 1 6.5 5h3.18c.55 0 1.07.21 1.46.59l1.11 1.07c.39.38.92.59 1.46.59h3.79a2.75 2.75 0 0 1 2.75 2.75v6.75A2.75 2.75 0 0 1 17.5 19.5h-11A2.75 2.75 0 0 1 3.75 16.75v-9Z" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  if (icon === "gallery") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <rect x="4.25" y="5" width="15.5" height="14" rx="2.75" stroke="currentColor" strokeWidth="1.5" />
+        <path d="m8 14 2.7-2.95a1 1 0 0 1 1.47 0L16 15.25" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="9" cy="9.25" r="1.25" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+      <path d="M8 4.75h5.7c.53 0 1.04.21 1.41.59l2.3 2.3c.38.37.59.88.59 1.41V18A2.75 2.75 0 0 1 15.25 20.75H8A2.75 2.75 0 0 1 5.25 18V7.5A2.75 2.75 0 0 1 8 4.75Z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M14 4.75V8.5h3.75" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const links = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Projects", href: "/projects" },
-    { label: "Gallery", href: "/gallery" },
+    { label: "Home", href: "/", icon: "home" as const },
+    { label: "About", href: "/about", icon: "user" as const },
+    { label: "Projects", href: "/projects", icon: "folder" as const },
+    { label: "Gallery", href: "/gallery", icon: "gallery" as const },
   ];
 
   return (
@@ -84,49 +127,25 @@ export default function Navbar() {
             </a>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="flex h-12 w-12 items-center justify-center rounded-full md:hidden"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileMenuOpen}
+          <a
+            href="/resume/Jasond_Delos_Santos_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center justify-center rounded-full px-4 text-sm font-medium text-white/88 md:hidden"
             style={{
               background: "rgba(255,255,255,0.06)",
               border: "1px solid rgba(255,255,255,0.10)",
-              color: "rgba(255,255,255,0.92)",
             }}
           >
-            <span className="flex flex-col gap-1.5">
-              <span
-                className="block h-0.5 w-5 rounded-full transition-transform duration-200"
-                style={{
-                  background: "currentColor",
-                  transform: mobileMenuOpen ? "translateY(8px) rotate(45deg)" : "none",
-                }}
-              />
-              <span
-                className="block h-0.5 w-5 rounded-full transition-opacity duration-200"
-                style={{
-                  background: "currentColor",
-                  opacity: mobileMenuOpen ? 0 : 1,
-                }}
-              />
-              <span
-                className="block h-0.5 w-5 rounded-full transition-transform duration-200"
-                style={{
-                  background: "currentColor",
-                  transform: mobileMenuOpen ? "translateY(-8px) rotate(-45deg)" : "none",
-                }}
-              />
-            </span>
-          </button>
+            Resume
+          </a>
         </div>
 
-        {mobileMenuOpen && (
-          <div
-            className="mt-4 space-y-2 border-t pt-4 md:hidden"
-            style={{ borderColor: "rgba(255,255,255,0.08)" }}
-          >
+        <div
+          className="mt-4 border-t pt-4 md:hidden"
+          style={{ borderColor: "rgba(255,255,255,0.08)" }}
+        >
+          <div className="grid grid-cols-4 gap-2">
             {links.map((link) => {
               const active = pathname === link.href;
 
@@ -134,30 +153,22 @@ export default function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-2xl px-4 py-3 text-sm font-medium transition"
+                  className="flex flex-col items-center justify-center gap-2 rounded-[20px] px-2 py-3 text-center transition"
                   style={{
                     background: active ? "rgba(143,184,255,0.16)" : "rgba(255,255,255,0.03)",
-                    color: active ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.72)",
+                    color: active ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.78)",
                     border: "1px solid rgba(255,255,255,0.08)",
                   }}
                 >
-                  {link.label}
+                  <span className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/10 bg-white/[0.04]">
+                    <NavIcon icon={link.icon} />
+                  </span>
+                  <span className="text-[11px] font-medium leading-4">{link.label}</span>
                 </Link>
               );
             })}
-
-            <a
-              href="/resume/Jasond_Delos_Santos_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="premium-button mt-3 flex w-full"
-            >
-              Hire Me
-              <span aria-hidden="true">↗</span>
-            </a>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

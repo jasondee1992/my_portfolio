@@ -222,6 +222,7 @@ function DesktopWindow({
   subtitle,
   icon,
   isCompact,
+  compactInsetTop = "5rem",
   isMaximized,
   zIndex,
   onClose,
@@ -235,6 +236,7 @@ function DesktopWindow({
   subtitle: string;
   icon: "user" | "folder" | "gallery" | "file" | "mail";
   isCompact: boolean;
+  compactInsetTop?: string;
   isMaximized: boolean;
   zIndex: number;
   onClose: () => void;
@@ -270,7 +272,7 @@ function DesktopWindow({
         isCompact
           ? {
               position: "fixed",
-              inset: "5rem 0.9rem 1rem",
+              inset: `${compactInsetTop} 0.9rem 1rem`,
               zIndex,
             }
           : isMaximized
@@ -367,6 +369,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
     selectedGalleryImage && selectedGalleryAlbum?.slug === selectedGalleryImage.albumSlug
       ? selectedGalleryAlbum.images[selectedGalleryImage.index] ?? null
       : null;
+  const hasCompactOpenWindow = isCompact && windowOrder.length > 0;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
@@ -615,26 +618,50 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
           </div>
         </div>
 
-        <div className="mt-2 grid gap-4 lg:hidden">
-          {DESKTOP_ITEMS.map((item) => (
+        <div className={`${hasCompactOpenWindow ? "fixed inset-x-4 top-[5.4rem] z-40" : "mt-2"} lg:hidden`}>
+          <div className={hasCompactOpenWindow ? "flex gap-2 overflow-x-auto pb-1" : "grid grid-cols-4 gap-3"}>
+            {DESKTOP_ITEMS.map((item) => {
+              const active = windowState[item.id].open;
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => openWindow(item.id)}
+                  className={`${hasCompactOpenWindow ? "min-w-[64px] shrink-0" : ""} flex ${hasCompactOpenWindow ? "min-h-[64px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-2 py-3 text-center text-white/82 transition`}
+                >
+                  <span
+                    className={`flex h-12 w-12 items-center justify-center rounded-[18px] border transition ${
+                      active
+                        ? "border-[#ff9f72]/22 bg-[#ff9f72]/12 text-white"
+                        : "border-white/10 bg-white/[0.05]"
+                    }`}
+                  >
+                    <DesktopGlyph icon={item.icon} />
+                  </span>
+                  {!hasCompactOpenWindow ? (
+                    <span className="text-xs font-normal uppercase tracking-[0.12em] text-white/78">
+                      {item.title}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+
             <button
-              key={item.id}
               type="button"
-              onClick={() => openWindow(item.id)}
-              className="flex items-center justify-between rounded-[24px] border border-white/10 bg-black/24 px-5 py-4 text-left text-white/82 backdrop-blur-xl"
+              onClick={() => openChatbot()}
+              className={`${hasCompactOpenWindow ? "min-w-[64px] shrink-0" : ""} flex ${hasCompactOpenWindow ? "min-h-[64px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-2 py-3 text-center text-white/82 transition`}
+              aria-label="Open AI terminal"
             >
-              <span className="flex items-center gap-4">
-                <span className="flex h-11 w-11 items-center justify-center rounded-[18px] border border-white/10 bg-white/[0.05]">
-                  <DesktopGlyph icon={item.icon} />
-                </span>
-                <span>
-                  <span className="block text-base font-medium text-white/94">{item.title}</span>
-                  <span className="block text-sm text-white/52">{item.subtitle}</span>
-                </span>
+              <span className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/10 bg-[#ff9f72]/10 text-[#ffd4bf]">
+                <DesktopGlyph icon="bot" />
               </span>
-              <span>→</span>
+              {!hasCompactOpenWindow ? (
+                <span className="text-xs font-normal uppercase tracking-[0.12em] text-white/78">AI Chat</span>
+              ) : null}
             </button>
-          ))}
+          </div>
         </div>
       </section>
 
@@ -655,6 +682,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 subtitle="Profile, experience, and stack"
                 icon="user"
                 isCompact={isCompact}
+                compactInsetTop={hasCompactOpenWindow ? "10.4rem" : "5rem"}
                 isMaximized={state.maximized}
                 zIndex={50 + index}
                 onClose={() => closeWindow(id)}
@@ -749,6 +777,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 subtitle="Selected enterprise and personal work"
                 icon="folder"
                 isCompact={isCompact}
+                compactInsetTop={hasCompactOpenWindow ? "10.4rem" : "5rem"}
                 isMaximized={state.maximized}
                 zIndex={50 + index}
                 onClose={() => closeWindow(id)}
@@ -842,6 +871,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 subtitle="Album previews and visual snapshots"
                 icon="gallery"
                 isCompact={isCompact}
+                compactInsetTop={hasCompactOpenWindow ? "10.4rem" : "5rem"}
                 isMaximized={state.maximized}
                 zIndex={50 + index}
                 onClose={() => closeWindow(id)}
@@ -1059,6 +1089,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 subtitle="Fast recruiter summary"
                 icon="file"
                 isCompact={isCompact}
+                compactInsetTop={hasCompactOpenWindow ? "10.4rem" : "5rem"}
                 isMaximized={state.maximized}
                 zIndex={50 + index}
                 onClose={() => closeWindow(id)}
@@ -1112,6 +1143,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
               subtitle="Email, LinkedIn, and AI chat"
               icon="mail"
               isCompact={isCompact}
+              compactInsetTop={hasCompactOpenWindow ? "10.4rem" : "5rem"}
               isMaximized={state.maximized}
               zIndex={50 + index}
               onClose={() => closeWindow(id)}
