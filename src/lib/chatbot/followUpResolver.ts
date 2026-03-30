@@ -33,6 +33,16 @@ const ACCEPT_PATTERNS = [
   ...getIntentExamples("accept_previous_offer"),
 ].map((item) => item.toLowerCase());
 
+const OFFER_ONLY_ACCEPT_PATTERNS = [
+  "share",
+  "please share",
+  "can you please share",
+  "share more",
+  "yes please share",
+  "go ahead and share",
+  "sure please share",
+].map((item) => item.toLowerCase());
+
 const REJECT_PATTERNS = [
   "not now",
   "not yet",
@@ -80,6 +90,10 @@ const OFFER_PATTERNS = [
   "you can ask me about",
   "feel free to ask about",
   "happy to chat about",
+  "happy to share",
+  "share more",
+  "i can share more",
+  "i can share",
   "i can walk you through",
   "i can explain",
   "i can tell you more about",
@@ -129,6 +143,10 @@ function includesAny(text: string, patterns: string[]) {
 
 function isExplicitAcceptanceMessage(message: string) {
   return includesAny(message, ACCEPT_PATTERNS);
+}
+
+function isExplicitOfferAcceptanceMessage(message: string) {
+  return isExplicitAcceptanceMessage(message) || includesAny(message, OFFER_ONLY_ACCEPT_PATTERNS);
 }
 
 function isConversationClosingMessage(message: string) {
@@ -283,8 +301,8 @@ export function resolveShortFollowUp(
     }
 
     if (
-      !isExplicitAcceptanceMessage(lowered) &&
-      !isExplicitAcceptanceMessage(continuationCandidate)
+      !isExplicitOfferAcceptanceMessage(lowered) &&
+      !isExplicitOfferAcceptanceMessage(continuationCandidate)
     ) {
       return null;
     }

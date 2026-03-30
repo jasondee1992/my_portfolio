@@ -66,11 +66,13 @@ function isTaglishOrFilipino(text: string) {
 function isAgeQuestion(text: string) {
   return hasAny(text, [
     "how old are you",
+    "what age are you",
     "what is your age",
     "whats your age",
     "what s your age",
     "how old is jasond",
     "how old is jasond delos santos",
+    "ilang taon na si jasond",
     "ilang taon ka na",
     "ilang taon ka",
     "ano age mo",

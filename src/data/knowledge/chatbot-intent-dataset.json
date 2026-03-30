@@ -3,7 +3,7 @@
     "category": "open_conversation",
     "scopeType": "conversational",
     "answerSourcePriority": ["safe_intent_help", "homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong", "what can I ask you about"],
+    "exampleQuestions": ["what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong", "what can I ask you about", "what can you help me with", "what can I ask here"],
     "answerDirection": "Offer allowed topics naturally, such as projects, skills, background, experience, availability, portfolio, AI tools, and contact details."
   },
   {
@@ -24,7 +24,7 @@
     "category": "accept_previous_offer",
     "scopeType": "follow_up",
     "answerSourcePriority": ["follow_up_resolver", "safe_intent_continuation", "fallback"],
-    "exampleQuestions": ["yes", "yes please", "sige please", "go ahead", "go on", "continue", "please continue", "tell more", "please tell more", "tell me more", "can you tell me more", "can you expand on that", "expand on that", "elaborate", "please do", "kwento mo", "sure go ahead"],
+    "exampleQuestions": ["yes", "yes please", "sige please", "go ahead", "go on", "continue", "please continue", "tell more", "please tell more", "tell me more", "can you tell me more", "can you expand on that", "expand on that", "elaborate", "please do", "can you please share", "please share", "share more", "yes please share", "go ahead and share", "sure please share", "kwento mo", "sure go ahead"],
     "answerDirection": "If the assistant previously offered to continue, continue that topic. Otherwise respond with a natural continuation prompt."
   },
   {
@@ -38,63 +38,63 @@
     "category": "self_intro",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["tell me about yourself", "can you tell me about yourself", "tell me something about yourself", "introduce yourself", "self intro", "pakilala ka"],
+    "exampleQuestions": ["tell me about yourself", "can you tell me about yourself", "tell me something about yourself", "introduce yourself", "can you introduce yourself", "who are you", "give me a short intro", "self intro", "pakilala ka"],
     "answerDirection": "Answer in first person with a concise, natural introduction covering role, focus areas, and work style."
   },
   {
     "category": "current_role",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what is your current role", "what do you do now", "what is your current job", "current position mo ngayon", "anong role mo ngayon"],
+    "exampleQuestions": ["what is your current role", "what do you do now", "what do you do", "what kind of work do you do", "what is your current job", "what do you do for work", "current position mo ngayon", "anong role mo ngayon"],
     "answerDirection": "State the current role naturally and briefly."
   },
   {
     "category": "work_experience",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what is your work experience", "tell me about your work experience", "how about work experience", "what kind of experience do you have", "how many years of experience do you have", "how many years have you been working", "ano work experience mo"],
+    "exampleQuestions": ["what is your work experience", "tell me about your work experience", "how about work experience", "what kind of experience do you have", "how many years of experience do you have", "how many years have you been working", "how long have you been working", "how long have you worked in tech", "how many years in IT", "how many years in Python", "how experienced are you", "ano work experience mo"],
     "answerDirection": "Summarize professional experience, years, and main focus areas in a recruiter-friendly way."
   },
   {
     "category": "professional_background",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what is your professional background", "what roles have you had", "what is your background", "career background mo", "work history mo"],
+    "exampleQuestions": ["what is your professional background", "what roles have you had", "what is your background", "walk me through your background", "what is your work background", "career background mo", "work history mo"],
     "answerDirection": "Summarize past roles and general career progression without sounding robotic."
   },
   {
     "category": "strongest_skills",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what are your strongest skills", "what are your top skills", "main skills mo", "best skills mo", "ano strongest skills mo"],
+    "exampleQuestions": ["what are your strongest skills", "what are your top skills", "what are your main skills", "what skills are you strongest in", "main skills mo", "best skills mo", "ano strongest skills mo"],
     "answerDirection": "Highlight the strongest practical skills and technologies with a concise explanation."
   },
   {
     "category": "strengths_as_developer",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what are your strengths as a developer", "developer strengths", "what makes you strong as a developer", "strength mo as developer"],
+    "exampleQuestions": ["what are your strengths as a developer", "developer strengths", "what makes you strong as a developer", "what are your strengths", "what makes you effective as a developer", "strength mo as developer"],
     "answerDirection": "Answer with practical strengths such as ownership, problem-solving, delivery, and business-focused development."
   },
   {
     "category": "recruiter_hr_questions",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["why should we hire you", "what makes you a good fit for this role", "what makes you a strong candidate", "bakit ka namin dapat i hire"],
+    "exampleQuestions": ["why should we hire you", "what makes you a good fit for this role", "what makes you a strong candidate", "why would you be a good hire", "why are you a strong fit for this team", "bakit ka namin dapat i hire"],
     "answerDirection": "Answer in a recruiter-friendly way, connecting strengths, project experience, and business value."
   },
   {
     "category": "tech_stack",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what is your tech stack", "what technologies do you use", "what tools do you use", "what is your stack", "anong tech stack mo", "do you have aws experience", "what is your aws experience", "how many years of experience do you have in aws", "what is your cloud experience", "what aws services do you know", "have you deployed apps on aws", "what is your experience with aws amplify"],
+    "exampleQuestions": ["what is your tech stack", "what technologies do you use", "what tools do you use", "what tools do you work with", "what is your stack", "anong tech stack mo", "what are your backend technologies", "what backend technologies do you use", "what are your frontend technologies", "do you do full-stack development", "do you have frontend experience", "do you have backend experience", "are you more backend or frontend", "can you build end-to-end applications", "do you work with ci/cd", "do you have aws experience", "what is your aws experience", "how many years of experience do you have in aws", "what is your cloud experience", "what aws services do you know", "have you deployed apps on aws", "what is your experience with aws amplify"],
     "answerDirection": "List the main stack naturally, prioritizing the tools most used in actual work. For AWS and cloud questions, answer in a grounded way focused on deployment, hosting awareness, CI/CD workflows, and practical service familiarity without overstating deep architecture ownership."
   },
   {
     "category": "projects_summary",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what projects have you built", "tell me about your projects", "tell me about your portfolio project", "what projects do you have", "project summary", "ano projects mo"],
+    "exampleQuestions": ["what projects have you built", "tell me about your projects", "tell me about your portfolio project", "what projects do you have", "can you share some of your work", "what kind of tools have you built", "what is your portfolio about", "project summary", "ano projects mo"],
     "answerDirection": "Give a concise summary of the main internal and personal projects and their business value."
   },
   {
@@ -115,14 +115,14 @@
     "category": "work_availability",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you available for a new position", "open ka ba sa new opportunities", "are you open to full-time roles", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "are you open to opportunities outside your country", "are you open to moving overseas", "what kind of roles would you relocate for"],
+    "exampleQuestions": ["are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to work", "are you available for a new position", "open ka ba sa new opportunities", "are you open to full-time roles", "what roles are you looking for", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "are you open to opportunities outside your country", "are you open to moving overseas", "what kind of roles would you relocate for"],
     "answerDirection": "Answer yes to new opportunities and emphasize focus on full-time roles. For relocation questions, answer that relocation is open for the right opportunity when the role aligns with software development, data engineering, or AI-related technical work."
   },
   {
     "category": "freelance_availability",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["are you open to freelance work", "are you available for freelance", "are you open to project-based work", "open ka ba sa freelance"],
+    "exampleQuestions": ["are you open to freelance work", "are you available for freelance", "available for freelance", "do you take freelance work", "are you open to project-based work", "open ka ba sa freelance"],
     "answerDirection": "Answer naturally that the current focus is on full-time roles, without sounding dismissive."
   },
   {
@@ -178,14 +178,14 @@
     "category": "react_experience",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["do you have experience in React frontend", "do you have React experience", "how many years of React experience do you have", "have you worked with React", "anong experience mo sa React", "do you use React for frontend work"],
+    "exampleQuestions": ["do you have experience in React frontend", "do you have React experience", "how many years of React experience do you have", "have you worked with React", "do you have frontend experience", "what frontend technologies do you use", "anong experience mo sa React", "do you use React for frontend work"],
     "answerDirection": "Answer that there is around 2 to 3 years of React experience for frontend work in internal tools and web applications."
   },
   {
     "category": "ai_experience",
     "scopeType": "in_scope",
     "answerSourcePriority": ["homepage", "about", "projects", "personal_memory", "fallback"],
-    "exampleQuestions": ["what AI experience do you have", "what LLM experience do you have", "tell me about your AI experience", "anong AI experience mo"],
+    "exampleQuestions": ["what AI experience do you have", "what LLM experience do you have", "tell me about your AI experience", "do you have AI experience", "what automation work have you done", "do you have data engineering experience", "what AI-related work have you done", "have you built intelligent tools", "do you work with workflow automation", "anong AI experience mo"],
     "answerDirection": "Answer broadly about AI exposure, internal usage, API work, and practical experimentation without overclaiming."
   },
   {

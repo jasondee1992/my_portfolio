@@ -674,6 +674,18 @@ export default function ChatbotPanel({
                   minWidth: 0,
                 }}
               >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    marginRight: 10,
+                    color: terminalPrompt,
+                    fontSize: isMobileViewport ? 12 : 13,
+                    whiteSpace: "nowrap",
+                    opacity: 0.95,
+                  }}
+                >
+                  {isMobileViewport ? ">" : "visitor@desktop:~$"}
+                </span>
                 <textarea
                   ref={inputRef}
                   className="chat-input-field"
@@ -686,7 +698,8 @@ export default function ChatbotPanel({
                     }
                   }}
                   rows={1}
-                  placeholder=""
+                  aria-label="Chat message input"
+                  placeholder="Type your message here..."
                   style={{
                     flex: 1,
                     padding: "0",
@@ -719,7 +732,8 @@ export default function ChatbotPanel({
                   }
                 }}
                 rows={1}
-                placeholder="Ask me anything..."
+                aria-label="Chat message input"
+                placeholder="Type your message here..."
                 style={{
                   flex: 1,
                   padding: "12px 14px",

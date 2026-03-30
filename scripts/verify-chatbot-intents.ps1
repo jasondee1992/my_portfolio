@@ -80,14 +80,26 @@ foreach ($category in $requiredCategories) {
 
 $datasetChecks = @{
   open_conversation = @("what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong")
+  self_intro = @("who are you", "give me a short intro")
+  current_role = @("what do you do", "what kind of work do you do")
   work_experience = @("how many years of experience do you have", "how many years have you been working")
-  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for")
+  professional_background = @("walk me through your background", "what is your work background")
+  strongest_skills = @("what are your main skills", "what skills are you strongest in")
+  work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to work", "what roles are you looking for", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for")
+  freelance_availability = @("available for freelance", "do you take freelance work")
   react_experience = @("do you have experience in React frontend", "how many years of React experience do you have")
+  ai_experience = @("what automation work have you done", "do you have data engineering experience", "have you built intelligent tools")
   bedrock_experience = @("do you have Amazon Bedrock experience", "how did you use Amazon Bedrock")
   ai_tools_experience = @("what AI tools have you used")
   local_llm_experience = @("have you tried local LLMs", "what local models have you used")
-  accept_previous_offer = @("go on", "please continue", "tell more", "please tell more", "can you tell me more", "can you expand on that", "elaborate")
+  accept_previous_offer = @("go on", "please continue", "tell more", "please tell more", "can you tell me more", "can you expand on that", "elaborate", "please share", "share more")
+  projects_summary = @("can you share some of your work", "what kind of tools have you built", "what is your portfolio about")
   tech_stack = @(
+    "do you do full-stack development",
+    "do you have backend experience",
+    "are you more backend or frontend",
+    "what backend technologies do you use",
+    "can you build end-to-end applications",
     "do you have aws experience",
     "what is your aws experience",
     "how many years of experience do you have in aws",
@@ -117,12 +129,32 @@ $questionScopeChecks = @(
   "how old",
   "ilang taon",
   "edad",
+  "who are you",
+  "give me a short intro",
+  "can you introduce yourself",
+  "what do you do",
+  "what kind of work do you do",
   "how about work experience",
   "how many years of experience do you have",
   "how many years have you been working",
+  "how long have you worked in tech",
+  "how many years in it",
+  "how many years in python",
+  "how experienced are you",
   "how much experience do you have",
+  "what are your main skills",
+  "do you do full stack development",
+  "do you have backend experience",
+  "do you have frontend experience",
+  "are you more backend or frontend",
+  "what backend technologies do you use",
+  "what frontend technologies do you use",
+  "can you build end to end applications",
   "are you open for a new role",
+  "are you open to work",
   "are you open to full-time roles",
+  "available for freelance",
+  "what roles are you looking for",
   "are you open to relocation",
   "are you willing to work abroad",
   "would you relocate for a job",
@@ -131,6 +163,11 @@ $questionScopeChecks = @(
   "are you open to moving overseas",
   "what kind of roles would you relocate for",
   "do you have amazon bedrock experience",
+  "what automation work have you done",
+  "do you have data engineering experience",
+  "what ai related work have you done",
+  "have you built intelligent tools",
+  "do you work with workflow automation",
   "have you tried local llms",
   "what local models have you used",
   "do you have aws experience",
@@ -140,12 +177,16 @@ $questionScopeChecks = @(
   "have you deployed apps on aws",
   "what aws services do you know",
   "what is your experience with aws amplify",
+  "do you work with ci/cd",
   "what do you know about s3",
   "do you know route 53",
   "do you know acm",
   "do you know cloudwatch",
   "do you know iam",
   "do you know cloudfront",
+  "can you share some of your work",
+  "what kind of tools have you built",
+  "what is your portfolio about",
   "what do you know about rds",
   "what do you know about aurora",
   "what do you know about dynamodb",
@@ -164,8 +205,10 @@ foreach ($phrase in $questionScopeChecks) {
 $ageRuntimeChecks = @(
   "1992",
   "how old are you",
+  "what age are you",
   "what is your age",
   "ilang taon ka na",
+  "ilang taon na si jasond",
   "how old is jasond",
   "birthdate",
   "full birthdate private"
@@ -201,8 +244,22 @@ $ageScenarioCoverage = @(
     Avoids = "fixed hardcoded age string"
   },
   @{
+    Scenario = "Direct alternate age wording"
+    Message = "What age are you?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
     Scenario = "Tagalog age phrasing"
     Message = "Ilang taon ka na?"
+    ExpectedRoute = "runtime age calculation"
+    ExpectedAnswerPattern = "age in years only"
+    Avoids = "full birthdate exposure"
+  },
+  @{
+    Scenario = "Third-person Tagalog age phrasing"
+    Message = "Ilang taon na si Jasond?"
     ExpectedRoute = "runtime age calculation"
     ExpectedAnswerPattern = "age in years only"
     Avoids = "full birthdate exposure"
@@ -274,11 +331,67 @@ foreach ($phrase in $safeIntentChecks) {
 
 $mixedIntentScenarioCoverage = @(
   @{
+    Scenario = "Reaction plus intro question"
+    Message = "nice, who are you"
+    RequiresSafeIntentBypass = @("nice")
+    RequiresScopeCoverage = "who are you"
+    ExpectedRoute = "answer intro question"
+    Avoids = "reaction-only reply"
+  },
+  @{
     Scenario = "Reaction plus general years-of-experience question"
     Message = "nice! how many years of experience do you have?"
     RequiresSafeIntentBypass = @("nice")
     RequiresScopeCoverage = "how many years of experience do you have"
     ExpectedRoute = "answer recruiter experience question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Reaction plus backend question"
+    Message = "great, what backend technologies do you use"
+    RequiresSafeIntentBypass = @("great")
+    RequiresScopeCoverage = "what backend technologies do you use"
+    ExpectedRoute = "answer backend stack question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Reaction plus projects follow-up topic"
+    Message = "awesome, tell me more about your projects"
+    RequiresSafeIntentBypass = @("awesome")
+    RequiresScopeCoverage = "tell me about your projects"
+    ExpectedRoute = "answer projects question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Reaction plus work-sharing question"
+    Message = "awesome, can you share some of your work"
+    RequiresSafeIntentBypass = @("awesome")
+    RequiresScopeCoverage = "can you share some of your work"
+    ExpectedRoute = "answer work-sharing question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Thanks plus AI experience question"
+    Message = "thanks, what about your ai experience"
+    RequiresSafeIntentBypass = @("thanks")
+    RequiresScopeCoverage = "ai experience"
+    ExpectedRoute = "answer AI experience question"
+    Avoids = "thanks-only reply"
+  },
+  @{
+    Scenario = "Reaction plus relocation question"
+    Message = "cool, are you open to relocation"
+    RequiresSafeIntentBypass = @("cool")
+    RequiresScopeCoverage = "are you open to relocation"
+    ExpectedRoute = "answer relocation question"
+    Avoids = "reaction-only reply"
+  },
+  @{
+    Scenario = "Reaction plus AWS experience question"
+    Message = "great, do you have aws experience"
+    RequiresSafeIntentBypass = @("great")
+    RequiresScopeCoverage = "do you have aws experience"
+    ExpectedRoute = "answer aws experience question"
     Avoids = "reaction-only reply"
   },
   @{
@@ -342,9 +455,18 @@ $followUpChecks = @(
   "yes please",
   "sige please",
   "go ahead",
+  "go ahead and share",
   "go on",
+  "happy to share",
+  "i can share more",
   "continue",
   "please continue",
+  "share",
+  "please share",
+  "can you please share",
+  "share more",
+  "yes please share",
+  "sure please share",
   "tell more",
   "please tell more",
   "tell me more",
@@ -410,6 +532,42 @@ $followUpScenarioCoverage = @(
     FollowUp = "please tell more"
     ExpectedRoute = "continue explicit offered topic"
     Avoids = "acknowledgment-only reply"
+  },
+  @{
+    Scenario = "Explicit offer plus share continuation"
+    PriorUserQuestion = ""
+    FollowUp = "please share"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "out of scope fallback"
+  },
+  @{
+    Scenario = "Explicit offer plus can-you-share continuation"
+    PriorUserQuestion = ""
+    FollowUp = "can you please share"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "out of scope fallback"
+  },
+  @{
+    Scenario = "Explicit offer plus go-ahead-and-share continuation"
+    PriorUserQuestion = ""
+    FollowUp = "go ahead and share"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "out of scope fallback"
+  },
+  @{
+    Scenario = "Explicit offer plus sure-please-share continuation"
+    PriorUserQuestion = ""
+    FollowUp = "sure, please share"
+    FollowUpPhraseCoverage = "sure please share"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "out of scope fallback"
+  },
+  @{
+    Scenario = "Explicit offer plus share-more continuation"
+    PriorUserQuestion = ""
+    FollowUp = "share more"
+    ExpectedRoute = "continue explicit offered topic"
+    Avoids = "out of scope fallback"
   },
   @{
     Scenario = "Explicit offer plus thanks and continuation"
@@ -583,6 +741,22 @@ $closingIntentScenarioCoverage = @(
     Avoids = "follow-up offer"
   },
   @{
+    Scenario = "All-good closing"
+    Message = "all good"
+    SafeIntentPhraseCoverage = @("all good")
+    FollowUpPhraseCoverage = @("all good")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
+    Scenario = "That-will-be-all closing"
+    Message = "that will be all"
+    SafeIntentPhraseCoverage = @("that will be all")
+    FollowUpPhraseCoverage = @("that will be all")
+    ExpectedRoute = "short polite closing"
+    Avoids = "follow-up offer"
+  },
+  @{
     Scenario = "Gratitude only"
     Message = "thank you"
     SafeIntentPhraseCoverage = @("thank you")
@@ -734,6 +908,69 @@ foreach ($check in $relocationFaqChecks) {
   foreach ($phrase in $check.ExpectedAnswerIncludes) {
     if ($answerText -notlike "*$($phrase.ToLowerInvariant())*") {
       throw "Relocation FAQ '$($check.Question)' is missing expected answer content: $phrase"
+    }
+  }
+}
+
+$generalFaqChecks = @(
+  @{
+    Question = "Who are you?"
+    ExpectedAnswerIncludes = @("jasond delos santos", "python", "full-stack")
+  },
+  @{
+    Question = "How long have you worked in tech?"
+    ExpectedAnswerIncludes = @("10 years of it", "5 years of programming", "5 years of python")
+  },
+  @{
+    Question = "Do you do full-stack development?"
+    ExpectedAnswerIncludes = @("full-stack", "backend", "frontend")
+  },
+  @{
+    Question = "What backend technologies do you use?"
+    ExpectedAnswerIncludes = @("python", "django", "flask", "sql")
+  },
+  @{
+    Question = "Are you more backend or frontend?"
+    ExpectedAnswerIncludes = @("backend", "frontend", "react")
+  },
+  @{
+    Question = "What automation work have you done?"
+    ExpectedAnswerIncludes = @("automation", "reporting", "dashboards", "enterprise")
+  },
+  @{
+    Question = "Do you have data engineering experience?"
+    ExpectedAnswerIncludes = @("data extraction", "transformation", "snowflake", "automation")
+  },
+  @{
+    Question = "Can you share some of your work?"
+    ExpectedAnswerIncludes = @("internal enterprise tools", "dashboards", "automation", "portfolio")
+  },
+  @{
+    Question = "Are you open to work?"
+    ExpectedAnswerIncludes = @("open to work", "full-time", "software development")
+  },
+  @{
+    Question = "Are you available for freelance?"
+    ExpectedAnswerIncludes = @("focused on full-time", "freelance")
+  },
+  @{
+    Question = "What roles are you looking for?"
+    ExpectedAnswerIncludes = @("software development", "data engineering", "ai-related")
+  }
+)
+
+foreach ($check in $generalFaqChecks) {
+  $faqEntry = $personaMemory.faq | Where-Object { $_.question -eq $check.Question }
+
+  if (-not $faqEntry) {
+    throw "persona-memory.json is missing general FAQ entry: $($check.Question)"
+  }
+
+  $answerText = $faqEntry.answer.ToLowerInvariant()
+
+  foreach ($phrase in $check.ExpectedAnswerIncludes) {
+    if ($answerText -notlike "*$($phrase.ToLowerInvariant())*") {
+      throw "General FAQ '$($check.Question)' is missing expected answer content: $phrase"
     }
   }
 }
