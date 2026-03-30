@@ -48,7 +48,9 @@ const DEFAULT_PANEL_WIDTH = 360;
 const DEFAULT_PANEL_HEIGHT = 560;
 const MIN_PANEL_WIDTH = 320;
 const MIN_PANEL_HEIGHT = 420;
-const TERMINAL_MINIMIZED_HEIGHT = 118;
+const MOBILE_BREAKPOINT = 640;
+const MOBILE_MIN_PANEL_WIDTH = 280;
+const MOBILE_MIN_PANEL_HEIGHT = 340;
 const SUGGESTED_PROMPTS = [
   "Tell me about yourself",
   "What’s your tech stack?",
@@ -62,6 +64,20 @@ const FALLBACK_MESSAGE =
   "I don’t have enough verified information about that in my current portfolio data, but I’d be happy to talk about my projects, skills, experience, and background.";
 
 const PROFILE_IMAGE_SRC = "/images/profile/profile.jpeg";
+
+function getDefaultPanelSizeForViewport(variant: PanelVariant) {
+  if (typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT) {
+    return {
+      width: variant === "terminal" ? 360 : DEFAULT_PANEL_WIDTH,
+      height: variant === "terminal" ? 500 : 500,
+    };
+  }
+
+  return {
+    width: variant === "terminal" ? 520 : DEFAULT_PANEL_WIDTH,
+    height: variant === "terminal" ? 620 : DEFAULT_PANEL_HEIGHT,
+  };
+}
 
 export default function ChatbotPanel({
   onClose,
@@ -89,8 +105,6 @@ export default function ChatbotPanel({
     height: variant === "terminal" ? 620 : DEFAULT_PANEL_HEIGHT,
   });
   const [isResizing, setIsResizing] = useState(false);
-  const [isTerminalMaximized, setIsTerminalMaximized] = useState(false);
-  const [isTerminalMinimized, setIsTerminalMinimized] = useState(false);
 
   const endRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -108,14 +122,17 @@ export default function ChatbotPanel({
       };
     }
 
+    const minWidth = window.innerWidth < MOBILE_BREAKPOINT ? MOBILE_MIN_PANEL_WIDTH : MIN_PANEL_WIDTH;
+    const minHeight = window.innerWidth < MOBILE_BREAKPOINT ? MOBILE_MIN_PANEL_HEIGHT : MIN_PANEL_HEIGHT;
+
     return {
       width: Math.min(
-        Math.max(width, MIN_PANEL_WIDTH),
-        Math.max(MIN_PANEL_WIDTH, window.innerWidth - 24)
+        Math.max(width, minWidth),
+        Math.max(minWidth, window.innerWidth - 24)
       ),
       height: Math.min(
-        Math.max(height, MIN_PANEL_HEIGHT),
-        Math.max(MIN_PANEL_HEIGHT, window.innerHeight - 120)
+        Math.max(height, minHeight),
+        Math.max(minHeight, window.innerHeight - 120)
       ),
     };
   }
@@ -123,6 +140,11 @@ export default function ChatbotPanel({
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const defaults = getDefaultPanelSizeForViewport(variant);
+    setPanelSize(clampPanelSize(defaults.width, defaults.height));
+  }, [variant]);
 
   useEffect(() => {
     const textarea = inputRef.current;
@@ -177,14 +199,21 @@ export default function ChatbotPanel({
 
   useEffect(() => {
     function syncPanelSizeToViewport() {
-      setPanelSize((current) => clampPanelSize(current.width, current.height));
+      setPanelSize((current) => {
+        if (window.innerWidth < MOBILE_BREAKPOINT) {
+          const defaults = getDefaultPanelSizeForViewport(variant);
+          return clampPanelSize(defaults.width, defaults.height);
+        }
+
+        return clampPanelSize(current.width, current.height);
+      });
     }
 
     window.addEventListener("resize", syncPanelSizeToViewport);
     return () => {
       window.removeEventListener("resize", syncPanelSizeToViewport);
     };
-  }, []);
+  }, [variant]);
 
   useEffect(() => {
     if (!pendingPrompt) {
@@ -217,37 +246,6 @@ export default function ChatbotPanel({
     };
 
     setIsResizing(true);
-  }
-
-  function toggleTerminalMaximize() {
-    if (!isTerminal) {
-      return;
-    }
-
-    if (isTerminalMinimized) {
-      setIsTerminalMinimized(false);
-    }
-
-    if (isTerminalMaximized) {
-      setPanelSize({
-        width: 520,
-        height: 620,
-      });
-      setIsTerminalMaximized(false);
-      return;
-    }
-
-    const nextSize = clampPanelSize(window.innerWidth - 32, window.innerHeight - 48);
-    setPanelSize(nextSize);
-    setIsTerminalMaximized(true);
-  }
-
-  function toggleTerminalMinimize() {
-    if (!isTerminal) {
-      return;
-    }
-
-    setIsTerminalMinimized((current) => !current);
   }
 
   async function sendMessage(rawMessage?: string) {
@@ -320,14 +318,12 @@ export default function ChatbotPanel({
 
   const showSuggestedPrompts = messages.length <= 1 && !loading;
   const isTerminal = variant === "terminal";
+  const isMobileViewport = typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT;
   const panelPosition = anchor === "left" ? { left: 20 } : { right: 20 };
   const panelBottom = isTerminal ? 20 : 84;
-  const terminalBackground = "#300a24";
-  const terminalHeader = "#3b3a3a";
+  const terminalBackground = "#090909";
+  const terminalHeader = "#161616";
   const terminalPrompt = "#33d17a";
-  const panelHeight = isTerminal && isTerminalMinimized
-    ? TERMINAL_MINIMIZED_HEIGHT
-    : panelSize.height;
 
   return (
     <>
@@ -338,7 +334,7 @@ export default function ChatbotPanel({
           ...panelPosition,
           bottom: panelBottom,
           width: `min(${panelSize.width}px, calc(100vw - 24px))`,
-          height: `min(${panelHeight}px, calc(100vh - 120px))`,
+          height: `min(${panelSize.height}px, calc(100vh - 120px))`,
           background: isTerminal ? terminalBackground : "rgba(12,12,13,0.98)",
           border: isTerminal ? "1px solid rgba(0,0,0,0.64)" : "1px solid rgba(255,255,255,0.12)",
           borderRadius: isTerminal ? 14 : 26,
@@ -411,19 +407,11 @@ export default function ChatbotPanel({
               <>
                 <button
                   type="button"
-                  onClick={toggleTerminalMinimize}
-                  aria-label={isTerminalMinimized ? "Restore chat terminal" : "Minimize chat terminal"}
+                  onClick={onClose}
+                  aria-label="Minimize chat terminal"
                   className="terminal-window-control"
                 >
                   -
-                </button>
-                <button
-                  type="button"
-                  onClick={toggleTerminalMaximize}
-                  aria-label={isTerminalMaximized ? "Restore chat terminal" : "Maximize chat terminal"}
-                  className="terminal-window-control"
-                >
-                  □
                 </button>
               </>
             ) : null}
@@ -450,224 +438,222 @@ export default function ChatbotPanel({
           <div style={{ height: 2, background: "#e95420", opacity: 0.94 }} aria-hidden="true" />
         ) : null}
 
-        {!isTerminalMinimized ? (
+        <div
+          className="chat-scroll-area"
+          style={{
+            position: "relative",
+            flex: 1,
+            padding: isTerminal ? 18 : 16,
+            overflowY: "auto",
+            fontSize: 14,
+            color: "white",
+            background: isTerminal ? terminalBackground : undefined,
+          }}
+        >
           <div
-            className="chat-scroll-area"
             style={{
               position: "relative",
-              flex: 1,
-              padding: isTerminal ? 18 : 16,
-              overflowY: "auto",
-              fontSize: 14,
-              color: "white",
-              background: isTerminal ? terminalBackground : undefined,
+              minHeight: "100%",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <div
-              style={{
-                position: "relative",
-                minHeight: "100%",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {messages.map((message, index) => (
-                <div
-                  key={`${message.role}-${index}`}
-                  style={{
-                    marginBottom: 14,
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    gap: 10,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {isTerminal ? null : message.role === "assistant" ? (
-                    <div
-                      style={{
-                        position: "relative",
-                        width: 28,
-                        height: 28,
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Image
-                        src={PROFILE_IMAGE_SRC}
-                        alt="Jasond Delos Santos"
-                        fill
-                        sizes="28px"
-                        style={{ borderRadius: "9999px", objectFit: "cover" }}
-                      />
-                    </div>
-                  ) : null}
-
-                  <div style={{ display: "inline-block", maxWidth: isTerminal ? "100%" : "85%" }}>
-                    {isTerminal ? (
-                      <div style={{ fontFamily: "var(--font-ubuntu), monospace", lineHeight: 1.7 }}>
-                        {message.role === "user" ? (
-                          <div style={{ color: "rgba(255,247,242,0.96)", whiteSpace: "pre-wrap" }}>
-                            <span style={{ color: terminalPrompt }}>visitor@desktop:~$</span> {message.text}
-                          </div>
-                        ) : (
-                          <div style={{ color: "rgba(255,245,240,0.94)", whiteSpace: "pre-wrap" }}>
-                            <span style={{ color: terminalPrompt }}>jasond@portfolio:~$</span> {message.text}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          padding: "12px 14px",
-                          borderRadius: 18,
-                          whiteSpace: "pre-wrap",
-                          background:
-                            message.role === "user"
-                              ? "linear-gradient(135deg, rgba(90,123,255,0.94), rgba(127,163,255,0.88))"
-                              : "rgba(255,255,255,0.06)",
-                          border: "1px solid rgba(255,255,255,0.10)",
-                          color: "white",
-                          lineHeight: 1.65,
-                          boxShadow:
-                            message.role === "user"
-                              ? "0 16px 34px rgba(42,67,141,0.28)"
-                              : "inset 0 0 0 1px rgba(255,255,255,0.03)",
-                        }}
-                      >
-                        {message.text}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {loading ? (
-                <div
-                  style={{
-                    marginBottom: 14,
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    gap: 10,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {isTerminal ? null : (
-                    <div style={{ position: "relative", width: 28, height: 28, flexShrink: 0 }}>
-                      <Image
-                        src={PROFILE_IMAGE_SRC}
-                        alt="Jasond Delos Santos"
-                        fill
-                        sizes="28px"
-                        style={{ borderRadius: "9999px", objectFit: "cover" }}
-                      />
-                    </div>
-                  )}
-
+            {messages.map((message, index) => (
+              <div
+                key={`${message.role}-${index}`}
+                style={{
+                  marginBottom: 14,
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  gap: 10,
+                  alignItems: "flex-start",
+                }}
+              >
+                {isTerminal ? null : message.role === "assistant" ? (
                   <div
                     style={{
+                      position: "relative",
+                      width: 28,
+                      height: 28,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Image
+                      src={PROFILE_IMAGE_SRC}
+                      alt="Jasond Delos Santos"
+                      fill
+                      sizes="28px"
+                      style={{ borderRadius: "9999px", objectFit: "cover" }}
+                    />
+                  </div>
+                ) : null}
+
+                <div style={{ display: "inline-block", maxWidth: isTerminal ? "100%" : "85%" }}>
+                  {isTerminal ? (
+                    <div style={{ fontFamily: "var(--font-ubuntu), monospace", lineHeight: 1.7 }}>
+                      {message.role === "user" ? (
+                        <div style={{ color: "rgba(255,247,242,0.96)", whiteSpace: "pre-wrap" }}>
+                          <span style={{ color: terminalPrompt }}>visitor@desktop:~</span> {message.text}
+                        </div>
+                      ) : (
+                        <div style={{ color: "rgba(255,245,240,0.94)", whiteSpace: "pre-wrap" }}>
+                          <span style={{ color: terminalPrompt }}>jasond@portfolio:~</span> {message.text}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        padding: "12px 14px",
+                        borderRadius: 18,
+                        whiteSpace: "pre-wrap",
+                        background:
+                          message.role === "user"
+                            ? "linear-gradient(135deg, rgba(90,123,255,0.94), rgba(127,163,255,0.88))"
+                            : "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.10)",
+                        color: "white",
+                        lineHeight: 1.65,
+                        boxShadow:
+                          message.role === "user"
+                            ? "0 16px 34px rgba(42,67,141,0.28)"
+                            : "inset 0 0 0 1px rgba(255,255,255,0.03)",
+                      }}
+                    >
+                      {message.text}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {loading ? (
+              <div
+                style={{
+                  marginBottom: 14,
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  gap: 10,
+                  alignItems: "flex-start",
+                }}
+              >
+                {isTerminal ? null : (
+                  <div style={{ position: "relative", width: 28, height: 28, flexShrink: 0 }}>
+                    <Image
+                      src={PROFILE_IMAGE_SRC}
+                      alt="Jasond Delos Santos"
+                      fill
+                      sizes="28px"
+                      style={{ borderRadius: "9999px", objectFit: "cover" }}
+                    />
+                  </div>
+                )}
+
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    maxWidth: isTerminal ? "100%" : "85%",
+                    padding: isTerminal ? "0" : "12px 14px",
+                    borderRadius: 18,
+                    background: isTerminal ? "transparent" : "rgba(255,255,255,0.06)",
+                    border: isTerminal ? "none" : "1px solid rgba(255,255,255,0.10)",
+                    color: "white",
+                    fontFamily: isTerminal ? "var(--font-ubuntu), monospace" : undefined,
+                  }}
+                >
+                    {isTerminal ? (
+                      <span>
+                        <span style={{ color: terminalPrompt }}>jasond@portfolio:~</span>{" "}
+                        <span style={{ opacity: 0.82 }}>thinking...</span>
+                      </span>
+                    ) : (
+                    <span style={{ opacity: 0.75 }}>Thinking...</span>
+                  )}
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0s",
+                    }}
+                  />
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0.18s",
+                    }}
+                  />
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 9999,
+                      background: "rgba(255,255,255,0.85)",
+                      animation: "chatDotPulse 1s ease-in-out infinite",
+                      animationDelay: "0.36s",
+                    }}
+                  />
+                </div>
+              </div>
+            ) : null}
+
+            {showSuggestedPrompts ? (
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: isTerminal ? "stretch" : "center",
+                  justifyContent: "flex-end",
+                  gap: 10,
+                  paddingTop: 40,
+                  paddingBottom: 28,
+                }}
+              >
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => void sendMessage(prompt)}
+                    style={{
+                      width: isTerminal ? "100%" : "fit-content",
+                      maxWidth: "100%",
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: 6,
-                      maxWidth: isTerminal ? "100%" : "85%",
-                      padding: isTerminal ? "0" : "12px 14px",
-                      borderRadius: 18,
-                      background: isTerminal ? "transparent" : "rgba(255,255,255,0.06)",
-                      border: isTerminal ? "none" : "1px solid rgba(255,255,255,0.10)",
-                      color: "white",
+                      justifyContent: isTerminal ? "space-between" : "center",
+                      padding: isTerminal ? "10px 12px" : "11px 16px",
+                      borderRadius: isTerminal ? 8 : 9999,
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: isTerminal ? "rgba(0,0,0,0.16)" : "rgba(255,255,255,0.03)",
+                      color: "rgba(255,255,255,0.88)",
+                      fontWeight: 400,
+                      cursor: "pointer",
                       fontFamily: isTerminal ? "var(--font-ubuntu), monospace" : undefined,
                     }}
                   >
-                    {isTerminal ? (
-                      <span>
-                        <span style={{ color: terminalPrompt }}>jasond@portfolio:~$</span>{" "}
-                        <span style={{ opacity: 0.82 }}>running response...</span>
-                      </span>
-                    ) : (
-                      <span style={{ opacity: 0.75 }}>Thinking...</span>
-                    )}
-                    <span
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: 9999,
-                        background: "rgba(255,255,255,0.85)",
-                        animation: "chatDotPulse 1s ease-in-out infinite",
-                        animationDelay: "0s",
-                      }}
-                    />
-                    <span
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: 9999,
-                        background: "rgba(255,255,255,0.85)",
-                        animation: "chatDotPulse 1s ease-in-out infinite",
-                        animationDelay: "0.18s",
-                      }}
-                    />
-                    <span
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: 9999,
-                        background: "rgba(255,255,255,0.85)",
-                        animation: "chatDotPulse 1s ease-in-out infinite",
-                        animationDelay: "0.36s",
-                      }}
-                    />
-                  </div>
-                </div>
-              ) : null}
+                    <span>{prompt}</span>
+                    {isTerminal ? <span style={{ color: terminalPrompt }}>$</span> : null}
+                  </button>
+                ))}
+              </div>
+            ) : null}
 
-              {showSuggestedPrompts ? (
-                <div
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: isTerminal ? "stretch" : "center",
-                    justifyContent: "flex-end",
-                    gap: 10,
-                    paddingTop: 40,
-                    paddingBottom: 28,
-                  }}
-                >
-                  {SUGGESTED_PROMPTS.map((prompt) => (
-                    <button
-                      key={prompt}
-                      type="button"
-                      onClick={() => void sendMessage(prompt)}
-                      style={{
-                        width: isTerminal ? "100%" : "fit-content",
-                        maxWidth: "100%",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: isTerminal ? "space-between" : "center",
-                        padding: isTerminal ? "10px 12px" : "11px 16px",
-                        borderRadius: isTerminal ? 8 : 9999,
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        background: isTerminal ? "rgba(0,0,0,0.16)" : "rgba(255,255,255,0.03)",
-                        color: "rgba(255,255,255,0.88)",
-                        fontWeight: 400,
-                        cursor: "pointer",
-                        fontFamily: isTerminal ? "var(--font-ubuntu), monospace" : undefined,
-                      }}
-                    >
-                      <span>{prompt}</span>
-                      {isTerminal ? <span style={{ color: terminalPrompt }}>$</span> : null}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
-              <div ref={endRef} />
-            </div>
+            <div ref={endRef} />
           </div>
-        ) : null}
+        </div>
 
         <div
           style={{
             padding: 12,
-            borderTop: isTerminalMinimized ? "none" : "1px solid rgba(255,255,255,0.10)",
+            borderTop: "1px solid rgba(255,255,255,0.10)",
             display: "flex",
             gap: 8,
             flexDirection: "column",
@@ -681,16 +667,13 @@ export default function ChatbotPanel({
                   flex: 1,
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 0,
                   padding: "10px 0 2px",
                   fontFamily: "var(--font-ubuntu), monospace",
                   color: "rgba(255,247,242,0.96)",
+                  minWidth: 0,
                 }}
               >
-                <span style={{ color: terminalPrompt, lineHeight: 1.8, display: "inline-flex", alignItems: "center" }}>
-                  jasond@portfolio:~$
-                </span>
-                {!input ? <span className="ubuntu-cursor" aria-hidden="true" /> : null}
                 <textarea
                   ref={inputRef}
                   className="chat-input-field"
@@ -715,9 +698,11 @@ export default function ChatbotPanel({
                     resize: "none",
                     minHeight: 28,
                     maxHeight: 132,
-                    lineHeight: 1.8,
+                    lineHeight: 1.7,
                     overflowY: "auto",
                     fontFamily: "var(--font-ubuntu), monospace",
+                    fontSize: isMobileViewport ? 14 : 13,
+                    fontWeight: 400,
                   }}
                 />
               </label>
@@ -757,38 +742,53 @@ export default function ChatbotPanel({
               onClick={() => void sendMessage()}
               disabled={loading}
               style={{
-                width: isTerminal ? 64 : 48,
+                width: isTerminal ? (isMobileViewport ? 28 : 40) : 48,
                 height: isTerminal ? 40 : 48,
                 background: isTerminal
-                  ? "rgba(255,255,255,0.08)"
+                  ? isMobileViewport
+                    ? "transparent"
+                    : "rgba(255,255,255,0.08)"
                   : "linear-gradient(180deg, rgba(0,132,255,0.98), rgba(0,102,255,0.94))",
                 color: "white",
-                border: isTerminal ? "1px solid rgba(255,255,255,0.1)" : "none",
-                borderRadius: isTerminal ? 8 : 9999,
+                border: isTerminal ? (isMobileViewport ? "none" : "1px solid rgba(255,255,255,0.1)") : "none",
+                borderRadius: isTerminal ? (isMobileViewport ? 0 : 8) : 9999,
                 cursor: "pointer",
+                flexShrink: 0,
                 fontWeight: 400,
                 opacity: loading ? 0.7 : 1,
-                fontSize: isTerminal ? 12 : 20,
-                letterSpacing: isTerminal ? "0.12em" : undefined,
-                textTransform: isTerminal ? "uppercase" : undefined,
+                fontSize: isTerminal ? 0 : 20,
                 fontFamily: isTerminal ? "var(--font-ubuntu), monospace" : undefined,
                 boxShadow: isTerminal
                   ? "none"
                   : "0 12px 26px rgba(0,102,255,0.32)",
               }}
             >
-              {isTerminal ? "Enter" : "➤"}
+              {isTerminal ? (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className={`mx-auto ${isMobileViewport ? "h-4 w-4" : "h-[18px] w-[18px]"}`}
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 4.75 18.5 12 5 19.25l2.15-6.2L5 4.75Z"
+                    stroke="currentColor"
+                    strokeWidth={isMobileViewport ? 1.5 : 1.8}
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              ) : (
+                "➤"
+              )}
             </button>
           </div>
 
-          {!isTerminalMinimized ? (
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.40)", lineHeight: 1.5 }}>
-              {PORTFOLIO_GUARDRAIL}
-            </div>
-          ) : null}
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.40)", lineHeight: 1.5 }}>
+            {PORTFOLIO_GUARDRAIL}
+          </div>
         </div>
 
-        {resizable && !isTerminalMinimized ? (
+        {resizable ? (
           <>
             <button
               type="button"

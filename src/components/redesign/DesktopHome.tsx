@@ -41,6 +41,7 @@ type WindowLayout = {
 };
 
 const WINDOW_IDS: WindowId[] = ["about", "projects", "gallery", "resume", "contact"];
+const DESKTOP_WINDOW_REDIRECT_KEY = "desktop-window-redirect";
 const PROFILE_IMAGE_SRC = "/images/profile/profile.jpeg";
 const RESUME_URL = "/resume/Jasond_Delos_Santos_Resume.pdf";
 const CONTACT_EMAIL = profileData.contact.email;
@@ -542,6 +543,30 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
     };
   });
 
+  useEffect(() => {
+    const requestedWindow = window.sessionStorage.getItem(DESKTOP_WINDOW_REDIRECT_KEY);
+
+    if (
+      requestedWindow === "about" ||
+      requestedWindow === "projects" ||
+      requestedWindow === "gallery" ||
+      requestedWindow === "resume" ||
+      requestedWindow === "contact"
+    ) {
+      window.sessionStorage.removeItem(DESKTOP_WINDOW_REDIRECT_KEY);
+      setWindowState(() => {
+        const nextState = createInitialWindowState();
+        nextState[requestedWindow] = {
+          open: true,
+          minimized: false,
+          maximized: isCompact ? false : true,
+        };
+        return nextState;
+      });
+      setWindowOrder([requestedWindow]);
+    }
+  }, [isCompact]);
+
   return (
     <main className="ubuntu-desktop relative min-h-screen overflow-hidden">
       <div className="ubuntu-wallpaper absolute inset-0" aria-hidden="true" />
@@ -619,7 +644,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
         </div>
 
         <div className={`${hasCompactOpenWindow ? "fixed inset-x-4 top-[5.4rem] z-40" : "mt-2"} lg:hidden`}>
-          <div className={hasCompactOpenWindow ? "flex gap-2 overflow-x-auto pb-1" : "grid grid-cols-4 gap-3"}>
+          <div className={hasCompactOpenWindow ? "grid grid-cols-6 items-start justify-items-center gap-1.5" : "grid grid-cols-4 gap-3"}>
             {DESKTOP_ITEMS.map((item) => {
               const active = windowState[item.id].open;
 
@@ -628,7 +653,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                   key={item.id}
                   type="button"
                   onClick={() => openWindow(item.id)}
-                  className={`${hasCompactOpenWindow ? "min-w-[64px] shrink-0" : ""} flex ${hasCompactOpenWindow ? "min-h-[64px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-2 py-3 text-center text-white/82 transition`}
+                  className={`flex w-full ${hasCompactOpenWindow ? "min-h-[58px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-1 py-2 text-center text-white/82 transition`}
                 >
                   <span
                     className={`flex h-12 w-12 items-center justify-center rounded-[18px] border transition ${
@@ -651,7 +676,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
             <button
               type="button"
               onClick={() => openChatbot()}
-              className={`${hasCompactOpenWindow ? "min-w-[64px] shrink-0" : ""} flex ${hasCompactOpenWindow ? "min-h-[64px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-2 py-3 text-center text-white/82 transition`}
+              className={`flex w-full ${hasCompactOpenWindow ? "min-h-[58px]" : "min-h-[92px]"} flex-col items-center justify-center gap-3 px-1 py-2 text-center text-white/82 transition`}
               aria-label="Open AI terminal"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/10 bg-[#ff9f72]/10 text-[#ffd4bf]">
@@ -747,14 +772,13 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                             Open resume
                             <span aria-hidden="true">↗</span>
                           </a>
-                          <button
-                            type="button"
-                            onClick={() => openChatbot("Tell me about yourself", { resetConversation: true })}
-                            className="premium-button-secondary"
-                          >
-                            Ask AI
-                            <span aria-hidden="true">$</span>
-                          </button>
+                        <button
+                          type="button"
+                          onClick={() => openChatbot("Tell me about yourself", { resetConversation: true })}
+                          className="premium-button-secondary"
+                        >
+                          Ask Me
+                        </button>
                         </div>
                       </section>
                     </div>

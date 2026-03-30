@@ -36,25 +36,12 @@ const CHAT_HIGHLIGHT_PROMPTS = [
   },
 ] as const;
 
-const HOMEPAGE_COMMANDS = new Set(["about", "projects", "gallery", "resume", "contact"]);
-
-function dispatchDesktopWindow(windowId: string) {
-  window.dispatchEvent(
-    new CustomEvent("open-desktop-window", {
-      detail: { windowId },
-    })
-  );
-}
-
 export default function ChatbotWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>(INITIAL_CHAT_MESSAGES);
   const [teaserIndex, setTeaserIndex] = useState(0);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
-  const [terminalInput, setTerminalInput] = useState("");
-  const [terminalStatus, setTerminalStatus] = useState("Type help, a section name, or ask a normal question.");
-  const [isTerminalPreviewMinimized, setIsTerminalPreviewMinimized] = useState(false);
 
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const isHomepage = pathname === "/";
@@ -121,34 +108,6 @@ export default function ChatbotWidget() {
     setOpen(true);
   }
 
-  function handleTerminalSubmit() {
-    const normalized = terminalInput.trim();
-
-    if (!normalized) {
-      openChat();
-      return;
-    }
-
-    const command = normalized.toLowerCase();
-
-    if (command === "help") {
-      setTerminalStatus("Commands: about, projects, gallery, resume, contact. Normal questions still open AI chat.");
-      setTerminalInput("");
-      return;
-    }
-
-    if (HOMEPAGE_COMMANDS.has(command)) {
-      dispatchDesktopWindow(command);
-      setTerminalStatus(`Opened ./${command}`);
-      setTerminalInput("");
-      return;
-    }
-
-    openChat(normalized);
-    setTerminalStatus(`Sent prompt: ${normalized}`);
-    setTerminalInput("");
-  }
-
   if (isAdminRoute) {
     return null;
   }
@@ -157,83 +116,31 @@ export default function ChatbotWidget() {
     <>
       {!open && isHomepage ? (
         <div
-          className="homepage-terminal-shell"
           style={{
             position: "fixed",
-            bottom: 20,
+            bottom: 24,
+            right: 24,
             zIndex: 2147483647,
-            width: "min(500px, calc(100vw - 24px))",
           }}
         >
-          <div className="homepage-linux-launcher overflow-hidden rounded-[14px] border border-black/60 text-[#f6efe9] backdrop-blur-xl">
-            <div className="homepage-linux-launcher-bar flex items-center justify-between px-4 py-2.5">
-              <button
-                type="button"
-                onClick={() => openChat()}
-                className="font-mono text-[12px] text-white/84 transition hover:text-white"
-              >
-                jasond@portfolio: ~
-              </button>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setIsTerminalPreviewMinimized((current) => !current)}
-                  className="homepage-linux-control"
-                  aria-label={isTerminalPreviewMinimized ? "Restore terminal preview" : "Minimize terminal preview"}
-                >
-                  -
-                </button>
-                <button
-                  type="button"
-                  onClick={() => openChat()}
-                  className="homepage-linux-control"
-                  aria-label="Maximize terminal preview"
-                >
-                  □
-                </button>
-              </div>
-            </div>
-            <div className="relative border-t border-[#e95420]/80 bg-[#300a24] px-4 py-4">
-              {!isTerminalPreviewMinimized ? (
-                <div className="relative font-mono text-[13px] leading-6 text-[#f6efe9]">
-                  <div>
-                    <span className="text-[#33d17a]">jasond@portfolio:~$</span>{" "}
-                    <span className="text-white/92">help</span>
-                  </div>
-                  <div className="text-[#33d17a]">about projects gallery resume contact</div>
-                  <div className="mt-2 text-white/82">{terminalStatus}</div>
-                  <div className="mt-1 text-white/56">Tip: ask &quot;{activeTeaser.prompt}&quot;</div>
-                </div>
-              ) : null}
-
-              <div className={`relative flex items-end gap-3 ${isTerminalPreviewMinimized ? "" : "mt-4"}`}>
-                <label className="flex flex-1 items-center gap-2 rounded-[8px] border border-white/8 bg-black/18 px-3 py-2.5 font-mono text-[13px] text-[#fff2eb]">
-                  <span className="shrink-0 text-[#33d17a]">jasond@portfolio:~$</span>
-                  <input
-                    value={terminalInput}
-                    onChange={(event) => setTerminalInput(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        event.preventDefault();
-                        handleTerminalSubmit();
-                      }
-                    }}
-                    placeholder="help"
-                    className="min-w-0 flex-1 bg-transparent text-[#fff7f2] outline-none placeholder:text-white/24"
-                  />
-                  {!terminalInput ? <span className="ubuntu-cursor" aria-hidden="true" /> : null}
-                </label>
-
-                <button
-                  type="button"
-                  onClick={handleTerminalSubmit}
-                  className="rounded-[8px] border border-white/8 bg-white/6 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-white/84 transition hover:bg-white/10"
-                >
-                  Enter
-                </button>
-              </div>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => openChat()}
+            aria-label="Open portfolio AI chat"
+            className="relative flex h-[56px] w-[56px] items-center justify-center text-white/92 transition hover:text-white"
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+              <path
+                d="M12 5.25c-4.42 0-8 2.94-8 6.56 0 2.05 1.16 3.89 2.98 5.09-.13.98-.58 2.08-1.37 3.02 1.54-.2 3.13-.87 4.36-1.85.62.14 1.28.22 2.03.22 4.42 0 8-2.94 8-6.48 0-3.62-3.58-6.56-8-6.56Z"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="absolute right-0 top-0 flex h-6 min-w-6 translate-x-[10%] -translate-y-[10%] items-center justify-center rounded-full border border-[#ff7c70]/18 bg-[#ff5b57] px-1 text-[11px] font-medium leading-none text-white shadow-[0_6px_18px_rgba(255,91,87,0.35)]">
+              1
+            </span>
+          </button>
         </div>
       ) : null}
 
