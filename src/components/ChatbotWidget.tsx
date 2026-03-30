@@ -36,14 +36,28 @@ const CHAT_HIGHLIGHT_PROMPTS = [
   },
 ] as const;
 
+const HOMEPAGE_COMMANDS = new Set(["about", "projects", "gallery", "resume", "contact"]);
+
+function dispatchDesktopWindow(windowId: string) {
+  window.dispatchEvent(
+    new CustomEvent("open-desktop-window", {
+      detail: { windowId },
+    })
+  );
+}
+
 export default function ChatbotWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>(INITIAL_CHAT_MESSAGES);
   const [teaserIndex, setTeaserIndex] = useState(0);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalStatus, setTerminalStatus] = useState("Type help, a section name, or ask a normal question.");
+  const [isTerminalPreviewMinimized, setIsTerminalPreviewMinimized] = useState(false);
 
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+  const isHomepage = pathname === "/";
   const activeTeaser = CHAT_HIGHLIGHT_PROMPTS[teaserIndex] ?? CHAT_HIGHLIGHT_PROMPTS[0];
 
   useEffect(() => {
@@ -107,19 +121,129 @@ export default function ChatbotWidget() {
     setOpen(true);
   }
 
+  function handleTerminalSubmit() {
+    const normalized = terminalInput.trim();
+
+    if (!normalized) {
+      openChat();
+      return;
+    }
+
+    const command = normalized.toLowerCase();
+
+    if (command === "help") {
+      setTerminalStatus("Commands: about, projects, gallery, resume, contact. Normal questions still open AI chat.");
+      setTerminalInput("");
+      return;
+    }
+
+    if (HOMEPAGE_COMMANDS.has(command)) {
+      dispatchDesktopWindow(command);
+      setTerminalStatus(`Opened ./${command}`);
+      setTerminalInput("");
+      return;
+    }
+
+    openChat(normalized);
+    setTerminalStatus(`Sent prompt: ${normalized}`);
+    setTerminalInput("");
+  }
+
   if (isAdminRoute) {
     return null;
   }
 
   return (
     <>
-      {!open ? (
+      {!open && isHomepage ? (
+        <div
+          className="homepage-terminal-shell"
+          style={{
+            position: "fixed",
+            bottom: 20,
+            zIndex: 2147483647,
+            width: "min(500px, calc(100vw - 24px))",
+          }}
+        >
+          <div className="homepage-linux-launcher overflow-hidden rounded-[14px] border border-black/60 text-[#f6efe9] backdrop-blur-xl">
+            <div className="homepage-linux-launcher-bar flex items-center justify-between px-4 py-2.5">
+              <button
+                type="button"
+                onClick={() => openChat()}
+                className="font-mono text-[12px] text-white/84 transition hover:text-white"
+              >
+                jasond@portfolio: ~
+              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setIsTerminalPreviewMinimized((current) => !current)}
+                  className="homepage-linux-control"
+                  aria-label={isTerminalPreviewMinimized ? "Restore terminal preview" : "Minimize terminal preview"}
+                >
+                  -
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openChat()}
+                  className="homepage-linux-control"
+                  aria-label="Maximize terminal preview"
+                >
+                  □
+                </button>
+              </div>
+            </div>
+            <div className="relative border-t border-[#e95420]/80 bg-[#300a24] px-4 py-4">
+              {!isTerminalPreviewMinimized ? (
+                <div className="relative font-mono text-[13px] leading-6 text-[#f6efe9]">
+                  <div>
+                    <span className="text-[#33d17a]">jasond@portfolio:~$</span>{" "}
+                    <span className="text-white/92">help</span>
+                  </div>
+                  <div className="text-[#33d17a]">about projects gallery resume contact</div>
+                  <div className="mt-2 text-white/82">{terminalStatus}</div>
+                  <div className="mt-1 text-white/56">Tip: ask &quot;{activeTeaser.prompt}&quot;</div>
+                </div>
+              ) : null}
+
+              <div className={`relative flex items-end gap-3 ${isTerminalPreviewMinimized ? "" : "mt-4"}`}>
+                <label className="flex flex-1 items-center gap-2 rounded-[8px] border border-white/8 bg-black/18 px-3 py-2.5 font-mono text-[13px] text-[#fff2eb]">
+                  <span className="shrink-0 text-[#33d17a]">jasond@portfolio:~$</span>
+                  <input
+                    value={terminalInput}
+                    onChange={(event) => setTerminalInput(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        handleTerminalSubmit();
+                      }
+                    }}
+                    placeholder="help"
+                    className="min-w-0 flex-1 bg-transparent text-[#fff7f2] outline-none placeholder:text-white/24"
+                  />
+                  {!terminalInput ? <span className="ubuntu-cursor" aria-hidden="true" /> : null}
+                </label>
+
+                <button
+                  type="button"
+                  onClick={handleTerminalSubmit}
+                  className="rounded-[8px] border border-white/8 bg-white/6 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-white/84 transition hover:bg-white/10"
+                >
+                  Enter
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {!open && !isHomepage ? (
         <div
           style={{
-          position: "fixed",
-          right: 20,
-          bottom: 20,
-          zIndex: 2147483647,
+            position: "fixed",
+            right: 20,
+            bottom: 20,
+            zIndex: 2147483647,
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
@@ -311,10 +435,47 @@ export default function ChatbotWidget() {
           setMessages={setMessages}
           pendingPrompt={pendingPrompt}
           onPendingPromptConsumed={() => setPendingPrompt(null)}
+          variant={isHomepage ? "terminal" : "default"}
+          anchor="right"
+          resizable={!isHomepage}
         />
       ) : null}
 
       <style jsx>{`
+        .homepage-linux-launcher {
+          box-shadow:
+            0 24px 58px rgba(0, 0, 0, 0.42),
+            0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .homepage-linux-launcher-bar {
+          background: linear-gradient(180deg, #3f3a3b, #2f2a2c);
+        }
+
+        .homepage-linux-control {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.35rem;
+          height: 1.35rem;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0.35rem;
+          background: rgba(255, 255, 255, 0.06);
+          color: rgba(255, 255, 255, 0.72);
+          font-family: var(--font-ubuntu), monospace;
+          font-size: 0.75rem;
+          line-height: 1;
+          transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+        }
+
+        .homepage-linux-control:hover,
+        .homepage-linux-control:focus-visible {
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.14);
+          color: rgba(255, 255, 255, 0.94);
+          outline: none;
+        }
+
         .chatbot-chip-row {
           display: flex;
           flex-wrap: wrap;
@@ -380,6 +541,22 @@ export default function ChatbotWidget() {
           50% {
             opacity: 0.56;
             transform: scale(1.08);
+          }
+        }
+
+        @media (max-width: 767px) {
+          .ubuntu-terminal-panel {
+            width: min(100vw - 24px, 380px);
+          }
+        }
+
+        .homepage-terminal-shell {
+          right: 18px;
+        }
+
+        @media (min-width: 768px) {
+          .homepage-terminal-shell {
+            right: 24px;
           }
         }
 

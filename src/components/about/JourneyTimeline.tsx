@@ -146,7 +146,41 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-export default function JourneyTimeline() {
+function getScrollContainer(element: HTMLElement | null): HTMLElement | Window {
+  let current = element?.parentElement ?? null;
+
+  while (current) {
+    const styles = window.getComputedStyle(current);
+    const overflowY = styles.overflowY;
+    const isScrollable =
+      (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") &&
+      current.scrollHeight > current.clientHeight;
+
+    if (isScrollable) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return window;
+}
+
+function isScrolledToEnd(container: HTMLElement | Window) {
+  if (container === window) {
+    const documentElement = document.documentElement;
+    return window.scrollY + window.innerHeight >= documentElement.scrollHeight - 4;
+  }
+
+  const element = container as HTMLElement;
+  return element.scrollTop + element.clientHeight >= element.scrollHeight - 4;
+}
+
+export default function JourneyTimeline({
+  variant = "page",
+}: {
+  variant?: "page" | "embedded";
+}) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [lineProgress, setLineProgress] = useState(0);
@@ -156,19 +190,27 @@ export default function JourneyTimeline() {
 
   useEffect(() => {
     let frameId = 0;
+    const track = trackRef.current;
+
+    if (!track) {
+      return;
+    }
+
+    const scrollContainer = getScrollContainer(track);
 
     const updateProgress = () => {
       frameId = 0;
 
-      const track = trackRef.current;
-
-      if (!track) {
-        return;
-      }
-
       const trackRect = track.getBoundingClientRect();
-      const viewportLine = window.innerHeight * VIEWPORT_ANCHOR;
-      const lineY = clamp(viewportLine - trackRect.top, 0, trackRect.height);
+      const viewportLine =
+        scrollContainer === window
+          ? window.innerHeight * VIEWPORT_ANCHOR
+          : (() => {
+              const containerRect = (scrollContainer as HTMLElement).getBoundingClientRect();
+              return containerRect.top + containerRect.height * VIEWPORT_ANCHOR;
+            })();
+      const anchoredLineY = clamp(viewportLine - trackRect.top, 0, trackRect.height);
+      const lineY = isScrolledToEnd(scrollContainer) ? trackRect.height : anchoredLineY;
       const nextLineProgress = trackRect.height > 0 ? lineY / trackRect.height : 0;
 
       const nextItemProgress = timeline.map((_, index) => {
@@ -204,7 +246,11 @@ export default function JourneyTimeline() {
 
     requestUpdate();
 
-    window.addEventListener("scroll", requestUpdate, { passive: true });
+    if (scrollContainer === window) {
+      window.addEventListener("scroll", requestUpdate, { passive: true });
+    } else {
+      scrollContainer.addEventListener("scroll", requestUpdate, { passive: true });
+    }
     window.addEventListener("resize", requestUpdate);
 
     return () => {
@@ -212,14 +258,23 @@ export default function JourneyTimeline() {
         window.cancelAnimationFrame(frameId);
       }
 
-      window.removeEventListener("scroll", requestUpdate);
+      if (scrollContainer === window) {
+        window.removeEventListener("scroll", requestUpdate);
+      } else {
+        scrollContainer.removeEventListener("scroll", requestUpdate);
+      }
       window.removeEventListener("resize", requestUpdate);
     };
   }, []);
 
+  const outerClassName =
+    variant === "embedded"
+      ? "mx-auto max-w-5xl"
+      : "container-page section-shell";
+
   return (
-    <section className="container-page section-shell">
-      <div className="mx-auto max-w-5xl">
+    <section className={outerClassName}>
+      <div className={variant === "embedded" ? "" : "mx-auto max-w-5xl"}>
         <div className="section-header items-center text-center">
           <div className="section-eyebrow">Journey</div>
           <h2 className="type-section-title section-title font-normal text-white/95">

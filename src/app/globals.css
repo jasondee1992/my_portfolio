@@ -1040,6 +1040,143 @@ textarea {
   border-right: none;
 }
 
+.ubuntu-desktop {
+  background:
+    radial-gradient(860px 620px at 18% 16%, rgba(255, 143, 94, 0.14), transparent 48%),
+    radial-gradient(880px 660px at 82% 12%, rgba(120, 100, 210, 0.12), transparent 52%),
+    linear-gradient(180deg, #09070d 0%, #0a0810 42%, #09070d 100%);
+}
+
+.ubuntu-wallpaper {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.03), transparent 18% 82%, rgba(255,255,255,0.025)),
+    radial-gradient(circle at 28% 30%, rgba(255, 143, 94, 0.12), transparent 0 26%),
+    radial-gradient(circle at 74% 18%, rgba(132, 112, 228, 0.1), transparent 0 28%);
+  filter: saturate(1.03);
+}
+
+.ubuntu-wallpaper::before,
+.ubuntu-wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ubuntu-wallpaper::before {
+  background:
+    linear-gradient(140deg, transparent 32%, rgba(255,255,255,0.04) 32.2%, transparent 32.5%),
+    linear-gradient(320deg, transparent 36%, rgba(255,255,255,0.03) 36.2%, transparent 36.5%);
+  opacity: 0.26;
+  mask-image: radial-gradient(circle at center, black, transparent 74%);
+}
+
+.ubuntu-wallpaper::after {
+  background: radial-gradient(circle at center, rgba(255,255,255,0.035), transparent 62%);
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  opacity: 0.16;
+}
+
+.ubuntu-grid {
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.2));
+}
+
+.ubuntu-window-shell,
+.ubuntu-desktop-card,
+.ubuntu-shell-bar > div,
+.ubuntu-dock,
+.ubuntu-terminal-panel {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.02),
+    0 20px 70px rgba(0,0,0,0.34);
+}
+
+.ubuntu-window-shell::before,
+.ubuntu-desktop-card::before,
+.ubuntu-terminal-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 24%);
+}
+
+.ubuntu-window-shell,
+.ubuntu-desktop-card,
+.ubuntu-terminal-panel {
+  position: relative;
+}
+
+.ubuntu-window-shell {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)),
+    rgba(20, 16, 24, 0.92);
+}
+
+.ubuntu-window-bar {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.12));
+}
+
+.desktop-window-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.38rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-ubuntu), monospace;
+  font-size: 0.8rem;
+  line-height: 1;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.desktop-window-control:hover,
+.desktop-window-control:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.94);
+  outline: none;
+}
+
+.ubuntu-terminal-scanline {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.03) 0 1px,
+      transparent 1px 4px
+    );
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.ubuntu-cursor {
+  display: inline-block;
+  width: 0.66rem;
+  height: 1.1rem;
+  margin-left: 0.22rem;
+  background: rgba(255, 212, 191, 0.9);
+  animation: ubuntuCursorBlink 1s steps(1, end) infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes ubuntuCursorBlink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (min-width: 768px) {
   .container-page {
     padding-inline: 32px;
@@ -1101,6 +1238,12 @@ textarea {
   }
 }
 
+@media (max-width: 1023px) {
+  .ubuntu-dock {
+    display: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1121,7 +1264,9 @@ textarea {
   .soft-hover,
   .tech-card,
   .tech-marquee-row,
-  .group * {
+  .group *,
+  .ubuntu-cursor {
     transition: none !important;
+    animation: none !important;
   }
 }
