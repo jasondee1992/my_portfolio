@@ -80,6 +80,7 @@ foreach ($category in $requiredCategories) {
 
 $datasetChecks = @{
   open_conversation = @("what do you want to discuss", "what can we talk about", "ano ba gusto mong pag usapan", "anong pwede kong itanong")
+  work_experience = @("how many years of experience do you have", "how many years have you been working")
   work_availability = @("are you open for a new role", "are you open to a new role", "are you open to new opportunities", "are you open to relocation", "are you willing to work abroad", "would you relocate for a job", "are you open to overseas opportunities", "what kind of roles would you relocate for")
   react_experience = @("do you have experience in React frontend", "how many years of React experience do you have")
   bedrock_experience = @("do you have Amazon Bedrock experience", "how did you use Amazon Bedrock")
@@ -117,6 +118,9 @@ $questionScopeChecks = @(
   "ilang taon",
   "edad",
   "how about work experience",
+  "how many years of experience do you have",
+  "how many years have you been working",
+  "how much experience do you have",
   "are you open for a new role",
   "are you open to full-time roles",
   "are you open to relocation",
@@ -269,6 +273,14 @@ foreach ($phrase in $safeIntentChecks) {
 }
 
 $mixedIntentScenarioCoverage = @(
+  @{
+    Scenario = "Reaction plus general years-of-experience question"
+    Message = "nice! how many years of experience do you have?"
+    RequiresSafeIntentBypass = @("nice")
+    RequiresScopeCoverage = "how many years of experience do you have"
+    ExpectedRoute = "answer recruiter experience question"
+    Avoids = "reaction-only reply"
+  },
   @{
     Scenario = "Acknowledgment plus AWS question"
     Message = "nice awesome. how many years of experience do you have in aws?"
