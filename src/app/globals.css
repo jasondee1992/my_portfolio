@@ -1143,6 +1143,47 @@ textarea {
   outline: none;
 }
 
+html,
+body,
+.ide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(110, 114, 122, 0.72) rgba(10, 11, 14, 0.94);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.ide-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.ide-scrollbar::-webkit-scrollbar-track {
+  background: rgba(10, 11, 14, 0.94);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.ide-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid rgba(10, 11, 14, 0.94);
+  background: linear-gradient(180deg, rgba(118, 121, 128, 0.92), rgba(82, 86, 93, 0.92));
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+.ide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(138, 142, 150, 0.96), rgba(96, 100, 108, 0.96));
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner,
+.ide-scrollbar::-webkit-scrollbar-corner {
+  background: rgba(10, 11, 14, 0.94);
+}
+
 .ubuntu-terminal-scanline {
   background:
     linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%),

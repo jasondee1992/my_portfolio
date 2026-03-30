@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { ManagedProject, ProjectSection, ProjectVisibility } from "@/lib/projects/types";
+import type {
+  ManagedProject,
+  ProjectAppPlatform,
+  ProjectSection,
+  ProjectVisibility,
+} from "@/lib/projects/types";
 
 type AdminProjectsManagerProps = {
   initialProjects: ManagedProject[];
@@ -11,11 +16,13 @@ type ProjectFormState = {
   title: string;
   role: string;
   projectType: string;
+  appPlatform: ProjectAppPlatform;
   details: string;
   summaryDescription: string;
   visibility: ProjectVisibility;
   section: ProjectSection;
   techStack: string;
+  liveUrl: string;
   showOnHomepage: boolean;
   displayOrder: string;
 };
@@ -24,13 +31,21 @@ const DEFAULT_FORM_STATE: ProjectFormState = {
   title: "",
   role: "",
   projectType: "",
+  appPlatform: "web",
   details: "",
   summaryDescription: "",
   visibility: "public",
   section: "other",
   techStack: "",
+  liveUrl: "",
   showOnHomepage: false,
   displayOrder: "0",
+};
+
+const APP_PLATFORM_LABELS: Record<ProjectAppPlatform, string> = {
+  web: "Web App",
+  phone: "Phone App",
+  desktop: "Desktop App",
 };
 
 function sortProjects(projects: ManagedProject[]) {
@@ -48,16 +63,32 @@ function formatTechStack(value: string[]) {
   return value.length > 0 ? value.join(", ") : "n/a";
 }
 
+function normalizeLiveUrl(value: string) {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return "";
+  }
+
+  if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `https://${trimmed}`;
+}
+
 function createFormStateFromProject(project: ManagedProject): ProjectFormState {
   return {
     title: project.title,
     role: project.role,
     projectType: project.projectType,
+    appPlatform: project.appPlatform,
     details: project.details,
     summaryDescription: project.summaryDescription,
     visibility: project.visibility,
     section: project.section,
     techStack: project.techStack.join(", "),
+    liveUrl: project.liveUrl ?? "",
     showOnHomepage: project.showOnHomepage,
     displayOrder: String(project.displayOrder),
   };
@@ -73,8 +104,6 @@ export default function AdminProjectsManager({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const homepageProjectsCount = projects.filter((project) => project.showOnHomepage).length;
   const isEditing = editingId !== null;
 
   function resetForm() {
@@ -105,6 +134,7 @@ export default function AdminProjectsManager({
           ...(editingId ? { id: editingId } : {}),
           ...formState,
           techStack: formState.techStack,
+          liveUrl: normalizeLiveUrl(formState.liveUrl),
           displayOrder: Number(formState.displayOrder),
         }),
       });
@@ -188,9 +218,8 @@ export default function AdminProjectsManager({
       <div className="mb-6">
         <h2 className="text-xl font-medium text-white/95">Projects</h2>
         <p className="mt-2 text-sm text-white/55">
-          Add, edit, and manage projects that feed both the homepage and the full projects page.
-          Homepage shows up to 4 projects with `Show on homepage` enabled, ordered by
-          `Display order`.
+          Add, edit, and manage projects for the desktop portfolio experience, including app
+          type grouping and optional live links.
         </p>
       </div>
 
@@ -230,6 +259,24 @@ export default function AdminProjectsManager({
               }
               required
             />
+          </label>
+
+          <label className="admin-grid-filter">
+            <span className="admin-grid-filter-label">App Type</span>
+            <select
+              className="admin-grid-input admin-grid-select"
+              value={formState.appPlatform}
+              onChange={(event) =>
+                setFormState((current) => ({
+                  ...current,
+                  appPlatform: event.target.value as ProjectAppPlatform,
+                }))
+              }
+            >
+              <option value="web">Web App</option>
+              <option value="phone">Phone App</option>
+              <option value="desktop">Desktop App</option>
+            </select>
           </label>
 
           <label className="admin-grid-filter xl:col-span-3">
@@ -318,21 +365,17 @@ export default function AdminProjectsManager({
             />
           </label>
 
-          <label className="admin-grid-filter justify-end xl:col-span-1">
-            <span className="admin-grid-filter-label">Homepage Display</span>
-            <label className="inline-flex min-h-[42px] items-center gap-3 rounded-[10px] border border-white/10 bg-[#1f1f1f] px-3 text-sm text-white/82">
-              <input
-                type="checkbox"
-                checked={formState.showOnHomepage}
-                onChange={(event) =>
-                  setFormState((current) => ({
-                    ...current,
-                    showOnHomepage: event.target.checked,
-                  }))
-                }
-              />
-              Show on homepage
-            </label>
+          <label className="admin-grid-filter xl:col-span-1">
+            <span className="admin-grid-filter-label">Live URL</span>
+            <input
+              className="admin-grid-input"
+              type="text"
+              value={formState.liveUrl}
+              onChange={(event) =>
+                setFormState((current) => ({ ...current, liveUrl: event.target.value }))
+              }
+              placeholder="https://example.com"
+            />
           </label>
         </div>
 
@@ -356,9 +399,6 @@ export default function AdminProjectsManager({
               Cancel Edit
             </button>
           ) : null}
-          <div className="text-sm text-white/55">
-            Homepage-ready projects: {homepageProjectsCount}
-          </div>
           {feedback ? <div className="text-sm text-emerald-300">{feedback}</div> : null}
           {error ? <div className="text-sm text-rose-300">{error}</div> : null}
         </div>
@@ -373,8 +413,9 @@ export default function AdminProjectsManager({
               <th className="px-4 py-3 font-medium">Visibility</th>
               <th className="px-4 py-3 font-medium">Role</th>
               <th className="px-4 py-3 font-medium">Project Type</th>
-              <th className="px-4 py-3 font-medium">Homepage</th>
+              <th className="px-4 py-3 font-medium">App Type</th>
               <th className="px-4 py-3 font-medium">Order</th>
+              <th className="px-4 py-3 font-medium">Live URL</th>
               <th className="px-4 py-3 font-medium">Tech Stack</th>
               <th className="px-4 py-3 font-medium">Summary</th>
               <th className="px-4 py-3 font-medium">Details</th>
@@ -390,10 +431,24 @@ export default function AdminProjectsManager({
                 <td className="px-4 py-3 min-w-52 text-white/65">{project.role}</td>
                 <td className="px-4 py-3 min-w-48 text-white/65">{project.projectType}</td>
                 <td className="px-4 py-3 whitespace-nowrap text-white/65">
-                  {project.showOnHomepage ? "Yes" : "No"}
+                  {APP_PLATFORM_LABELS[project.appPlatform]}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-white/65">
                   {project.displayOrder}
+                </td>
+                <td className="px-4 py-3 min-w-60 text-white/65">
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#9bc2ff] underline-offset-4 hover:text-white hover:underline"
+                    >
+                      {project.liveUrl}
+                    </a>
+                  ) : (
+                    "n/a"
+                  )}
                 </td>
                 <td className="px-4 py-3 min-w-64 text-white/65">
                   {formatTechStack(project.techStack)}

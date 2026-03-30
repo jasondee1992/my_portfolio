@@ -914,7 +914,7 @@ export default function ChatbotPanel({
         .chat-input-field {
           font-size: 13px;
           scrollbar-width: thin;
-          scrollbar-color: rgba(173, 201, 255, 0.72) rgba(255, 255, 255, 0.04);
+          scrollbar-color: rgba(110, 114, 122, 0.72) rgba(10, 11, 14, 0.94);
         }
 
         .terminal-window-control {
@@ -948,33 +948,22 @@ export default function ChatbotPanel({
         .chat-input-field::-webkit-scrollbar-track {
           margin: 8px 0;
           border-radius: 999px;
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.02),
-            rgba(255, 255, 255, 0.05)
-          );
+          background: rgba(10, 11, 14, 0.94);
         }
 
         .chat-input-field::-webkit-scrollbar-thumb {
-          border: 2px solid transparent;
+          border: 2px solid rgba(10, 11, 14, 0.94);
           border-radius: 999px;
-          background:
-            linear-gradient(180deg, rgba(214, 228, 255, 0.95), rgba(106, 136, 214, 0.94))
-            padding-box;
-          box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.35),
-            0 0 12px rgba(143, 184, 255, 0.2);
+          background: linear-gradient(180deg, rgba(118, 121, 128, 0.92), rgba(82, 86, 93, 0.92));
         }
 
         .chat-input-field::-webkit-scrollbar-thumb:hover {
-          background:
-            linear-gradient(180deg, rgba(236, 243, 255, 0.98), rgba(130, 162, 236, 0.96))
-            padding-box;
+          background: linear-gradient(180deg, rgba(138, 142, 150, 0.96), rgba(96, 100, 108, 0.96));
         }
 
         .chat-scroll-area {
           scrollbar-width: thin;
-          scrollbar-color: rgba(143, 184, 255, 0.42) rgba(255, 255, 255, 0.04);
+          scrollbar-color: rgba(110, 114, 122, 0.72) rgba(10, 11, 14, 0.94);
         }
 
         .chat-scroll-area::-webkit-scrollbar {
@@ -984,28 +973,17 @@ export default function ChatbotPanel({
         .chat-scroll-area::-webkit-scrollbar-track {
           margin: 10px 0;
           border-radius: 999px;
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.02),
-            rgba(255, 255, 255, 0.05)
-          );
+          background: rgba(10, 11, 14, 0.94);
         }
 
         .chat-scroll-area::-webkit-scrollbar-thumb {
-          border: 2px solid transparent;
+          border: 2px solid rgba(10, 11, 14, 0.94);
           border-radius: 999px;
-          background:
-            linear-gradient(180deg, rgba(184, 208, 255, 0.9), rgba(93, 122, 196, 0.92))
-            padding-box;
-          box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.3),
-            0 0 10px rgba(143, 184, 255, 0.18);
+          background: linear-gradient(180deg, rgba(118, 121, 128, 0.92), rgba(82, 86, 93, 0.92));
         }
 
         .chat-scroll-area::-webkit-scrollbar-thumb:hover {
-          background:
-            linear-gradient(180deg, rgba(214, 228, 255, 0.96), rgba(118, 149, 226, 0.96))
-            padding-box;
+          background: linear-gradient(180deg, rgba(138, 142, 150, 0.96), rgba(96, 100, 108, 0.96));
         }
 
         @media (max-width: 768px) {

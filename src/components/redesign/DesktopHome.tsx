@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState, type PointerEvent as ReactPointerEvent } 
 import JourneyTimeline from "@/components/about/JourneyTimeline";
 import profileData from "@/data/knowledge/profile.json";
 import { openChatbot } from "@/lib/chatbot/openChatbot";
-import type { ManagedProject } from "@/lib/projects/types";
+import type { ManagedProject, ProjectAppPlatform } from "@/lib/projects/types";
 
 type AlbumImage = {
   src: string;
@@ -46,6 +46,22 @@ const PROFILE_IMAGE_SRC = "/images/profile/profile.jpeg";
 const RESUME_URL = "/resume/Jasond_Delos_Santos_Resume.pdf";
 const CONTACT_EMAIL = profileData.contact.email;
 const QUICK_STATS = ["10 years in IT", "5 years in programming", "5 years in Python"] as const;
+const PROJECT_PLATFORM_ORDER: ProjectAppPlatform[] = ["web", "phone", "desktop"];
+const PROJECT_PLATFORM_LABELS: Record<ProjectAppPlatform, string> = {
+  web: "Web",
+  phone: "Mobile",
+  desktop: "Desktop",
+};
+const PROJECT_PLATFORM_ACCENTS: Record<ProjectAppPlatform, string> = {
+  web: "from-[#8fb8ff]/28 via-[#2d4f7c]/22 to-[#0f172a]/10",
+  phone: "from-[#f7b267]/24 via-[#6f4f2e]/18 to-[#111827]/10",
+  desktop: "from-[#98f5e1]/22 via-[#30564e]/18 to-[#111827]/10",
+};
+const PROJECT_PLATFORM_PREVIEW_IMAGE: Record<ProjectAppPlatform, string> = {
+  web: "/app_type/web.png",
+  phone: "/app_type/mobile.png",
+  desktop: "/app_type/desktop.png",
+};
 
 const WINDOW_LAYOUTS: Record<WindowId, WindowLayout> = {
   about: { top: 108, left: 158, width: 620, height: 560 },
@@ -144,6 +160,10 @@ function getOptionalText(value: string) {
   return trimmed ? trimmed : null;
 }
 
+function getDefaultProjectPlatform(projects: ManagedProject[]): ProjectAppPlatform {
+  return projects.find((project) => PROJECT_PLATFORM_ORDER.includes(project.appPlatform))?.appPlatform ?? "web";
+}
+
 function DesktopGlyph({ icon }: { icon: "user" | "folder" | "gallery" | "file" | "mail" | "bot" }) {
   if (icon === "user") {
     return (
@@ -213,6 +233,99 @@ function DesktopGlyph({ icon }: { icon: "user" | "folder" | "gallery" | "file" |
       <rect x="4.25" y="4.25" width="15.5" height="15.5" rx="3.25" stroke="currentColor" strokeWidth="1.5" />
       <path d="M8.75 15.25V8.75H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="m12.25 12 3 3 3.5-4.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ProjectPlatformGlyph({
+  platform,
+  className = "h-4 w-4",
+}: {
+  platform: ProjectAppPlatform;
+  className?: string;
+}) {
+  if (platform === "phone") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={className}>
+        <rect x="7.25" y="2.75" width="9.5" height="18.5" rx="2.75" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M10 5.75h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="12" cy="18.25" r="0.9" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (platform === "desktop") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={className}>
+        <rect x="3.25" y="4.25" width="17.5" height="11.5" rx="2.25" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M9.25 19.75h5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M12 15.75v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <rect x="3.25" y="4.75" width="17.5" height="11" rx="2.25" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 19.25h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M12 15.75v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ProjectPreview({
+  platform,
+}: {
+  platform: ProjectAppPlatform;
+}) {
+  const frameClassName =
+    platform === "phone"
+      ? "aspect-[10/14] w-[136px] rounded-[30px] p-2.5"
+      : "aspect-[16/10] w-full max-w-[230px] rounded-[24px] p-3";
+
+  return (
+    <div
+      className={`relative mx-auto overflow-hidden border border-white/10 bg-[#06080d]/95 shadow-[0_24px_48px_rgba(0,0,0,0.35)] ${frameClassName}`}
+    >
+      <div className="relative h-full w-full overflow-hidden rounded-[18px] border border-white/8 bg-black/20">
+        <Image
+          src={PROJECT_PLATFORM_PREVIEW_IMAGE[platform]}
+          alt={`${PROJECT_PLATFORM_LABELS[platform]} preview`}
+          fill
+          sizes="(min-width: 1280px) 16vw, (min-width: 768px) 36vw, 80vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,7,18,0.04),rgba(3,7,18,0.72))]" />
+      </div>
+    </div>
+  );
+}
+
+function LiveLinkGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+      <path d="M14.75 5.25h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 14 18.25 5.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M10.25 6.25h-1.5A2.5 2.5 0 0 0 6.25 8.75v6.5a2.5 2.5 0 0 0 2.5 2.5h6.5a2.5 2.5 0 0 0 2.5-2.5v-1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function DetailsGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+      <path
+        d="M6.75 5.75h10.5A1.75 1.75 0 0 1 19 7.5v9a1.75 1.75 0 0 1-1.75 1.75H6.75A1.75 1.75 0 0 1 5 16.5v-9a1.75 1.75 0 0 1 1.75-1.75Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path d="M8.5 10h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M8.5 13.5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -340,7 +453,7 @@ function DesktopWindow({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-5 md:py-5">{children}</div>
+        <div className="ide-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-5 md:py-5">{children}</div>
       </div>
     </motion.section>
   );
@@ -351,6 +464,10 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
   const [windowOrder, setWindowOrder] = useState<WindowId[]>([]);
   const [isCompact, setIsCompact] = useState(false);
   const [clock, setClock] = useState(() => formatClock(new Date()));
+  const [selectedProjectPlatform, setSelectedProjectPlatform] = useState<ProjectAppPlatform>(() =>
+    getDefaultProjectPlatform(projects)
+  );
+  const [selectedProjectDetails, setSelectedProjectDetails] = useState<ManagedProject | null>(null);
   const [selectedGalleryAlbumSlug, setSelectedGalleryAlbumSlug] = useState<string | null>(null);
   const [selectedGalleryImage, setSelectedGalleryImage] = useState<{ albumSlug: string; index: number } | null>(null);
   const [contactName, setContactName] = useState("");
@@ -362,6 +479,19 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
 
   const skillItems = useMemo(() => flattenSkillGroups().slice(0, 12), []);
   const introParagraphs = useMemo(() => getPrimarySummary(aboutParagraphs), [aboutParagraphs]);
+  const projectCountsByPlatform = useMemo(
+    () =>
+      PROJECT_PLATFORM_ORDER.reduce<Record<ProjectAppPlatform, number>>((accumulator, platform) => {
+        accumulator[platform] = projects.filter((project) => project.appPlatform === platform).length;
+        return accumulator;
+      }, { web: 0, phone: 0, desktop: 0 }),
+    [projects]
+  );
+  const visibleProjectPlatform = selectedProjectPlatform;
+  const filteredProjects = useMemo(
+    () => projects.filter((project) => project.appPlatform === visibleProjectPlatform),
+    [projects, visibleProjectPlatform]
+  );
   const selectedGalleryAlbum = useMemo(
     () => albums.find((album) => album.slug === selectedGalleryAlbumSlug) ?? null,
     [albums, selectedGalleryAlbumSlug]
@@ -415,6 +545,10 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
 
     if (id === "gallery") {
       setSelectedGalleryImage(null);
+    }
+
+    if (id === "projects") {
+      setSelectedProjectDetails(null);
     }
   }
 
@@ -715,7 +849,7 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 onMaximize={() => maximizeWindow(id)}
                 onFocus={() => focusWindow(id)}
               >
-                <div className="space-y-5">
+                <div className="relative space-y-5">
                   <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)]">
                     <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
                       <div className="overflow-hidden rounded-[20px] border border-white/10">
@@ -810,70 +944,171 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                 onFocus={() => focusWindow(id)}
               >
                 <div className="space-y-5">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.18em] text-white/40">Projects</div>
-                    <h2 className="mt-2 text-2xl font-medium text-white/94">Production-minded builds with clear operational value</h2>
+                  <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.18em] text-white/40">Projects</div>
+                      <h2 className="mt-2 text-2xl font-medium text-white/94">
+                        Production-minded builds with clear operational value
+                      </h2>
+                      <p className="mt-3 max-w-2xl text-sm leading-7 text-white/56">
+                        Browse projects by delivery format. Each card highlights the build type,
+                        stack, and live destination when a public URL is available.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {PROJECT_PLATFORM_ORDER.map((platform) => {
+                        const active = visibleProjectPlatform === platform;
+                        const count = projectCountsByPlatform[platform];
+
+                        return (
+                          <button
+                            key={platform}
+                            type="button"
+                            onClick={() => setSelectedProjectPlatform(platform)}
+                            className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition ${
+                              active
+                                ? "border-white/16 bg-white/[0.12] text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)]"
+                                : "border-white/10 bg-black/24 text-white/62 hover:border-white/14 hover:bg-white/[0.06] hover:text-white"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                                active ? "bg-white/12 text-white" : "bg-white/[0.06] text-white/68"
+                              }`}
+                            >
+                              <ProjectPlatformGlyph platform={platform} />
+                            </span>
+                            <span className="font-medium">{PROJECT_PLATFORM_LABELS[platform]}</span>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-[11px] ${
+                                active ? "bg-black/22 text-white/76" : "bg-white/[0.04] text-white/42"
+                              }`}
+                            >
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {projects.length === 0 ? (
                     <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-sm text-white/58">
-                      No public projects are available yet.
+                      Projects will appear here soon.
+                    </div>
+                  ) : filteredProjects.length === 0 ? (
+                    <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-sm text-white/58">
+                      Nothing to show here yet.
                     </div>
                   ) : (
-                    <div className="grid gap-4 xl:grid-cols-2">
-                      {projects.map((project, projectIndex) => {
-                        const section = getOptionalText(project.section);
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                      {filteredProjects.map((project) => {
                         const title = getOptionalText(project.title);
                         const role = getOptionalText(project.role);
                         const projectType = getOptionalText(project.projectType);
                         const summary = getOptionalText(project.summaryDescription);
+                        const detailText = getOptionalText(project.details);
+                        const liveUrl = getOptionalText(project.liveUrl ?? "");
                         const techStack = project.techStack
                           .map((item) => item.trim())
                           .filter((item) => item.length > 0);
 
                         return (
-                          <article key={project.id} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <div className="text-[11px] uppercase tracking-[0.18em] text-white/36">
-                                  {section
-                                    ? `${String(projectIndex + 1).padStart(2, "0")} · ${section}`
-                                    : String(projectIndex + 1).padStart(2, "0")}
+                          <article
+                            key={project.id}
+                            className="flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-4 shadow-[0_18px_40px_rgba(0,0,0,0.22)]"
+                          >
+                            <div
+                              className={`rounded-[20px] border border-white/10 bg-gradient-to-br ${PROJECT_PLATFORM_ACCENTS[project.appPlatform]} px-3 py-4`}
+                            >
+                              <div className="mb-4 flex items-center justify-between gap-3">
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-[0.18em] text-white/44">
+                                    {PROJECT_PLATFORM_LABELS[project.appPlatform]}
+                                  </div>
                                 </div>
-                                {title ? <h3 className="mt-2 text-lg font-medium leading-7 text-white/92">{title}</h3> : null}
+                                <span
+                                  className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.16em] ${
+                                    project.visibility === "internal"
+                                      ? "border-[#ff9f72]/20 bg-[#ff9f72]/10 text-[#ffd0bb]"
+                                      : "border-[#86efac]/18 bg-[#86efac]/10 text-[#d6fce2]"
+                                  }`}
+                                >
+                                  {project.visibility}
+                                </span>
                               </div>
-                              <span className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.16em] ${project.visibility === "internal" ? "border-[#ff9f72]/20 bg-[#ff9f72]/10 text-[#ffd0bb]" : "border-[#86efac]/18 bg-[#86efac]/10 text-[#d6fce2]"}`}>
-                                {project.visibility}
-                              </span>
+
+                              <ProjectPreview platform={project.appPlatform} />
                             </div>
 
-                            {role || projectType ? (
-                              <div className="mt-4 space-y-1 text-sm text-white/56">
-                                {role ? (
-                                  <div>
-                                    <span className="text-white/84">Role:</span> {role}
-                                  </div>
+                            <div className="mt-4 flex items-start justify-between gap-3">
+                              <div>
+                                {title ? (
+                                  <h3 className="text-lg font-medium leading-7 text-white/92">{title}</h3>
                                 ) : null}
-                                {projectType ? (
-                                  <div>
-                                    <span className="text-white/84">Type:</span> {projectType}
+                                {(role || projectType) && (
+                                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-white/52">
+                                    {role ? (
+                                      <span>
+                                        <span className="text-white/78">Role:</span> {role}
+                                      </span>
+                                    ) : null}
+                                    {projectType ? (
+                                      <span>
+                                        <span className="text-white/78">Type:</span> {projectType}
+                                      </span>
+                                    ) : null}
                                   </div>
-                                ) : null}
+                                )}
+                              </div>
+                            </div>
+
+                            {summary ? <p className="mt-3 text-sm leading-6 text-white/60">{summary}</p> : null}
+
+                            {techStack.length > 0 ? (
+                              <div className="mt-4">
+                                <div className="mb-2 text-[11px] uppercase tracking-[0.18em] text-white/38">
+                                  Tech stack
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {techStack.map((item) => (
+                                    <span
+                                      key={item}
+                                      className="rounded-full border border-white/8 bg-black/24 px-3 py-1.5 text-xs text-white/70"
+                                    >
+                                      {item}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
                             ) : null}
 
-                            {summary ? <p className="mt-4 text-sm leading-7 text-white/60">{summary}</p> : null}
-
-                            {techStack.length > 0 ? (
-                              <div className="mt-4 flex flex-wrap gap-2">
-                                {techStack.map((item) => (
-                                  <span
-                                    key={item}
-                                    className="rounded-full border border-white/8 bg-black/24 px-3 py-1.5 text-xs text-white/70"
+                            {detailText || liveUrl ? (
+                              <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+                                <div>
+                                  {detailText ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedProjectDetails(project)}
+                                      className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/[0.04] px-4 py-2 text-sm font-medium text-white/82 transition hover:border-white/22 hover:bg-white/[0.1] hover:text-white"
+                                    >
+                                      <DetailsGlyph />
+                                      View details
+                                    </button>
+                                  ) : null}
+                                </div>
+                                {liveUrl ? (
+                                  <a
+                                    href={liveUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/[0.04] px-4 py-2 text-sm font-medium text-white/82 transition hover:border-white/22 hover:bg-white/[0.1] hover:text-white"
                                   >
-                                    {item}
-                                  </span>
-                                ))}
+                                    <LiveLinkGlyph />
+                                    Live
+                                  </a>
+                                ) : null}
                               </div>
                             ) : null}
                           </article>
@@ -881,6 +1116,109 @@ export default function DesktopHome({ aboutParagraphs, projects, albums }: Deskt
                       })}
                     </div>
                   )}
+
+                  <AnimatePresence>
+                    {selectedProjectDetails ? (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[140] flex items-center justify-center bg-black/60 p-4"
+                        onClick={() => setSelectedProjectDetails(null)}
+                      >
+                        <motion.div
+                          initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                          onClick={(event) => event.stopPropagation()}
+                          className="w-full max-w-2xl overflow-hidden rounded-[28px] border border-white/12 bg-[#151018]/96 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+                        >
+                          <div className="flex items-start justify-between gap-4 border-b border-white/8 px-5 py-4">
+                            <div>
+                              <div className="text-[10px] uppercase tracking-[0.18em] text-white/40">
+                                {PROJECT_PLATFORM_LABELS[selectedProjectDetails.appPlatform]}
+                              </div>
+                              <h3 className="mt-2 text-2xl font-medium text-white/94">
+                                {selectedProjectDetails.title}
+                              </h3>
+                              {(selectedProjectDetails.role || selectedProjectDetails.projectType) && (
+                                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/54">
+                                  {selectedProjectDetails.role ? (
+                                    <span>
+                                      <span className="text-white/78">Role:</span> {selectedProjectDetails.role}
+                                    </span>
+                                  ) : null}
+                                  {selectedProjectDetails.projectType ? (
+                                    <span>
+                                      <span className="text-white/78">Type:</span> {selectedProjectDetails.projectType}
+                                    </span>
+                                  ) : null}
+                                </div>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setSelectedProjectDetails(null)}
+                              className="desktop-window-control shrink-0"
+                              aria-label="Close project details"
+                            >
+                              ×
+                            </button>
+                          </div>
+
+                          <div className="ide-scrollbar max-h-[70vh] space-y-5 overflow-y-auto px-5 py-5">
+                            {getOptionalText(selectedProjectDetails.summaryDescription) ? (
+                              <p className="text-sm leading-7 text-white/62">
+                                {selectedProjectDetails.summaryDescription}
+                              </p>
+                            ) : null}
+
+                            <div className="rounded-[22px] border border-white/10 bg-white/[0.04] p-4">
+                              <div className="text-[11px] uppercase tracking-[0.18em] text-white/40">
+                                Project details
+                              </div>
+                              <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-white/72">
+                                {selectedProjectDetails.details}
+                              </p>
+                            </div>
+
+                            {selectedProjectDetails.techStack.length > 0 ? (
+                              <div>
+                                <div className="mb-2 text-[11px] uppercase tracking-[0.18em] text-white/40">
+                                  Tech stack
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {selectedProjectDetails.techStack.map((item) => (
+                                    <span
+                                      key={item}
+                                      className="rounded-full border border-white/8 bg-black/24 px-3 py-1.5 text-xs text-white/70"
+                                    >
+                                      {item}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
+
+                            <div className="flex justify-end">
+                              {getOptionalText(selectedProjectDetails.liveUrl ?? "") ? (
+                                <a
+                                  href={selectedProjectDetails.liveUrl ?? ""}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="premium-button"
+                                >
+                                  Open live project
+                                </a>
+                              ) : null}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
               </DesktopWindow>
             );

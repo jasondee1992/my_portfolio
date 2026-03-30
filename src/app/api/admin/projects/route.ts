@@ -6,7 +6,11 @@ import {
   getProjects,
   updateProject,
 } from "@/lib/projects/projectStorage";
-import type { CreateProjectInput, UpdateProjectInput } from "@/lib/projects/types";
+import type {
+  CreateProjectInput,
+  ProjectAppPlatform,
+  UpdateProjectInput,
+} from "@/lib/projects/types";
 
 export const runtime = "nodejs";
 
@@ -40,16 +44,22 @@ function normalizeTechStack(value: unknown) {
   return [];
 }
 
+function normalizeProjectAppPlatform(value: unknown): ProjectAppPlatform {
+  return value === "phone" || value === "desktop" ? value : "web";
+}
+
 function normalizeCreateProjectInput(body: Record<string, unknown>): CreateProjectInput {
   return {
     title: toNullableText(body.title) ?? "",
     role: toNullableText(body.role) ?? "",
     projectType: toNullableText(body.projectType) ?? "",
+    appPlatform: normalizeProjectAppPlatform(body.appPlatform),
     details: toNullableText(body.details) ?? "",
     summaryDescription: toNullableText(body.summaryDescription) ?? "",
     visibility: body.visibility === "internal" ? "internal" : "public",
     section: body.section === "enterprise" ? "enterprise" : "other",
     techStack: normalizeTechStack(body.techStack),
+    liveUrl: toNullableText(body.liveUrl),
     showOnHomepage: body.showOnHomepage === true,
     displayOrder:
       typeof body.displayOrder === "number"

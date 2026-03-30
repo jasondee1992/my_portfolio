@@ -13,6 +13,7 @@ import { getLocalSqliteDatabase, importLegacySqliteTable } from "@/lib/storage/l
 import type {
   CreateProjectInput,
   ManagedProject,
+  ProjectAppPlatform,
   ProjectSection,
   UpdateProjectInput,
   ProjectVisibility,
@@ -43,6 +44,10 @@ function toRequiredText(value: unknown, fieldName: string) {
 
 function normalizeProjectSection(value: unknown): ProjectSection {
   return value === "enterprise" ? "enterprise" : "other";
+}
+
+function normalizeProjectAppPlatform(value: unknown): ProjectAppPlatform {
+  return value === "phone" || value === "desktop" ? value : "web";
 }
 
 function normalizeProjectVisibility(value: unknown): ProjectVisibility {
@@ -120,6 +125,9 @@ function normalizeManagedProject(
     projectType:
       toNullableText(row.projectType) ??
       toRequiredText(row.project_type, "project_type"),
+    appPlatform: normalizeProjectAppPlatform(
+      toNullableText(row.appPlatform) ?? row.app_platform
+    ),
     details: toRequiredText(row.details, "details"),
     summaryDescription:
       toNullableText(row.summaryDescription) ??
@@ -127,6 +135,7 @@ function normalizeManagedProject(
     visibility: normalizeProjectVisibility(row.visibility),
     section: normalizeProjectSection(row.section),
     techStack,
+    liveUrl: toNullableText(row.liveUrl) ?? toNullableText(row.live_url),
     showOnHomepage:
       normalizeBoolean(row.showOnHomepage) || normalizeBoolean(row.show_on_homepage),
     displayOrder:
@@ -153,6 +162,22 @@ function sortProjects(left: ManagedProject, right: ManagedProject) {
   );
 }
 
+function ensureSqliteColumn(
+  database: ReturnType<typeof getLocalSqliteDatabase>,
+  columnName: string,
+  definition: string
+) {
+  const existingColumns = database
+    .prepare(`PRAGMA table_info(${SQLITE_TABLE_NAME})`)
+    .all() as Array<{ name?: string }>;
+
+  if (existingColumns.some((column) => column.name === columnName)) {
+    return;
+  }
+
+  database.exec(`ALTER TABLE ${SQLITE_TABLE_NAME} ADD COLUMN ${columnName} ${definition}`);
+}
+
 function getSqliteDatabase() {
   const database = getLocalSqliteDatabase();
   importLegacySqliteTable({
@@ -166,17 +191,21 @@ function getSqliteDatabase() {
       title TEXT NOT NULL,
       role TEXT NOT NULL,
       project_type TEXT NOT NULL,
+      app_platform TEXT NOT NULL DEFAULT 'web',
       details TEXT NOT NULL,
       summary_description TEXT NOT NULL,
       visibility TEXT NOT NULL,
       section TEXT NOT NULL,
       tech_stack_json TEXT NOT NULL,
+      live_url TEXT,
       show_on_homepage INTEGER NOT NULL DEFAULT 0,
       display_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     )
   `);
+  ensureSqliteColumn(database, "app_platform", "TEXT NOT NULL DEFAULT 'web'");
+  ensureSqliteColumn(database, "live_url", "TEXT");
   return database;
 }
 
@@ -191,11 +220,13 @@ function getSqliteInsertStatement() {
       title,
       role,
       project_type,
+      app_platform,
       details,
       summary_description,
       visibility,
       section,
       tech_stack_json,
+      live_url,
       show_on_homepage,
       display_order,
       created_at,
@@ -205,11 +236,13 @@ function getSqliteInsertStatement() {
       @title,
       @role,
       @projectType,
+      @appPlatform,
       @details,
       @summaryDescription,
       @visibility,
       @section,
       @techStackJson,
+      @liveUrl,
       @showOnHomepage,
       @displayOrder,
       @createdAt,
@@ -300,11 +333,13 @@ function toCreateProjectRecord(input: CreateProjectInput): ManagedProject {
     title: toRequiredText(input.title, "title"),
     role: toRequiredText(input.role, "role"),
     projectType: toRequiredText(input.projectType, "projectType"),
+    appPlatform: normalizeProjectAppPlatform(input.appPlatform),
     details: toRequiredText(input.details, "details"),
     summaryDescription: toRequiredText(input.summaryDescription, "summaryDescription"),
     visibility: normalizeProjectVisibility(input.visibility),
     section: normalizeProjectSection(input.section),
     techStack: normalizeTechStack(input.techStack),
+    liveUrl: toNullableText(input.liveUrl),
     showOnHomepage: normalizeBoolean(input.showOnHomepage),
     displayOrder: normalizeDisplayOrder(input.displayOrder),
     createdAt: timestamp,
@@ -320,11 +355,13 @@ function toUpdateProjectRecord(input: UpdateProjectInput): ManagedProject {
     title: toRequiredText(input.title, "title"),
     role: toRequiredText(input.role, "role"),
     projectType: toRequiredText(input.projectType, "projectType"),
+    appPlatform: normalizeProjectAppPlatform(input.appPlatform),
     details: toRequiredText(input.details, "details"),
     summaryDescription: toRequiredText(input.summaryDescription, "summaryDescription"),
     visibility: normalizeProjectVisibility(input.visibility),
     section: normalizeProjectSection(input.section),
     techStack: normalizeTechStack(input.techStack),
+    liveUrl: toNullableText(input.liveUrl),
     showOnHomepage: normalizeBoolean(input.showOnHomepage),
     displayOrder: normalizeDisplayOrder(input.displayOrder),
     createdAt: timestamp,
@@ -342,11 +379,13 @@ export async function getProjects() {
             title,
             role,
             project_type,
+            app_platform,
             details,
             summary_description,
             visibility,
             section,
             tech_stack_json,
+            live_url,
             show_on_homepage,
             display_order,
             created_at,
@@ -397,11 +436,13 @@ export async function createProject(input: CreateProjectInput) {
       title: nextProject.title,
       role: nextProject.role,
       projectType: nextProject.projectType,
+      appPlatform: nextProject.appPlatform,
       details: nextProject.details,
       summaryDescription: nextProject.summaryDescription,
       visibility: nextProject.visibility,
       section: nextProject.section,
       techStackJson: JSON.stringify(nextProject.techStack),
+      liveUrl: nextProject.liveUrl,
       showOnHomepage: nextProject.showOnHomepage ? 1 : 0,
       displayOrder: nextProject.displayOrder,
       createdAt: nextProject.createdAt,
@@ -420,11 +461,13 @@ export async function createProject(input: CreateProjectInput) {
         title: nextProject.title,
         role: nextProject.role,
         project_type: nextProject.projectType,
+        appPlatform: nextProject.appPlatform,
         details: nextProject.details,
         summary_description: nextProject.summaryDescription,
         visibility: nextProject.visibility,
         section: nextProject.section,
         techStack: nextProject.techStack,
+        liveUrl: nextProject.liveUrl,
         showOnHomepage: nextProject.showOnHomepage,
         displayOrder: nextProject.displayOrder,
         createdAt: nextProject.createdAt,
@@ -460,11 +503,13 @@ export async function updateProject(input: UpdateProjectInput) {
             title = @title,
             role = @role,
             project_type = @projectType,
+            app_platform = @appPlatform,
             details = @details,
             summary_description = @summaryDescription,
             visibility = @visibility,
             section = @section,
             tech_stack_json = @techStackJson,
+            live_url = @liveUrl,
             show_on_homepage = @showOnHomepage,
             display_order = @displayOrder,
             updated_at = @updatedAt
@@ -476,11 +521,13 @@ export async function updateProject(input: UpdateProjectInput) {
         title: nextProject.title,
         role: nextProject.role,
         projectType: nextProject.projectType,
+        appPlatform: nextProject.appPlatform,
         details: nextProject.details,
         summaryDescription: nextProject.summaryDescription,
         visibility: nextProject.visibility,
         section: nextProject.section,
         techStackJson: JSON.stringify(nextProject.techStack),
+        liveUrl: nextProject.liveUrl,
         showOnHomepage: nextProject.showOnHomepage ? 1 : 0,
         displayOrder: nextProject.displayOrder,
         updatedAt: nextProject.updatedAt,
@@ -507,11 +554,13 @@ export async function updateProject(input: UpdateProjectInput) {
         title: nextProject.title,
         role: nextProject.role,
         project_type: nextProject.projectType,
+        appPlatform: nextProject.appPlatform,
         details: nextProject.details,
         summary_description: nextProject.summaryDescription,
         visibility: nextProject.visibility,
         section: nextProject.section,
         techStack: nextProject.techStack,
+        liveUrl: nextProject.liveUrl,
         showOnHomepage: nextProject.showOnHomepage,
         displayOrder: nextProject.displayOrder,
         createdAt: nextProject.createdAt,
