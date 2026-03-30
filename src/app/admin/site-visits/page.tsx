@@ -1,5 +1,6 @@
 import "server-only";
 import AdminPageShell from "@/components/admin/AdminPageShell";
+import AdminTableScroller from "@/components/admin/AdminTableScroller";
 import {
   ADMIN_TABLE_PAGE_SIZE,
   buildHref,
@@ -62,7 +63,7 @@ export default async function AdminSiteVisitsPage({ searchParams }: AdminSearchP
             <div className="admin-grid-empty">No site visits found.</div>
           ) : (
             <>
-              <div className="admin-grid-table-wrap">
+              <AdminTableScroller>
                 <table className="admin-grid-table min-w-full text-left text-sm text-white/80">
                   <thead>
                     <tr>
@@ -118,7 +119,7 @@ export default async function AdminSiteVisitsPage({ searchParams }: AdminSearchP
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </AdminTableScroller>
 
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                 <div className="text-sm text-white/55">

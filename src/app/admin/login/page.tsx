@@ -30,6 +30,35 @@ function getErrorMessage(errorCode: string) {
   }
 }
 
+function UserAvatarGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-9 w-9">
+      <path
+        d="M12 12.25a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Z"
+        fill="currentColor"
+      />
+      <path
+        d="M5 19.5c0-3.1 3.15-5.25 7-5.25s7 2.15 7 5.25"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function ArrowGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+      <path
+        d="M8.25 12h7.5M12.75 7.5 17.25 12l-4.5 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default async function AdminLoginPage({ searchParams }: PageProps) {
   const resolvedSearchParams = (await searchParams) ?? {};
   const nextPath = getAdminRedirectTarget(getSingleValue(resolvedSearchParams.next));
@@ -43,56 +72,54 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="container-page section-shell min-h-screen pb-16 pt-12">
-      <section className="section-panel mx-auto max-w-xl p-6 md:p-8">
-        <div className="section-header">
-          <div className="section-eyebrow">Admin Access</div>
-          <div>
-            <h1 className="section-title text-3xl font-normal md:text-4xl">Admin Login</h1>
-            <p className="section-copy mt-3 text-sm md:text-base">
-              Protected admin access for portfolio logs. Passcode validation happens server-side
-              and authenticated state is stored in an `httpOnly` admin cookie.
-            </p>
-          </div>
+    <main className="admin-auth-screen">
+      <section className="admin-auth-panel">
+        <div className="admin-auth-avatar">
+          <UserAvatarGlyph />
         </div>
 
         {loggedOut ? (
-          <div className="premium-card mt-6 p-4 text-sm text-white/75">
-            Admin session cleared.
-          </div>
+          <div className="admin-auth-message">Admin session cleared.</div>
         ) : null}
 
         {errorMessage ? (
-          <div className="premium-card mt-6 border-red-400/20 p-4 text-sm text-red-100/85">
+          <div className="admin-auth-message" data-tone="error">
             {errorMessage}
           </div>
         ) : null}
 
         {!isConfigured ? (
-          <div className="premium-card mt-6 p-4 text-sm text-white/75">
+          <div className="admin-auth-message">
             Set `ADMIN_PASSCODE` in your environment before using admin login.
           </div>
         ) : null}
 
-        <form action="/admin/login/submit" method="post" className="mt-8 grid gap-4">
+        <form action="/admin/login/submit" method="post" className="admin-auth-form">
           <input type="hidden" name="next" value={nextPath} />
 
-          <label className="premium-card flex flex-col gap-2 p-4">
-            <span className="text-sm text-white/70">Admin Passcode</span>
+          <div className="admin-auth-input-shell">
             <input
               type="password"
               name="passcode"
               required
               disabled={!isConfigured}
-              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none"
-              placeholder="Enter admin passcode"
+              className="admin-auth-input"
+              placeholder="Admin passcode"
             />
-          </label>
-
-          <button type="submit" className="premium-button w-fit" disabled={!isConfigured}>
-            Sign In
-          </button>
+            <button
+              type="submit"
+              className="admin-auth-submit"
+              disabled={!isConfigured}
+              aria-label="Unlock admin dashboard"
+            >
+              <ArrowGlyph />
+            </button>
+          </div>
         </form>
+
+        <p className="admin-auth-note admin-auth-note-prominent">
+          Enter the admin passcode to unlock the dashboard.
+        </p>
       </section>
     </main>
   );

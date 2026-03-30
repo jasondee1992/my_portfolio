@@ -78,6 +78,21 @@ function getLegacyAdminCookieOptions() {
   };
 }
 
+function getAdminCookieClearOptionVariants() {
+  const baseOptions = getCookieOptions();
+  const legacyOptions = getLegacyAdminCookieOptions();
+
+  return [
+    baseOptions,
+    legacyOptions,
+    { ...baseOptions, path: "/admin/chat-logs" },
+    { ...baseOptions, path: "/admin/site-visits" },
+    { ...baseOptions, path: "/admin/projects" },
+    { ...baseOptions, path: "/admin/dashboard" },
+    { ...baseOptions, path: "/admin/login" },
+  ];
+}
+
 function clearCookieByName(
   response: NextResponse,
   name: string,
@@ -86,6 +101,7 @@ function clearCookieByName(
   response.cookies.set(name, "", {
     ...options,
     maxAge: 0,
+    expires: new Date(0),
   });
 }
 
@@ -222,10 +238,29 @@ export function applyAdminSessionCookie(response: NextResponse) {
 }
 
 export function clearAdminSessionCookie(response: NextResponse) {
-  clearCookieByName(response, ADMIN_SESSION_COOKIE_NAME, getCookieOptions());
-  clearCookieByName(response, ADMIN_SESSION_COOKIE_NAME, getLegacyAdminCookieOptions());
-  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getCookieOptions());
-  clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, getLegacyAdminCookieOptions());
+  for (const options of getAdminCookieClearOptionVariants()) {
+    clearCookieByName(response, ADMIN_SESSION_COOKIE_NAME, options);
+    clearCookieByName(response, LEGACY_ADMIN_SESSION_COOKIE_NAME, options);
+  }
+}
+
+export async function clearAdminSessionAndRedirect(path = "/admin/login?logged_out=1"): Promise<never> {
+  const cookieStore = await cookies();
+
+  for (const options of getAdminCookieClearOptionVariants()) {
+    cookieStore.set(ADMIN_SESSION_COOKIE_NAME, "", {
+      ...options,
+      maxAge: 0,
+      expires: new Date(0),
+    });
+    cookieStore.set(LEGACY_ADMIN_SESSION_COOKIE_NAME, "", {
+      ...options,
+      maxAge: 0,
+      expires: new Date(0),
+    });
+  }
+
+  redirect(path);
 }
 
 export function getAdminRedirectTarget(value: string | null | undefined) {

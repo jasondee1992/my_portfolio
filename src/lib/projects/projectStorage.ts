@@ -1,6 +1,5 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import path from "node:path";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DeleteCommand,
@@ -9,7 +8,7 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { getLoggingBackend } from "@/lib/logging/backend";
-import { getLocalSqliteDatabase, importLegacySqliteTable } from "@/lib/storage/localDatabase";
+import { getLocalSqliteDatabase } from "@/lib/storage/localDatabase";
 import type {
   CreateProjectInput,
   ManagedProject,
@@ -180,11 +179,6 @@ function ensureSqliteColumn(
 
 function getSqliteDatabase() {
   const database = getLocalSqliteDatabase();
-  importLegacySqliteTable({
-    database,
-    tableName: SQLITE_TABLE_NAME,
-    sourcePath: path.join(process.cwd(), "data", "portfolio_content.sqlite"),
-  });
   database.exec(`
     CREATE TABLE IF NOT EXISTS ${SQLITE_TABLE_NAME} (
       id TEXT PRIMARY KEY,
