@@ -216,7 +216,7 @@ export default function AdminProjectsManager({
   const [isImporting, setIsImporting] = useState(false);
   const [importProgress, setImportProgress] = useState<number | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
-  const importProgressTimerRef = useRef<ReturnType<typeof window.setInterval> | null>(null);
+  const importProgressTimerRef = useRef<number | null>(null);
   const isEditing = editingId !== null;
 
   const stopImportProgressAnimation = useCallback(() => {
